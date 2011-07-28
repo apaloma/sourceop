@@ -1,0 +1,66 @@
+local objectmodeoffset = sourceop.GetPropOffset("DT_BaseObject", "m_iObjectMode")
+local objectowneroffset = sourceop.GetPropOffset("DT_BaseObject", "m_hBuilder")
+local carriedoffset = sourceop.GetPropOffset("DT_BaseObject", "m_bCarried")
+
+function mbb_playercommand(pPlayer, command, arguments)
+  if(pPlayer == nil || string.lower(command) != "build" || pPlayer:GetPlayerClass() != TF2_CLASS_ENGINEER) then
+    return false
+  end
+
+  local buildtype = tonumber(arguments[1])
+  local buildmode = tonumber(arguments[2] or 0)
+  local buildent = ""
+
+  if(buildtype == 0) then
+    buildent = "obj_dispenser"
+  elseif(buildtype == 1) then
+    buildent = "obj_teleporter"
+  elseif(buildtype == 2) then
+    buildent = "obj_sentrygun"
+  elseif(buildtype == 3 && arguments[2] == nil) then
+    buildent = "obj_teleporter"
+    builtype = 2
+    buildmode = 1
+  else
+    return false
+  end
+
+  ////Msg("Build: " .. buildent .. " " .. tostring(buildmode) .. "\n")
+
+  local playerindex = pPlayer:EntIndex()
+  local objects = ents.FindByClass(buildent)
+  local count = 0
+  local oneOrMoreCarried = false
+  for _,e in pairs(objects) do
+    if(e != nil) then
+      local ownerindex = e:GetOffsetEntity(objectowneroffset):EntIndex()
+
+      if(ownerindex == playerindex) then
+        local mode = e:GetOffsetInt(objectmodeoffset)
+        local carried = e:GetOffsetByte(carriedoffset)
+ 
+        if(carried == 1) then
+          oneOrMoreCarried = true
+        end
+
+        ////Msg("carried: " .. tostring(carried) .. " mode: " .. tostring(mode) .. " " .. tostring(ownerindex) .. "\n")
+        if(mode == buildmode) then
+          count = count + 1
+        end
+      end
+    end
+  end
+
+  if(count >= 1 && oneOrMoreCarried) then
+    pPlayer:BanByID(7200, "Automatic ban for multiple building exploit", "Player wanted to build a " .. buildent .. " (mode " .. tostring(buildmode) .. ") but was already carrying one.")
+    return true
+  end
+end
+
+if(game:IsTF2()) then
+  if(objectmodeoffset > 0 && objectowneroffset > 0 && carriedoffset > 0) then
+    hook.Add("PlayerCommand", "mbb_playercommand", mbb_playercommand)
+  else
+    Error("One or more offsets for the multi building ban exploit fix were zero.\n")
+  end
+end

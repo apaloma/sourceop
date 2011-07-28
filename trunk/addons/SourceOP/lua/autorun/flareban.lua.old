@@ -1,0 +1,31 @@
+function fixflares()
+  local flarecount = {}
+  for _,e in pairs(ents.FindByClass("tf_projectile_flare")) do
+    if(e != nil) then
+      local flareowner = e:GetOwner()
+      if(flareowner != nil) then
+        if(flarecount[flareowner:EntIndex()] == nil) then
+          flarecount[flareowner:EntIndex()] = 1
+        else
+          flarecount[flareowner:EntIndex()] = flarecount[flareowner:EntIndex()] + 1
+        end
+      end
+    end
+  end
+
+  for k,v in pairs(flarecount) do
+    if(v > 6) then
+      local banplayer = player.GetByID(k)
+      if(banplayer != nil) then
+        banplayer:BanByID(0, "Automatic ban for flare exploit")
+      end
+    end
+  end
+end
+
+function fixflares_command( pPlayer, command, arguments )
+  fixflares()
+end
+
+concommand.Add("fixflares", fixflares_command, "Fixes lingering flares.")
+timer.Create("flarefix", 10, 0, fixflares)

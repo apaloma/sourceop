@@ -1,0 +1,57 @@
+Index: llex.cpp
+===================================================================
+--- llex.cpp	(revision 15)
++++ llex.cpp	(working copy)
+@@ -357,6 +357,30 @@
+           next(ls);
+         continue;
+       }
++      // PATCH: c++ style comments
++	  case '/': {
++        next(ls);
++        if (ls->current == '/') {
++          while (ls->current != '\n' && ls->current != EOZ)
++            next(ls);
++          continue;
++        } else if (ls->current == '*') {
++          next(ls);
++          while (ls->current != EOZ) {
++            if (ls->current == '*') {
++              next(ls);
++              if (ls->current == '/') {
++                next(ls);
++                break;
++              }
++            }
++            next(ls);
++          }
++          continue;
++        } else
++          return '/';
++      }
++      // ENDPATCH
+       case '[': {
+         int sep = skip_sep(ls);
+         if (sep >= 0) {
+@@ -386,6 +410,21 @@
+         if (ls->current != '=') return '~';
+         else { next(ls); return TK_NE; }
+       }
++      case '!': {
++        next(ls);
++        if (ls->current != '=') return TK_NOT; /*return '!'; */
++        else { next(ls); return TK_NE; }
++      }
++	  case '&': {
++        next(ls);
++		if (ls->current != '&') return '&';
++		else { next(ls); return TK_AND; }
++      }
++	  case '|': {
++        next(ls);
++		if (ls->current != '|') return '|';
++		else { next(ls); return TK_OR; }
++      }
+       case '"':
+       case '\'': {
+         read_string(ls, ls->current, seminfo);

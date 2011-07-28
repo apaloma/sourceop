@@ -1,0 +1,60 @@
+mypassword
+
+// THIS IS AN EXAMPLE
+//
+// all users must be placed in the addons\SourceOP\users folder
+// do not place users in the addons\SourceOP\users\example folder
+// the example folder is not used by SourceOP
+
+
+// This file sets the password and permissions for the user
+// The user's password must be the first line
+// Players:
+//	a - Can view players (required for anything else in category)
+//	b - Can kick players
+//	c - Can ban players
+//	d - Can give players god
+//	e - Can give players noclip
+//	f - Can give players quad
+//	g - Can give players credits
+//	h - Can slap players
+//	i - Can slay players
+//	j - Can give players guns
+//	k - Can open map and view players
+//	l - Can drag players on map
+//	m - Can set a player's health
+//	n - Can set a player's team
+//
+// AdminInfo:
+//	a - Can view connected admins (required for anything else in category)
+//	b - Can view a connected admin's info
+// Chat:
+//	a - Can view player chat
+//	b - Can send player chat
+//	c - Can view admin chat
+//	d - Can send admin chat
+//	e - Can private message players
+//	f - Can private message admins
+// Administrative
+//	a - Can view user list (required for any user editing)
+//	b - Can view user passwords
+//	c - Can view user permissions (required to edit perimssions)
+//	d - Can edit user passwords
+//	e - Can edit user permissions
+//	f - Can delete users
+//	g - Can add users
+//	h - Can view player database
+//	i = Can edit player database (Requires view player database)
+//	j - Can view/send RCON
+//	k - Can spawn items on map
+//	l - Can view map list
+//	m - Can change map
+//	n - Can view settings (Cvars)
+//	o - Can change settings
+//	p - Can view server password (Requires view settings)
+//	q - Can set server password (Requires change settings)
+
+Players		= abcdefghijklmn
+AdminInfo	= ab
+Chat		= abcdef
+Administrative	= acdefghijklmnopq

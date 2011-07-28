@@ -1,0 +1,769 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{754e7161-90d3-4d4d-83e9-7fa534852234}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+    <Filter Include="Source Files\memhack">
+      <UniqueIdentifier>{62d099e5-5393-446c-b87a-6e201bf61120}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Ents">
+      <UniqueIdentifier>{545fae1a-8894-4545-93dc-c3c6d9aa90e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\SourceHook">
+      <UniqueIdentifier>{b1c3a91a-978f-4361-8bcf-723d436e1911}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\From SDK">
+      <UniqueIdentifier>{041c534c-e99a-48f7-95fe-1a03ca154b41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Lua">
+      <UniqueIdentifier>{309ae772-cebb-4dc5-85c8-085a0f1c5956}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Lua\lib">
+      <UniqueIdentifier>{a4c5f1be-8d3e-4c23-88d9-0317393cb402}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Lua\lib\mine">
+      <UniqueIdentifier>{03fa8e70-1d89-4877-a80d-2f62895911fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Lua\Class">
+      <UniqueIdentifier>{321600bb-dd7a-4736-8e8d-87a2ff79beeb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Lua\sop">
+      <UniqueIdentifier>{c587e9ff-046a-44b1-b45c-7f809740c072}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\CDetour">
+      <UniqueIdentifier>{e02ec94d-6dde-486b-bc66-425c0deb36c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{6c1d3bfe-cdc3-4c21-b971-1dd3ff45c9c0}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+    <Filter Include="Header Files\EntsH">
+      <UniqueIdentifier>{ec4c4a88-bb41-4a40-a618-aa5f9c4d0968}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\SourceHook">
+      <UniqueIdentifier>{b9461fa2-6d30-4e5b-8ce4-03b47c33d1e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\lua">
+      <UniqueIdentifier>{df1fc6b5-d57a-4bf9-a01e-b4732cfb53af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\lua\sop">
+      <UniqueIdentifier>{02ba7781-dd18-4958-8547-0bb90a1b4b35}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="admincommands.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AdminOP.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="adminopplayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="bans.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="bytebuf.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cbase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="clientcommands.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="convar_l4d.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="crc32.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="download.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="entitylist.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="entitylist_base.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="funcdetours.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gamerulesproxy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gamestringpool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="isopgamesystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LuaLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mapcycletracker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\public\tier0\memoverride.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="particles.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsShared.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pingmanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="playerdatabase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="random.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="recipientfilter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="reservedslots.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="serverplugin_empty.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sigmgr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sopmysql.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sopsteamid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sourceopadmin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="specialitems.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="strtools.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="takedamageinfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="util.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="utlsymbol_old.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vfuncs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="votesystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mempatch.cpp">
+      <Filter>Source Files\memhack</Filter>
+    </ClCompile>
+    <ClCompile Include="CAOPEntity.cpp">
+      <Filter>Source Files\Ents</Filter>
+    </ClCompile>
+    <ClCompile Include="CAOPExploding.cpp">
+      <Filter>Source Files\Ents</Filter>
+    </ClCompile>
+    <ClCompile Include="CAOPFragTest.cpp">
+      <Filter>Source Files\Ents</Filter>
+    </ClCompile>
+    <ClCompile Include="CAOPGrenTimer.cpp">
+      <Filter>Source Files\Ents</Filter>
+    </ClCompile>
+    <ClCompile Include="CAOPLuaNormal.cpp">
+      <Filter>Source Files\Ents</Filter>
+    </ClCompile>
+    <ClCompile Include="CAOPNormal.cpp">
+      <Filter>Source Files\Ents</Filter>
+    </ClCompile>
+    <ClCompile Include="CAOPRadio.cpp">
+      <Filter>Source Files\Ents</Filter>
+    </ClCompile>
+    <ClCompile Include="CAOPSnark.cpp">
+      <Filter>Source Files\Ents</Filter>
+    </ClCompile>
+    <ClCompile Include="DFBaseent.cpp">
+      <Filter>Source Files\Ents</Filter>
+    </ClCompile>
+    <ClCompile Include="DFRadio.cpp">
+      <Filter>Source Files\Ents</Filter>
+    </ClCompile>
+    <ClCompile Include="bone_setup.cpp">
+      <Filter>Source Files\From SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionUtils.cpp">
+      <Filter>Source Files\From SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="globals.cpp">
+      <Filter>Source Files\From SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="igamesystem.cpp">
+      <Filter>Source Files\From SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="studio.cpp">
+      <Filter>Source Files\From SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="studio_shared.cpp">
+      <Filter>Source Files\From SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="lua\src\lapi.cpp">
+      <Filter>Source Files\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="lua\src\lcode.cpp">
+      <Filter>Source Files\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="lua\src\ldebug.cpp">
+      <Filter>Source Files\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="lua\src\ldo.cpp">
+      <Filter>Source Files\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="lua\src\ldump.cpp">
+      <Filter>Source Files\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="lua\src\lfunc.cpp">
+      <Filter>Source Files\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="lua\src\lgc.cpp">
+      <Filter>Source Files\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="lua\src\linit.cpp">
+      <Filter>Source Files\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="lua\src\llex.cpp">
+      <Filter>Source Files\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="lua\src\lmem.cpp">
+      <Filter>Source Files\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="lua\src\loadlib.cpp">
+      <Filter>Source Files\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="lua\src\lobject.cpp">
+      <Filter>Source Files\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="lua\src\lopcodes.cpp">
+      <Filter>Source Files\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="lua\src\lparser.cpp">
+      <Filter>Source Files\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="lua\src\lstate.cpp">
+      <Filter>Source Files\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="lua\src\lstring.cpp">
+      <Filter>Source Files\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="lua\src\ltable.cpp">
+      <Filter>Source Files\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="lua\src\ltm.cpp">
+      <Filter>Source Files\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="lua\src\lundump.cpp">
+      <Filter>Source Files\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="lua\src\lvm.cpp">
+      <Filter>Source Files\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="lua\src\lzio.cpp">
+      <Filter>Source Files\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="lua\src\lib\lauxlib.cpp">
+      <Filter>Source Files\Lua\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="lua\src\lib\lbaselib.cpp">
+      <Filter>Source Files\Lua\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="lua\src\lib\ldblib.cpp">
+      <Filter>Source Files\Lua\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="lua\src\lib\liolib.cpp">
+      <Filter>Source Files\Lua\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="lua\src\lib\lmathlib.cpp">
+      <Filter>Source Files\Lua\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="lua\src\lib\loslib.cpp">
+      <Filter>Source Files\Lua\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="lua\src\lib\lstrlib.cpp">
+      <Filter>Source Files\Lua\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="lua\src\lib\ltablib.cpp">
+      <Filter>Source Files\Lua\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="lbitlib.cpp">
+      <Filter>Source Files\Lua\lib\mine</Filter>
+    </ClCompile>
+    <ClCompile Include="lconcommand.cpp">
+      <Filter>Source Files\Lua\lib\mine</Filter>
+    </ClCompile>
+    <ClCompile Include="lconstraint.cpp">
+      <Filter>Source Files\Lua\lib\mine</Filter>
+    </ClCompile>
+    <ClCompile Include="lconvar.cpp">
+      <Filter>Source Files\Lua\lib\mine</Filter>
+    </ClCompile>
+    <ClCompile Include="leffects.cpp">
+      <Filter>Source Files\Lua\lib\mine</Filter>
+    </ClCompile>
+    <ClCompile Include="lenginelib.cpp">
+      <Filter>Source Files\Lua\lib\mine</Filter>
+    </ClCompile>
+    <ClCompile Include="lents.cpp">
+      <Filter>Source Files\Lua\lib\mine</Filter>
+    </ClCompile>
+    <ClCompile Include="lfile.cpp">
+      <Filter>Source Files\Lua\lib\mine</Filter>
+    </ClCompile>
+    <ClCompile Include="lgame.cpp">
+      <Filter>Source Files\Lua\lib\mine</Filter>
+    </ClCompile>
+    <ClCompile Include="lgamerules.cpp">
+      <Filter>Source Files\Lua\lib\mine</Filter>
+    </ClCompile>
+    <ClCompile Include="loslibext.cpp">
+      <Filter>Source Files\Lua\lib\mine</Filter>
+    </ClCompile>
+    <ClCompile Include="lplayer.cpp">
+      <Filter>Source Files\Lua\lib\mine</Filter>
+    </ClCompile>
+    <ClCompile Include="lsourceop.cpp">
+      <Filter>Source Files\Lua\lib\mine</Filter>
+    </ClCompile>
+    <ClCompile Include="lstrlibext.cpp">
+      <Filter>Source Files\Lua\lib\mine</Filter>
+    </ClCompile>
+    <ClCompile Include="ltablibext.cpp">
+      <Filter>Source Files\Lua\lib\mine</Filter>
+    </ClCompile>
+    <ClCompile Include="ltempentlib.cpp">
+      <Filter>Source Files\Lua\lib\mine</Filter>
+    </ClCompile>
+    <ClCompile Include="lutil.cpp">
+      <Filter>Source Files\Lua\lib\mine</Filter>
+    </ClCompile>
+    <ClCompile Include="l_class_angle.cpp">
+      <Filter>Source Files\Lua\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="l_class_damageinfo.cpp">
+      <Filter>Source Files\Lua\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="l_class_entity.cpp">
+      <Filter>Source Files\Lua\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="l_class_physobj.cpp">
+      <Filter>Source Files\Lua\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="l_class_player.cpp">
+      <Filter>Source Files\Lua\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="l_class_vector.cpp">
+      <Filter>Source Files\Lua\Class</Filter>
+    </ClCompile>
+    <ClCompile Include="lentitycache.cpp">
+      <Filter>Source Files\Lua\sop</Filter>
+    </ClCompile>
+    <ClCompile Include="lext.cpp">
+      <Filter>Source Files\Lua\sop</Filter>
+    </ClCompile>
+    <ClCompile Include="lsopinit.cpp">
+      <Filter>Source Files\Lua\sop</Filter>
+    </ClCompile>
+    <ClCompile Include="CDetour.cpp">
+      <Filter>Source Files\CDetour</Filter>
+    </ClCompile>
+    <ClCompile Include="CDetourDis.cpp">
+      <Filter>Source Files\CDetour</Filter>
+    </ClCompile>
+    <ClCompile Include="mmsource\sourcehook\sourcehook.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mmsource\sourcehook\sourcehook_hookmangen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="plugin_mm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="sourceop.def">
+      <Filter>Source Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="sourceop.rc">
+      <Filter>Source Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="mempatcher.h">
+      <Filter>Source Files\memhack</Filter>
+    </ClInclude>
+    <ClInclude Include="luasoplibs.h">
+      <Filter>Source Files\Lua\lib\mine</Filter>
+    </ClInclude>
+    <ClInclude Include="l_class_angle.h">
+      <Filter>Source Files\Lua\Class</Filter>
+    </ClInclude>
+    <ClInclude Include="l_class_damageinfo.h">
+      <Filter>Source Files\Lua\Class</Filter>
+    </ClInclude>
+    <ClInclude Include="l_class_entity.h">
+      <Filter>Source Files\Lua\Class</Filter>
+    </ClInclude>
+    <ClInclude Include="l_class_physobj.h">
+      <Filter>Source Files\Lua\Class</Filter>
+    </ClInclude>
+    <ClInclude Include="l_class_player.h">
+      <Filter>Source Files\Lua\Class</Filter>
+    </ClInclude>
+    <ClInclude Include="l_class_vector.h">
+      <Filter>Source Files\Lua\Class</Filter>
+    </ClInclude>
+    <ClInclude Include="CByteArray.h">
+      <Filter>Source Files\CDetour</Filter>
+    </ClInclude>
+    <ClInclude Include="CDetour.h">
+      <Filter>Source Files\CDetour</Filter>
+    </ClInclude>
+    <ClInclude Include="CDetourDis.h">
+      <Filter>Source Files\CDetour</Filter>
+    </ClInclude>
+    <ClInclude Include="CDetourPlatform.h">
+      <Filter>Source Files\CDetour</Filter>
+    </ClInclude>
+    <ClInclude Include="admincommands.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AdminOP.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="adminopplayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dlls\baseentity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Public\basetypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="bytebuf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="clientcommands.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\public\Color.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="convar_l4d.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="crc32.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cvars.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\public\tier0\dbg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="download.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Public\eiface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Public\FileSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fixdebug.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="funcdetours.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gamerulesproxy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\public\vstdlib\ICommandLine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\public\igameevents.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\public\tier1\interface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="interfaces.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\public\dlls\iplayerinfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\public\engine\iserverplugin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="isopgamesystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\public\tier1\KeyValues.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LuaLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mapcycletracker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\public\tier0\mem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\public\tier0\memalloc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\public\tier0\memdbgon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="object_hash.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="packet_types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pingmanager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="queuethread.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="randomstuff.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="recipientfilter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="reservedslots.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sigmgr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sopconsts.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sopmysql.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sopsteamid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sourcehooks.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sourceopadmin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sourceopadmin_net.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="specialitems.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\public\vstdlib\strtools.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tf2items.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\public\tier1\utlbuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="utldict_old.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\public\tier1\utlmemory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="utlsymbol_old.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\public\tier1\utlvector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vfuncs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="votesystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\public\vstdlib\vstdlib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CAOPEntity.h">
+      <Filter>Header Files\EntsH</Filter>
+    </ClInclude>
+    <ClInclude Include="CAOPExploding.h">
+      <Filter>Header Files\EntsH</Filter>
+    </ClInclude>
+    <ClInclude Include="CAOPFragTest.h">
+      <Filter>Header Files\EntsH</Filter>
+    </ClInclude>
+    <ClInclude Include="CAOPGrenTimer.h">
+      <Filter>Header Files\EntsH</Filter>
+    </ClInclude>
+    <ClInclude Include="CAOPLuaNormal.h">
+      <Filter>Header Files\EntsH</Filter>
+    </ClInclude>
+    <ClInclude Include="CAOPNormal.h">
+      <Filter>Header Files\EntsH</Filter>
+    </ClInclude>
+    <ClInclude Include="CAOPRadio.h">
+      <Filter>Header Files\EntsH</Filter>
+    </ClInclude>
+    <ClInclude Include="CAOPSnark.h">
+      <Filter>Header Files\EntsH</Filter>
+    </ClInclude>
+    <ClInclude Include="DFBaseent.h">
+      <Filter>Header Files\EntsH</Filter>
+    </ClInclude>
+    <ClInclude Include="DFRadio.h">
+      <Filter>Header Files\EntsH</Filter>
+    </ClInclude>
+    <ClInclude Include="FastDelegate.h">
+      <Filter>Header Files\SourceHook</Filter>
+    </ClInclude>
+    <ClInclude Include="sh_list.h">
+      <Filter>Header Files\SourceHook</Filter>
+    </ClInclude>
+    <ClInclude Include="sh_listcat.h">
+      <Filter>Header Files\SourceHook</Filter>
+    </ClInclude>
+    <ClInclude Include="sh_memfuncinfo.h">
+      <Filter>Header Files\SourceHook</Filter>
+    </ClInclude>
+    <ClInclude Include="sh_memory.h">
+      <Filter>Header Files\SourceHook</Filter>
+    </ClInclude>
+    <ClInclude Include="sh_stack.h">
+      <Filter>Header Files\SourceHook</Filter>
+    </ClInclude>
+    <ClInclude Include="sh_string.h">
+      <Filter>Header Files\SourceHook</Filter>
+    </ClInclude>
+    <ClInclude Include="sh_tinyhash.h">
+      <Filter>Header Files\SourceHook</Filter>
+    </ClInclude>
+    <ClInclude Include="sh_vector.h">
+      <Filter>Header Files\SourceHook</Filter>
+    </ClInclude>
+    <ClInclude Include="lua\include\lapi.h">
+      <Filter>Header Files\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="lua\include\lauxlib.h">
+      <Filter>Header Files\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="lua\include\lcode.h">
+      <Filter>Header Files\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="lua\include\ldebug.h">
+      <Filter>Header Files\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="lua\include\ldo.h">
+      <Filter>Header Files\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="lua\include\lfunc.h">
+      <Filter>Header Files\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="lua\include\lgc.h">
+      <Filter>Header Files\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="lua\include\llex.h">
+      <Filter>Header Files\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="lua\include\llimits.h">
+      <Filter>Header Files\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="lua\include\lmem.h">
+      <Filter>Header Files\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="lua\include\lobject.h">
+      <Filter>Header Files\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="lua\include\lopcodes.h">
+      <Filter>Header Files\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="lua\include\lparser.h">
+      <Filter>Header Files\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="lua\include\lstate.h">
+      <Filter>Header Files\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="lua\include\lstring.h">
+      <Filter>Header Files\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="lua\include\ltable.h">
+      <Filter>Header Files\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="lua\include\ltm.h">
+      <Filter>Header Files\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="lua\include\lua.h">
+      <Filter>Header Files\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="lua\include\luaconf.h">
+      <Filter>Header Files\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="lua\include\lualib.h">
+      <Filter>Header Files\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="lua\include\lunar.h">
+      <Filter>Header Files\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="lua\include\lundump.h">
+      <Filter>Header Files\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="lua\include\lvm.h">
+      <Filter>Header Files\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="lua\include\lzio.h">
+      <Filter>Header Files\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="lentitycache.h">
+      <Filter>Header Files\lua\sop</Filter>
+    </ClInclude>
+    <ClInclude Include="mmsource\sourcehook\sourcehook.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mmsource\sourcehook\sourcehook_impl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="plugin_mm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="steamext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\..\lib\public\tier0.lib" />
+    <CustomBuild Include="..\..\lib\public\vstdlib.lib" />
+  </ItemGroup>
+</Project>

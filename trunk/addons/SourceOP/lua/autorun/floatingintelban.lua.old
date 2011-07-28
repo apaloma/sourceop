@@ -1,0 +1,8 @@
+function fifix_playerchangedteam( pPlayer, newTeam )
+  // ban players joining unassigned team with flag
+  if(newTeam == 0 && pPlayer:HasFlag()) then
+    timer.Simple(0.01, (function() pPlayer:BanByID(0, "Automatic ban for floating intel exploit") end))
+  end
+end
+
+hook.Add("PlayerChangedTeam", "floatingintelchangedteam", fifix_playerchangedteam)

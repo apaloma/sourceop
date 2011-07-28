@@ -1,0 +1,45 @@
+// DF_radio.txt
+
+// Format:
+
+//	File		=The file name of the loop (relative to gamedir/sound/addons/SourceOP/radio; 155 character max)
+//	Name		=The actual song name (default is the File; 47 character max)
+//	ShortName	=The name that is used to play the song with the radioplay command (default is the song #; 31 character max)
+//	Pitch		=The pitch of the loop (default 100; Range: 1-255)
+//	Volume		=The volume of the loop (default 10; Range: 0-10; 10 is loudest)
+
+//	Dynamics	=The dynamics of the loop (default 0)
+//			0: "None"
+//			1: "Huge Machine"
+//			2: "Big Machine"
+//			3: "Machine"
+//			4: "Slow Fade in"  
+//			5: "Fade in"
+//			6: "Quick Fade in"
+//			7: "Slow Pulse"
+//			8: "Pulse"
+//			9: "Quick pulse"
+//			10: "Slow Oscillator"
+//			11: "Oscillator"
+//			12: "Quick Oscillator"
+//			13: "Grunge pitch"
+//			14: "Very low pitch"
+//			15: "Low pitch"
+//			16: "High pitch"
+//			17: "Very high pitch"
+//			18: "Screaming pitch"
+//			19: "Oscillate spinup/down"
+//			20: "Pulse spinup/down"
+//			21: "Random pitch"
+//			22: "Random pitch fast"
+//			23: "Incremental Spinup"
+//			24: "Alien"
+//			25: "Bizzare"
+//			26: "Planet X"
+//			27: "Haunted"
+
+//	NotLooped	=Is NOT Looped (boolean; default 0)
+//	Radius		=Radius of the sound (default 2)
+//			1: "Small Radius"
+//			2: "Medium Radius"
+//			3: "Large Radius"

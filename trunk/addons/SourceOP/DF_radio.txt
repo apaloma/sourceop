@@ -1,0 +1,190 @@
+// DF_radio.txt
+
+// Format:
+
+//	File		=The file name of the loop (relative to gamedir/sound/addons/SourceOP/radio; 155 character max)
+//	Name		=The actual song name (default is the File; 47 character max)
+//	ShortName	=The name that is used to play the song with the radioplay command (default is the song #; 31 character max)
+//	Pitch		=The pitch of the loop (default 100; Range: 1-255)
+//	Volume		=The volume of the loop (default 10; Range: 0-10; 10 is loudest)
+
+//	Dynamics	=The dynamics of the loop (default 0)
+//			0: "None"
+//			1: "Huge Machine"
+//			2: "Big Machine"
+//			3: "Machine"
+//			4: "Slow Fade in"  
+//			5: "Fade in"
+//			6: "Quick Fade in"
+//			7: "Slow Pulse"
+//			8: "Pulse"
+//			9: "Quick pulse"
+//			10: "Slow Oscillator"
+//			11: "Oscillator"
+//			12: "Quick Oscillator"
+//			13: "Grunge pitch"
+//			14: "Very low pitch"
+//			15: "Low pitch"
+//			16: "High pitch"
+//			17: "Very high pitch"
+//			18: "Screaming pitch"
+//			19: "Oscillate spinup/down"
+//			20: "Pulse spinup/down"
+//			21: "Random pitch"
+//			22: "Random pitch fast"
+//			23: "Incremental Spinup"
+//			24: "Alien"
+//			25: "Bizzare"
+//			26: "Planet X"
+//			27: "Haunted"
+
+//	NotLooped	=Is NOT Looped (boolean; default 0)
+//	Radius		=Radius of the sound (default 2)
+//			1: "Small Radius"
+//			2: "Medium Radius"
+//			3: "Large Radius"
+
+// #1
+{
+	File		= whatislove.wav
+	Name		= What Is Love
+	ShortName	= whatislove
+}
+// #2
+{
+	File		= move.wav
+	Name		= Move Your Body
+	ShortName	= move
+}
+// #3
+{
+	File		= aroundtheworld.wav
+	Name		= Around The World
+	ShortName	= aworld
+}
+// #4
+{
+	File		= phlacid.wav
+	Name		= Phlacid
+	ShortName	= phlacid
+}
+// #5
+{
+	File		= popcorn.wav
+	Name		= Popcorn
+	ShortName	= popcorn
+}
+// #6
+{
+	File		= stepup.wav
+	Name		= Stepup
+	ShortName	= stepup
+}
+// #7
+{
+	File		= wipeout.wav
+	Name		= Wipeout
+	ShortName	= wipeout
+}
+// #8
+{
+	File		= timeisnow.mp3
+	Name		= The Time Is Now
+	ShortName	= timeisnow
+}
+// #9
+{
+	File		= superstar.wav
+	Name		= Super Star
+	ShortName	= superstar
+}
+// #10
+{
+	File		= daloop1.wav
+	Name		= Loop1 - Dark Angel
+	ShortName	= daloop1
+}
+// #11
+{
+	File		= daloop2.wav
+	Name		= Loop2 - Dark Angel
+	ShortName	= daloop2
+}
+// #12
+{
+	File		= daloop3.wav
+	Name		= Loop3 - Dark Angel
+	ShortName	= daloop3
+}
+// #13
+{
+	File		= daloop4.wav
+	Name		= Loop4 - Dark Angel
+	ShortName	= daloop4
+}
+// #14
+{
+	File		= daloop5.wav
+	Name		= Loop5 - Dark Angel
+	ShortName	= daloop5
+}
+// #15
+{
+	File		= daloop6.wav
+	Name		= Loop6 - Dark Angel
+	ShortName	= daloop6
+}
+// #16
+{
+	File		= daloop7.wav
+	Name		= Loop7 - Dark Angel
+	ShortName	= daloop7
+}
+// #17
+{
+	File		= daloop8.wav
+	Name		= Loop8 - Dark Angel
+	ShortName	= daloop8
+}
+// #18
+{
+	File		= daloop9.wav
+	Name		= Loop9 - Dark Angel
+	ShortName	= daloop9
+}
+// #19
+{
+	File		= sgloop21.wav
+	Name		= Lose Yourself
+	ShortName	= loseyorself
+}
+// #20
+{
+	File		= sgloop14.wav
+	Name		= 007 Theme
+	ShortName	= 007theme
+}
+// #21
+{
+	File		= sgloop4.wav
+	Name		= Family Affair
+	ShortName	= sgloop4
+}
+// #22
+{
+	File		= sgloop29.wav
+	Name		= Hall of the Mountain King
+	ShortName	= sgloop29
+}
+// #23
+{
+	File		= sgloop30.wav
+	Name		= SG Loop 30
+	ShortName	= sgloop30
+}
+// #24
+{
+	File		= woohoo.wav
+	Name		= Woohoo
+	ShortName	= woohoo
+}

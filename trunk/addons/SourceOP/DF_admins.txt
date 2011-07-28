@@ -1,0 +1,98 @@
+// Admin file sample
+// for SourceOP
+
+// For a list of valid admin and player commands
+// visit: http://www.sourceop.com/wiki/Commands
+
+// To add a user, follow this format
+// On a new line (with the quotes) put:
+//   "SteamID:PLAYER_STEAM_ID"
+//  or
+//   "Name:PlayerName"
+//  or
+//   "IP:PlayerIP"
+// Replace the information after the colon with the appropriate user data.
+// Then on the line below add a '{' character.
+// Then use the available commands on seperate lines below the '{' character:
+//  baseLevel
+//  password
+//  denyCmd
+//  denyAdminCmd
+//  addAdminCmd
+//  spawnLimit
+
+// To deny a normal player command add:
+//   denyCmd = command_to_deny
+// To deny a admin command add:
+//   denyAdminCmd = command_to_deny
+// To add access to a admin command add:
+//   addAdminCmd = command_to_add
+
+// You can override the default spawn limit for the specific user by using "spawnLimit".
+// For example, to set a spawnLimit of 40, add:
+//   spawnLimit = 40
+// The default value for spawnLimit is the value of the DF_spawnlimit_admin CVAR.
+
+// Each command must be followed by a '=' character and then the information for the command.
+// Then after all commands for the user have been set, add a '}' character on a seperate line.
+
+// Examples for admins have been given below. Examples may and should be removed when editing this file.
+
+// The default user is used for all players not authenticated as an admin.
+// It's recommended that the default user has no access to admin commands.
+
+// If no password is set, it is assumed that the user requires no password
+// and the user matching the information will be authed without a password.
+
+// All lines that have // before them are ignored by SourceOP when processing this file.
+
+
+// This is an example user
+// it is ignored since every line has // before it
+//
+// this user would have all commands that have level less
+// than 128 and would not be allowed to use admin_pass.
+// in addition, he or she would also have access to the
+// admin_noclip and admin_rcon command.
+// the user must login with password "exampleuser"
+//"SteamID:STEAM_0:1:1234"
+//{
+//	baseLevel = 127
+//	denyAdminCmd = pass
+//	addAdminCmd = noclip
+//	addAdminCmd = rcon
+//	password = exampleuser
+//}
+
+
+// Another example user
+// it is ignored since every line has // before it
+//
+// this entry causes all people named "Llama" to not
+// be able to speak.
+//"Name:Llama"
+//{
+//	baseLevel = 0
+//	denyCmd = say
+//	denyCmd = say_team
+//}
+
+
+// Last example user
+// it is ignored since every line has // before it
+//
+// this entry causes the user with IP 10.32.4.18 to have access
+// to all admin commands except slay (no password required)
+//"IP:10.32.4.18"
+//{
+//	baseLevel = 131071
+//	denyAdminCmd = slay
+//}
+
+
+// This is the default user.
+// This should always remain in this file, but can be modified to your liking.
+"Default:Default"
+{
+	baseLevel = 0
+}

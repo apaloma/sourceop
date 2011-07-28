@@ -1,0 +1,231 @@
+	
+//-----------------------------------------------------------------------------
+// Sets the radius
+//-----------------------------------------------------------------------------
+void CPropCombineBall::SetRadius( float flRadius )
+{
+	m_flRadius = clamp( flRadius, 1, MAX_COMBINEBALL_RADIUS );
+223FB370 D9 44 24 04      fld         dword ptr [esp+4] 
+223FB374 D8 1D C0 EB 4A 22 fcomp       dword ptr [__real@41400000 (224AEBC0h)] 
+223FB37A DF E0            fnstsw      ax   
+223FB37C F6 C4 41         test        ah,41h 
+223FB37F 75 1B            jne         CPropCombineBall::SetRadius+2Ch (223FB39Ch) 
+223FB381 8D 54 24 04      lea         edx,[esp+4] 
+223FB385 52               push        edx  
+223FB386 81 C1 A0 04 00 00 add         ecx,4A0h 
+223FB38C C7 44 24 08 00 00 40 41 mov         dword ptr [esp+8],41400000h 
+223FB394 E8 A7 FB FF FF   call        CNetworkVarBase<float,CPropCombineBall::NetworkVar_m_flRadius>::Set (223FAF40h) 
+}
+223FB399 C2 04 00         ret         4    
+
+	
+//-----------------------------------------------------------------------------
+// Sets the radius
+//-----------------------------------------------------------------------------
+void CPropCombineBall::SetRadius( float flRadius )
+{
+	m_flRadius = clamp( flRadius, 1, MAX_COMBINEBALL_RADIUS );
+223FB39C D9 44 24 04      fld         dword ptr [esp+4] 
+223FB3A0 D8 1D 48 61 4A 22 fcomp       dword ptr [__real@3f800000 (224A6148h)] 
+223FB3A6 DF E0            fnstsw      ax   
+223FB3A8 F6 C4 05         test        ah,5 
+223FB3AB 7A 1B            jp          CPropCombineBall::SetRadius+58h (223FB3C8h) 
+223FB3AD 8D 54 24 04      lea         edx,[esp+4] 
+223FB3B1 52               push        edx  
+223FB3B2 81 C1 A0 04 00 00 add         ecx,4A0h 
+223FB3B8 C7 44 24 08 00 00 80 3F mov         dword ptr [esp+8],3F800000h 
+223FB3C0 E8 7B FB FF FF   call        CNetworkVarBase<float,CPropCombineBall::NetworkVar_m_flRadius>::Set (223FAF40h) 
+}
+223FB3C5 C2 04 00         ret         4    
+
+	
+//-----------------------------------------------------------------------------
+// Sets the radius
+//-----------------------------------------------------------------------------
+void CPropCombineBall::SetRadius( float flRadius )
+{
+	m_flRadius = clamp( flRadius, 1, MAX_COMBINEBALL_RADIUS );
+223FB3C8 8B 44 24 04      mov         eax,dword ptr [esp+4] 
+223FB3CC 8D 54 24 04      lea         edx,[esp+4] 
+223FB3D0 52               push        edx  
+223FB3D1 81 C1 A0 04 00 00 add         ecx,4A0h 
+223FB3D7 89 44 24 08      mov         dword ptr [esp+8],eax 
+223FB3DB E8 60 FB FF FF   call        CNetworkVarBase<float,CPropCombineBall::NetworkVar_m_flRadius>::Set (223FAF40h) 
+}
+223FB3E0 C2 04 00         ret         4    
+--- No source file -------------------------------------------------------------
+
+
+
+
+
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+// Input  : radius - 
+// Output : CBaseEntity
+//-----------------------------------------------------------------------------
+CBaseEntity *CreateCombineBall( const Vector &origin, const Vector &velocity, float radius, float mass, float lifetime, CBaseEntity *pOwner )
+{
+223FDD90 83 EC 0C         sub         esp,0Ch 
+223FDD93 56               push        esi  
+223FDD94 57               push        edi  
+	CPropCombineBall *pBall = static_cast<CPropCombineBall*>( CreateEntityByName( "prop_combine_ball" ) );
+223FDD95 6A FF            push        0FFFFFFFFh 
+223FDD97 68 14 39 56 22   push        offset string "prop_combine_ball" (22563914h) 
+223FDD9C E8 DF 11 DB FF   call        CreateEntityByName (221AEF80h) 
+223FDDA1 8B F0            mov         esi,eax 
+	pBall->SetRadius( radius );
+223FDDA3 8B 44 24 28      mov         eax,dword ptr [esp+28h] 
+223FDDA7 83 C4 08         add         esp,8 
+223FDDAA 50               push        eax  
+223FDDAB 8B CE            mov         ecx,esi 
+223FDDAD E8 BE D5 FF FF   call        CPropCombineBall::SetRadius (223FB370h) 
+
+	pBall->SetAbsOrigin( origin );
+223FDDB2 8B 4C 24 18      mov         ecx,dword ptr [esp+18h] 
+223FDDB6 51               push        ecx  
+223FDDB7 8B CE            mov         ecx,esi 
+223FDDB9 E8 22 B7 CF FF   call        CBaseEntity::SetAbsOrigin (220F94E0h) 
+	pBall->SetOwnerEntity( pOwner );
+223FDDBE 8B 44 24 2C      mov         eax,dword ptr [esp+2Ch] 
+223FDDC2 8B 16            mov         edx,dword ptr [esi] 
+223FDDC4 50               push        eax  
+223FDDC5 8B CE            mov         ecx,esi 
+223FDDC7 FF 52 48         call        dword ptr [edx+48h] 
+
+	pBall->SetAbsVelocity( velocity );
+223FDDCA 8B 7C 24 1C      mov         edi,dword ptr [esp+1Ch] 
+223FDDCE 57               push        edi  
+223FDDCF 8B CE            mov         ecx,esi 
+223FDDD1 E8 FA 8F CF FF   call        CBaseEntity::SetAbsVelocity (220F6DD0h) 
+	pBall->Spawn();
+223FDDD6 8B 16            mov         edx,dword ptr [esi] 
+223FDDD8 8B CE            mov         ecx,esi 
+223FDDDA FF 52 5C         call        dword ptr [edx+5Ch] 
+
+	pBall->SetState( CPropCombineBall::STATE_THROWN );
+223FDDDD 8A 86 80 04 00 00 mov         al,byte ptr [esi+480h] 
+223FDDE3 3C 02            cmp         al,2 
+223FDDE5 74 19            je          CreateCombineBall+70h (223FDE00h) 
+223FDDE7 84 C0            test        al,al 
+223FDDE9 75 0E            jne         CreateCombineBall+69h (223FDDF9h) 
+223FDDEB A1 40 C2 67 22   mov         eax,dword ptr [gpGlobals (2267C240h)] 
+223FDDF0 8B 48 0C         mov         ecx,dword ptr [eax+0Ch] 
+223FDDF3 89 8E 94 04 00 00 mov         dword ptr [esi+494h],ecx 
+223FDDF9 C6 86 80 04 00 00 02 mov         byte ptr [esi+480h],2 
+	pBall->SetSpeed( velocity.Length() );
+223FDE00 D9 47 08         fld         dword ptr [edi+8] 
+223FDE03 51               push        ecx  
+223FDE04 D9 47 04         fld         dword ptr [edi+4] 
+223FDE07 D9 07            fld         dword ptr [edi] 
+223FDE09 D9 C0            fld         st(0) 
+223FDE0B D8 C9            fmul        st,st(1) 
+223FDE0D D9 C2            fld         st(2) 
+223FDE0F D8 CB            fmul        st,st(3) 
+
+	return pBall;
+223FDE11 DE C1            faddp       st(1),st 
+223FDE13 D9 C3            fld         st(3) 
+223FDE15 D8 CC            fmul        st,st(4) 
+223FDE17 DE C1            faddp       st(1),st 
+223FDE19 D9 1C 24         fstp        dword ptr [esp] 
+223FDE1C DD D8            fstp        st(0) 
+223FDE1E DD D8            fstp        st(0) 
+223FDE20 DD D8            fstp        st(0) 
+223FDE22 FF 15 98 CB 64 22 call        dword ptr [_pfSqrt (2264CB98h)] 
+223FDE28 83 C4 04         add         esp,4 
+223FDE2B D9 9E 84 04 00 00 fstp        dword ptr [esi+484h] 
+223FDE31 6A 00            push        0    
+223FDE33 6A 00            push        0    
+223FDE35 68 90 8C 59 22   push        offset string "NPC_CombineBall.Launch" (22598C90h) 
+223FDE3A 8B CE            mov         ecx,esi 
+223FDE3C E8 DF 8E E7 FF   call        CBaseEntity::EmitSound (22276D20h) 
+223FDE41 8B BE F8 01 00 00 mov         edi,dword ptr [esi+1F8h] 
+223FDE47 8B 17            mov         edx,dword ptr [edi] 
+223FDE49 8B CF            mov         ecx,edi 
+223FDE4B FF 52 20         call        dword ptr [edx+20h] 
+223FDE4E 8B 17            mov         edx,dword ptr [edi] 
+223FDE50 80 CC 01         or          ah,1 
+223FDE53 8B CF            mov         ecx,edi 
+223FDE55 50               push        eax  
+223FDE56 FF 52 1C         call        dword ptr [edx+1Ch] 
+223FDE59 A1 E4 2B 64 22   mov         eax,dword ptr [s_pWhizThinkContext (22642BE4h)] 
+223FDE5E 50               push        eax  
+223FDE5F A1 40 C2 67 22   mov         eax,dword ptr [gpGlobals (2267C240h)] 
+223FDE64 D9 40 1C         fld         dword ptr [eax+1Ch] 
+223FDE67 51               push        ecx  
+223FDE68 DC C0            fadd        st(0),st 
+223FDE6A 8B CE            mov         ecx,esi 
+223FDE6C D8 40 0C         fadd        dword ptr [eax+0Ch] 
+223FDE6F D9 1C 24         fstp        dword ptr [esp] 
+223FDE72 68 50 BE 3F 22   push        offset CPropCombineBall::WhizSoundThink (223FBE50h) 
+223FDE77 E8 E4 55 D0 FF   call        CBaseEntity::ThinkSet (22103460h) 
+223FDE7C 8B BE F8 01 00 00 mov         edi,dword ptr [esi+1F8h] 
+223FDE82 85 FF            test        edi,edi 
+223FDE84 74 30            je          CreateCombineBall+126h (223FDEB6h) 
+223FDE86 8B 44 24 24      mov         eax,dword ptr [esp+24h] 
+223FDE8A 8B 17            mov         edx,dword ptr [edi] 
+223FDE8C 50               push        eax  
+223FDE8D 8B CF            mov         ecx,edi 
+223FDE8F FF 52 34         call        dword ptr [edx+34h] 
+223FDE92 8B 17            mov         edx,dword ptr [edi] 
+223FDE94 8D 44 24 08      lea         eax,[esp+8] 
+223FDE98 50               push        eax  
+223FDE99 8B CF            mov         ecx,edi 
+223FDE9B C7 44 24 0C 00 00 FA 43 mov         dword ptr [esp+0Ch],43FA0000h 
+223FDEA3 C7 44 24 10 00 00 FA 43 mov         dword ptr [esp+10h],43FA0000h 
+223FDEAB C7 44 24 14 00 00 FA 43 mov         dword ptr [esp+14h],43FA0000h 
+223FDEB3 FF 52 48         call        dword ptr [edx+48h] 
+223FDEB6 8B 0D EC 2B 64 22 mov         ecx,dword ptr [s_pExplodeTimerContext (22642BECh)] 
+223FDEBC D9 44 24 28      fld         dword ptr [esp+28h] 
+223FDEC0 8B 15 40 C2 67 22 mov         edx,dword ptr [gpGlobals (2267C240h)] 
+223FDEC6 D8 42 0C         fadd        dword ptr [edx+0Ch] 
+223FDEC9 51               push        ecx  
+223FDECA 51               push        ecx  
+223FDECB 8B CE            mov         ecx,esi 
+223FDECD D9 1C 24         fstp        dword ptr [esp] 
+223FDED0 68 30 98 3F 22   push        offset `vcall' (223F9830h) 
+223FDED5 E8 86 55 D0 FF   call        CBaseEntity::ThinkSet (22103460h) 
+223FDEDA 8D BE 9E 04 00 00 lea         edi,[esi+49Eh] 
+223FDEE0 C6 86 7E 04 00 00 01 mov         byte ptr [esi+47Eh],1 
+223FDEE7 80 3F 01         cmp         byte ptr [edi],1 
+223FDEEA 74 38            je          CreateCombineBall+194h (223FDF24h) 
+223FDEEC 80 BF 46 FD FF FF 00 cmp         byte ptr [edi-2BAh],0 
+223FDEF3 8D 87 62 FB FF FF lea         eax,[edi-49Eh] 
+223FDEF9 74 12            je          CreateCombineBall+17Dh (223FDF0Dh) 
+223FDEFB C6 80 E8 01 00 00 01 mov         byte ptr [eax+1E8h],1 
+223FDF02 C6 07 01         mov         byte ptr [edi],1 
+223FDF05 5F               pop         edi  
+223FDF06 8B C6            mov         eax,esi 
+223FDF08 5E               pop         esi  
+}
+223FDF09 83 C4 0C         add         esp,0Ch 
+223FDF0C C3               ret              
+
+	pBall->EmitSound( "NPC_CombineBall.Launch" );
+
+	PhysSetGameFlags( pBall->VPhysicsGetObject(), FVPHYSICS_WAS_THROWN );
+
+	pBall->StartWhizSoundThink();
+
+	pBall->SetMass( mass );
+	pBall->StartLifetime( lifetime );
+	pBall->SetWeaponLaunched( true );
+223FDF0D 8B 88 54 01 00 00 mov         ecx,dword ptr [eax+154h] 
+223FDF13 85 C9            test        ecx,ecx 
+223FDF15 74 0A            je          CreateCombineBall+191h (223FDF21h) 
+223FDF17 8B D7            mov         edx,edi 
+223FDF19 2B D0            sub         edx,eax 
+223FDF1B 52               push        edx  
+223FDF1C E8 1F 66 C1 FF   call        CBaseEdict::StateChanged (22014540h) 
+223FDF21 C6 07 01         mov         byte ptr [edi],1 
+223FDF24 5F               pop         edi  
+
+	return pBall;
+223FDF25 8B C6            mov         eax,esi 
+223FDF27 5E               pop         esi  
+}
+223FDF28 83 C4 0C         add         esp,0Ch 
+223FDF2B C3               ret              
+--- No source file -------------------------------------------------------------

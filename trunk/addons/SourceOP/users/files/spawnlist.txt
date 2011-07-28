@@ -1,0 +1,1 @@
+When this file is requested, the actual file that is sent is addons\SourceOP\DF_spawnalias.txt. This file must exist in order for it to work.

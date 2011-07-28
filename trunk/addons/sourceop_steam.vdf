@@ -1,0 +1,6 @@
+"Plugin"
+{
+        // this vdf file is for sourceop when it's launched from TF2 itself (listenserver)
+        // or from Steam's dedicated server tool (as opposed to a standalone installation of srcds)
+        "file"  "..\bin\sourceop"
+}

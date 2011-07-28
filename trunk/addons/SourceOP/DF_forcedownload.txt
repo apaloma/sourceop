@@ -1,0 +1,3 @@
+// just enter file names to add to the download list
+// example:
+// sound/MySounds/coolsound.wav

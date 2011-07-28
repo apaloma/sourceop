@@ -1,0 +1,20 @@
+// num:name
+// If the player's credits are less then or equal to num, rank is assigned.
+// If nothing matches by the end the final line gets assigned. In the default case...God
+// If there is no line with a single name, Unknown gets assigned
+
+0:N00bie
+50:Beginner
+75:Officer
+150:Barbarian
+250:Golden
+400:Overlord
+600:TF-Commando
+1000:Exterminator
+1500:Predator
+3500:1st Class Assassin
+5000:Emperor
+7000:TF-Supreme
+50000:Master Hacker
+100000:Plays too much
+God

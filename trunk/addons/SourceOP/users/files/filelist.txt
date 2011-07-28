@@ -1,0 +1,9 @@
+// This file is parsed by SourceOP to determine which files appear on the remote client's patcher file list.
+
+// Any search patterns will work, however, directories are not parsed recursively. This means that if you
+// have "dir\*.*" in this file, it will add files inside "dir" to the file list but will not add any files
+// that are in any subdirectories of "dir".
+
+spawnlist.txt
+maps\*.*
+overviews\*.*

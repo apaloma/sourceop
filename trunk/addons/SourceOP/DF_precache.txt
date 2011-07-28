@@ -1,0 +1,13 @@
+// Used for precaching sounds and models
+// Enter the type followed by a space then the file name
+// Types:
+//   1: Model
+//   2: Sound
+// Models are relative to the gamemod folder, sounds are
+// relative to the gamemod's sound folder
+// Examples:
+//
+// 1 models/props_junk/sawblade001a.mdl
+// 1 models/Weapons/w_grenade.mdl
+// 2 ambient/gas/cannister_loop.wav
+// 2 physics/body/body_medium_impact_hard6.wav

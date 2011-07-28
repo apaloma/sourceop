@@ -1,0 +1,634 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!--
+    This file is part of SourceOP.
+
+    SourceOP is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    SourceOP is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with SourceOP.  If not, see <http://www.gnu.org/licenses/>.
+-->
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="GMod|Win32">
+      <Configuration>GMod</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="L4D_Debug|Win32">
+      <Configuration>L4D_Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{B6572CBE-7C7F-4FFF-94DE-AFBBBAB11C64}</ProjectGuid>
+    <RootNamespace>serverplugin_empty</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='L4D_Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='GMod|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='L4D_Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='GMod|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\Debug\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\Release\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='GMod|Win32'">GMod\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='GMod|Win32'">GMod\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='GMod|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='L4D_Debug|Win32'">$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='L4D_Debug|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='L4D_Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='GMod|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='GMod|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='GMod|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='L4D_Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='L4D_Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='L4D_Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">sourceop</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">sourceop</TargetName>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)mmsource;$(ProjectDir)mmsource\sourcehook;$(IncludePath)</IncludePath>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)mmsource;$(ProjectDir)mmsource\sourcehook;$(IncludePath)</IncludePath>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='GMod|Win32'">$(ProjectDir)mmsource;$(ProjectDir)mmsource\sourcehook;$(IncludePath)</IncludePath>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='L4D_Debug|Win32'">$(ProjectDir)mmsource;$(ProjectDir)mmsource\sourcehook;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <CustomBuildStep>
+      <Command>attrib -r C:\HL2Server\orangebox\bin\sourceop.dll
+copy "$(TargetPath)" C:\HL2Server\orangebox\bin\sourceop.dll
+attrib -r C:\HL2Server\orangebox\tf\addons\SourceOP\bin\sourceop.dll
+copy "$(TargetPath)" C:\HL2Server\orangebox\tf\addons\SourceOP\bin\sourceop.dll
+attrib -r "C:\Program Files (x86)\Steam\steamapps\drunkenf00l%40hotmail.com\team fortress 2\bin\sourceop.dll"
+copy "$(TargetPath)" "C:\Program Files (x86)\Steam\steamapps\drunkenf00l%40hotmail.com\team fortress 2\bin\sourceop.dll"
+attrib -r "C:\Program Files (x86)\Steam\steamapps\drunkenf00l2\team fortress 2\bin\sourceop.dll"
+copy "$(TargetPath)" "C:\Program Files (x86)\Steam\steamapps\drunkenf00l2\team fortress 2\bin\sourceop.dll"
+</Command>
+      <Outputs>..\..\..\bin\sourceop.dll;%(Outputs)</Outputs>
+    </CustomBuildStep>
+    <Midl>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TargetEnvironment>Win32</TargetEnvironment>
+      <TypeLibraryName>.\Debug/serverplugin_empty.tlb</TypeLibraryName>
+      <HeaderFileName>
+      </HeaderFileName>
+    </Midl>
+    <ClCompile>
+      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\public;..\..\public\engine;..\..\public\tier0;..\..\public\tier1;..\..\common;..\..\public\mathlib;..\..\public\game\server;..\..\game\shared;..\..\game\server;lua\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_SOPDEBUG;_WINDOWS;serverplugin_emptyONLY;strtoull=_strtoui64;_CRT_SECURE_NO_WARNINGS=1;NEW_OB_SENDPROPS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeaderOutputFile>.\Debug/serverplugin_empty.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\Debug/</AssemblerListingLocation>
+      <ObjectFileName>.\Debug/</ObjectFileName>
+      <ProgramDataBaseFileName>.\Debug/</ProgramDataBaseFileName>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+      <UndefinePreprocessorDefinitions>_DEBUG</UndefinePreprocessorDefinitions>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>tier0.lib;tier1.lib;tier2.lib;tier3.lib;vstdlib.lib;mathlib.lib;odbc32.lib;odbccp32.lib;wsock32.lib;libeay32.lib;ssleay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>.\Debug/sourceop.dll</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalLibraryDirectories>..\..\lib\public;..\..\lib\common;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>sourceop.def</ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>.\Debug/sourceop.pdb</ProgramDatabaseFile>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapFileName>.\Debug/sourceop.map</MapFileName>
+      <SubSystem>Windows</SubSystem>
+      <ImportLibrary>.\Debug/sourceop.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+      <IgnoreSpecificDefaultLibraries>libcmt.lib</IgnoreSpecificDefaultLibraries>
+      <Profile>false</Profile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <CustomBuildStep>
+      <Command>attrib -r C:\HL2Server\orangebox\bin\sourceop.dll
+copy "$(TargetPath)" C:\HL2Server\orangebox\bin\sourceop.dll
+attrib -r C:\HL2Server\orangebox\tf\addons\SourceOP\bin\sourceop.dll
+copy "$(TargetPath)" C:\HL2Server\orangebox\tf\addons\SourceOP\bin\sourceop.dll
+attrib -r "$(ProjectDir)\installer\files\SourceOP\bin\sourceop.dll"
+copy "$(TargetPath)" "$(ProjectDir)\installer\files\SourceOP\bin\sourceop.dll"
+attrib -r "C:\Program Files (x86)\Steam\steamapps\drunkenf00l%40hotmail.com\team fortress 2\bin\sourceop.dll"
+copy "$(TargetPath)" "C:\Program Files (x86)\Steam\steamapps\drunkenf00l%40hotmail.com\team fortress 2\bin\sourceop.dll"
+</Command>
+      <Outputs>..\..\..\bin\sourceop.dll;%(Outputs)</Outputs>
+    </CustomBuildStep>
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TargetEnvironment>Win32</TargetEnvironment>
+      <TypeLibraryName>.\Release/serverplugin_empty.tlb</TypeLibraryName>
+      <HeaderFileName>
+      </HeaderFileName>
+    </Midl>
+    <ClCompile>
+      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <AdditionalIncludeDirectories>..\..\public;..\..\public\engine;..\..\public\tier0;..\..\public\tier1;..\..\common;..\..\public\mathlib;..\..\public\game\server;..\..\game\shared;..\..\game\server;lua\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;serverplugin_emptyONLY;strtoull=_strtoui64;NEW_OB_SENDPROPS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <PrecompiledHeaderOutputFile>.\Release/serverplugin_empty.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\Release/</AssemblerListingLocation>
+      <ObjectFileName>.\Release/</ObjectFileName>
+      <ProgramDataBaseFileName>.\Release/</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>tier0.lib;tier1.lib;tier2.lib;tier3.lib;vstdlib.lib;mathlib.lib;odbc32.lib;odbccp32.lib;wsock32.lib;libeay32.lib;ssleay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>.\Release/sourceop.dll</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalLibraryDirectories>..\..\lib\public;..\..\lib\common;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>sourceop.def</ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>.\Release/sourceop.pdb</ProgramDatabaseFile>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapFileName>.\Release/sourceop.map</MapFileName>
+      <SubSystem>Windows</SubSystem>
+      <ImportLibrary>.\Release/sourceop.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='GMod|Win32'">
+    <CustomBuildStep>
+      <Command>attrib -r ..\..\..\bin\sourceop.dll
+copy "$(TargetPath)" ..\..\..\bin\sourceop.dll
+attrib -r C:\HL2Server\bin\sourceop.dll
+copy "$(TargetPath)" C:\HL2Server\bin\sourceop.dll
+attrib -r "C:\Program Files\Steam\SteamApps\drunkenf00l%40hotmail.com\half-life 2 deathmatch\bin\sourceop.dll"
+copy "$(TargetPath)" "C:\Program Files\Steam\SteamApps\drunkenf00l%40hotmail.com\half-life 2 deathmatch\bin\sourceop.dll"
+attrib -r "C:\Program Files\Steam\SteamApps\SourceMods\gmod\bin\sourceop.dll"
+copy "$(TargetPath)" "C:\Program Files\Steam\SteamApps\SourceMods\gmod\bin\sourceop.dll"
+attrib -r "C:\Program Files\Steam\SteamApps\drunkenf00l%40hotmail.com\half-life 2\bin\sourceop.dll"
+copy "$(TargetPath)" "C:\Program Files\Steam\SteamApps\drunkenf00l%40hotmail.com\half-life 2\bin\sourceop.dll"
+</Command>
+      <Outputs>..\..\..\bin\sourceop.dll;%(Outputs)</Outputs>
+    </CustomBuildStep>
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TargetEnvironment>Win32</TargetEnvironment>
+      <TypeLibraryName>.\Release/serverplugin_empty.tlb</TypeLibraryName>
+      <HeaderFileName>
+      </HeaderFileName>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <AdditionalIncludeDirectories>..\..\public;..\..\public\engine;..\..\public\tier0;..\..\public\tier1;..\..\dlls;..\..\game_shared;lua\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;serverplugin_emptyONLY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <PrecompiledHeaderOutputFile>.\Release/serverplugin_empty.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\Release/</AssemblerListingLocation>
+      <ObjectFileName>.\Release/</ObjectFileName>
+      <ProgramDataBaseFileName>.\Release/</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>odbc32.lib;odbccp32.lib;wsock32.lib;libeay32.lib;ssleay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>.\Release/serverplugin_empty.dll</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalLibraryDirectories>..\lib\public;..\lib\common;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>sourceop.def</ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>.\Release/serverplugin_empty.pdb</ProgramDatabaseFile>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapFileName>.\Release/serverplugin_empty.map</MapFileName>
+      <SubSystem>Windows</SubSystem>
+      <ImportLibrary>.\Release/serverplugin_empty.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='L4D_Debug|Win32'">
+    <CustomBuildStep>
+      <Command>attrib -r C:\L4DServer\l4d_demo\bin\sourceop.dll
+copy "$(TargetPath)" C:\L4DServer\l4d_demo\bin\sourceop.dll
+</Command>
+      <Outputs>..\..\..\bin\sourceop.dll;%(Outputs)</Outputs>
+    </CustomBuildStep>
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TargetEnvironment>Win32</TargetEnvironment>
+      <TypeLibraryName>.\Debug/serverplugin_empty.tlb</TypeLibraryName>
+      <HeaderFileName>
+      </HeaderFileName>
+    </Midl>
+    <ClCompile>
+      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\public;..\..\public\engine;..\..\public\tier0;..\..\public\tier1;..\..\common;..\..\public\mathlib;..\..\public\game\server;..\..\game\shared;..\..\game\server;lua\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_SOPDEBUG;_WINDOWS;_L4D_PLUGIN;serverplugin_emptyONLY;strtoull=_strtoui64;_CRT_SECURE_NO_WARNINGS=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeaderOutputFile>.\Debug/serverplugin_empty.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\Debug/</AssemblerListingLocation>
+      <ObjectFileName>.\Debug/</ObjectFileName>
+      <ProgramDataBaseFileName>.\Debug/</ProgramDataBaseFileName>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>tier0.lib;tier1.lib;tier2.lib;tier3.lib;vstdlib.lib;mathlib.lib;odbc32.lib;odbccp32.lib;wsock32.lib;libeay32.lib;ssleay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>.\Debug/serverplugin_empty.dll</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalLibraryDirectories>..\..\lib\public;..\..\lib\common;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>LIBC;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ModuleDefinitionFile>sourceop.def</ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>.\Debug/serverplugin_empty.pdb</ProgramDatabaseFile>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapFileName>.\Debug/serverplugin_empty.map</MapFileName>
+      <SubSystem>Windows</SubSystem>
+      <ImportLibrary>.\Debug/serverplugin_empty.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="admincommands.cpp" />
+    <ClCompile Include="AdminOP.cpp" />
+    <ClCompile Include="adminopplayer.cpp" />
+    <ClCompile Include="bans.cpp" />
+    <ClCompile Include="bytebuf.cpp" />
+    <ClCompile Include="cbase.cpp" />
+    <ClCompile Include="clientcommands.cpp" />
+    <ClCompile Include="convar_l4d.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="crc32.cpp" />
+    <ClCompile Include="download.cpp" />
+    <ClCompile Include="entitylist.cpp" />
+    <ClCompile Include="entitylist_base.cpp" />
+    <ClCompile Include="funcdetours.cpp" />
+    <ClCompile Include="gamerulesproxy.cpp" />
+    <ClCompile Include="gamestringpool.cpp" />
+    <ClCompile Include="isopgamesystem.cpp" />
+    <ClCompile Include="LuaLoader.cpp" />
+    <ClCompile Include="mapcycletracker.cpp" />
+    <ClCompile Include="..\..\public\tier0\memoverride.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="particles.cpp" />
+    <ClCompile Include="PhysicsShared.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="pingmanager.cpp" />
+    <ClCompile Include="playerdatabase.cpp" />
+    <ClCompile Include="plugin_mm.cpp" />
+    <ClCompile Include="random.cpp" />
+    <ClCompile Include="recipientfilter.cpp" />
+    <ClCompile Include="reservedslots.cpp" />
+    <ClCompile Include="serverplugin_empty.cpp" />
+    <ClCompile Include="sigmgr.cpp" />
+    <ClCompile Include="sopmysql.cpp" />
+    <ClCompile Include="sopsteamid.cpp" />
+    <ClCompile Include="sourceopadmin.cpp" />
+    <ClCompile Include="specialitems.cpp" />
+    <ClCompile Include="strtools.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='L4D_Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="takedamageinfo.cpp" />
+    <ClCompile Include="util.cpp" />
+    <ClCompile Include="utlsymbol_old.cpp" />
+    <ClCompile Include="vfuncs.cpp" />
+    <ClCompile Include="votesystem.cpp" />
+    <ClCompile Include="mempatch.cpp" />
+    <ClCompile Include="CAOPEntity.cpp" />
+    <ClCompile Include="CAOPExploding.cpp" />
+    <ClCompile Include="CAOPFragTest.cpp" />
+    <ClCompile Include="CAOPGrenTimer.cpp" />
+    <ClCompile Include="CAOPLuaNormal.cpp" />
+    <ClCompile Include="CAOPNormal.cpp" />
+    <ClCompile Include="CAOPRadio.cpp" />
+    <ClCompile Include="CAOPSnark.cpp" />
+    <ClCompile Include="DFBaseent.cpp" />
+    <ClCompile Include="DFRadio.cpp" />
+    <ClCompile Include="mmsource\sourcehook\sourcehook.cpp" />
+    <ClCompile Include="mmsource\sourcehook\sourcehook_hookmangen.cpp" />
+    <ClCompile Include="bone_setup.cpp" />
+    <ClCompile Include="CollisionUtils.cpp" />
+    <ClCompile Include="globals.cpp" />
+    <ClCompile Include="igamesystem.cpp" />
+    <ClCompile Include="studio.cpp" />
+    <ClCompile Include="studio_shared.cpp" />
+    <ClCompile Include="lua\src\lapi.cpp" />
+    <ClCompile Include="lua\src\lcode.cpp" />
+    <ClCompile Include="lua\src\ldebug.cpp" />
+    <ClCompile Include="lua\src\ldo.cpp" />
+    <ClCompile Include="lua\src\ldump.cpp" />
+    <ClCompile Include="lua\src\lfunc.cpp" />
+    <ClCompile Include="lua\src\lgc.cpp" />
+    <ClCompile Include="lua\src\linit.cpp" />
+    <ClCompile Include="lua\src\llex.cpp" />
+    <ClCompile Include="lua\src\lmem.cpp" />
+    <ClCompile Include="lua\src\loadlib.cpp" />
+    <ClCompile Include="lua\src\lobject.cpp" />
+    <ClCompile Include="lua\src\lopcodes.cpp" />
+    <ClCompile Include="lua\src\lparser.cpp" />
+    <ClCompile Include="lua\src\lstate.cpp" />
+    <ClCompile Include="lua\src\lstring.cpp" />
+    <ClCompile Include="lua\src\ltable.cpp" />
+    <ClCompile Include="lua\src\ltm.cpp" />
+    <ClCompile Include="lua\src\lundump.cpp" />
+    <ClCompile Include="lua\src\lvm.cpp" />
+    <ClCompile Include="lua\src\lzio.cpp" />
+    <ClCompile Include="lua\src\lib\lauxlib.cpp" />
+    <ClCompile Include="lua\src\lib\lbaselib.cpp" />
+    <ClCompile Include="lua\src\lib\ldblib.cpp" />
+    <ClCompile Include="lua\src\lib\liolib.cpp" />
+    <ClCompile Include="lua\src\lib\lmathlib.cpp" />
+    <ClCompile Include="lua\src\lib\loslib.cpp" />
+    <ClCompile Include="lua\src\lib\lstrlib.cpp" />
+    <ClCompile Include="lua\src\lib\ltablib.cpp" />
+    <ClCompile Include="lbitlib.cpp" />
+    <ClCompile Include="lconcommand.cpp" />
+    <ClCompile Include="lconstraint.cpp" />
+    <ClCompile Include="lconvar.cpp" />
+    <ClCompile Include="leffects.cpp" />
+    <ClCompile Include="lenginelib.cpp" />
+    <ClCompile Include="lents.cpp" />
+    <ClCompile Include="lfile.cpp" />
+    <ClCompile Include="lgame.cpp" />
+    <ClCompile Include="lgamerules.cpp" />
+    <ClCompile Include="loslibext.cpp" />
+    <ClCompile Include="lplayer.cpp" />
+    <ClCompile Include="lsourceop.cpp" />
+    <ClCompile Include="lstrlibext.cpp" />
+    <ClCompile Include="ltablibext.cpp" />
+    <ClCompile Include="ltempentlib.cpp" />
+    <ClCompile Include="lutil.cpp" />
+    <ClCompile Include="l_class_angle.cpp" />
+    <ClCompile Include="l_class_damageinfo.cpp" />
+    <ClCompile Include="l_class_entity.cpp" />
+    <ClCompile Include="l_class_physobj.cpp" />
+    <ClCompile Include="l_class_player.cpp" />
+    <ClCompile Include="l_class_vector.cpp" />
+    <ClCompile Include="lentitycache.cpp" />
+    <ClCompile Include="lext.cpp" />
+    <ClCompile Include="lsopinit.cpp" />
+    <ClCompile Include="CDetour.cpp" />
+    <ClCompile Include="CDetourDis.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="sourceop.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="sourceop.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="mempatcher.h" />
+    <ClInclude Include="luasoplibs.h" />
+    <ClInclude Include="l_class_angle.h" />
+    <ClInclude Include="l_class_damageinfo.h" />
+    <ClInclude Include="l_class_entity.h" />
+    <ClInclude Include="l_class_physobj.h" />
+    <ClInclude Include="l_class_player.h" />
+    <ClInclude Include="l_class_vector.h" />
+    <ClInclude Include="CByteArray.h" />
+    <ClInclude Include="CDetour.h" />
+    <ClInclude Include="CDetourDis.h" />
+    <ClInclude Include="CDetourPlatform.h" />
+    <ClInclude Include="admincommands.h" />
+    <ClInclude Include="AdminOP.h" />
+    <ClInclude Include="adminopplayer.h" />
+    <ClInclude Include="..\..\dlls\baseentity.h" />
+    <ClInclude Include="..\..\Public\basetypes.h" />
+    <ClInclude Include="bytebuf.h" />
+    <ClInclude Include="clientcommands.h" />
+    <ClInclude Include="..\..\public\Color.h" />
+    <ClInclude Include="convar_l4d.h" />
+    <ClInclude Include="crc32.h" />
+    <ClInclude Include="cvars.h" />
+    <ClInclude Include="..\..\public\tier0\dbg.h" />
+    <ClInclude Include="download.h" />
+    <ClInclude Include="..\..\Public\eiface.h" />
+    <ClInclude Include="..\..\Public\FileSystem.h" />
+    <ClInclude Include="fixdebug.h" />
+    <ClInclude Include="funcdetours.h" />
+    <ClInclude Include="gamerulesproxy.h" />
+    <ClInclude Include="..\..\public\vstdlib\ICommandLine.h" />
+    <ClInclude Include="..\..\public\igameevents.h" />
+    <ClInclude Include="..\..\public\tier1\interface.h" />
+    <ClInclude Include="interfaces.h" />
+    <ClInclude Include="..\..\public\dlls\iplayerinfo.h" />
+    <ClInclude Include="..\..\public\engine\iserverplugin.h" />
+    <ClInclude Include="isopgamesystem.h" />
+    <ClInclude Include="..\..\public\tier1\KeyValues.h" />
+    <ClInclude Include="LuaLoader.h" />
+    <ClInclude Include="mapcycletracker.h" />
+    <ClInclude Include="..\..\public\tier0\mem.h" />
+    <ClInclude Include="..\..\public\tier0\memalloc.h" />
+    <ClInclude Include="..\..\public\tier0\memdbgon.h" />
+    <ClInclude Include="object_hash.h" />
+    <ClInclude Include="packet_types.h" />
+    <ClInclude Include="pingmanager.h" />
+    <ClInclude Include="plugin_mm.h" />
+    <ClInclude Include="queuethread.h" />
+    <ClInclude Include="randomstuff.h" />
+    <ClInclude Include="recipientfilter.h" />
+    <ClInclude Include="reservedslots.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="sigmgr.h" />
+    <ClInclude Include="sopconsts.h" />
+    <ClInclude Include="sopmysql.h" />
+    <ClInclude Include="sopsteamid.h" />
+    <ClInclude Include="sourcehooks.h" />
+    <ClInclude Include="sourceopadmin.h" />
+    <ClInclude Include="sourceopadmin_net.h" />
+    <ClInclude Include="specialitems.h" />
+    <ClInclude Include="..\..\public\vstdlib\strtools.h" />
+    <ClInclude Include="steamext.h" />
+    <ClInclude Include="tf2items.h" />
+    <ClInclude Include="..\..\public\tier1\utlbuffer.h" />
+    <ClInclude Include="utldict_old.h" />
+    <ClInclude Include="..\..\public\tier1\utlmemory.h" />
+    <ClInclude Include="utlsymbol_old.h" />
+    <ClInclude Include="..\..\public\tier1\utlvector.h" />
+    <ClInclude Include="vfuncs.h" />
+    <ClInclude Include="votesystem.h" />
+    <ClInclude Include="..\..\public\vstdlib\vstdlib.h" />
+    <ClInclude Include="CAOPEntity.h" />
+    <ClInclude Include="CAOPExploding.h" />
+    <ClInclude Include="CAOPFragTest.h" />
+    <ClInclude Include="CAOPGrenTimer.h" />
+    <ClInclude Include="CAOPLuaNormal.h" />
+    <ClInclude Include="CAOPNormal.h" />
+    <ClInclude Include="CAOPRadio.h" />
+    <ClInclude Include="CAOPSnark.h" />
+    <ClInclude Include="DFBaseent.h" />
+    <ClInclude Include="DFRadio.h" />
+    <ClInclude Include="FastDelegate.h" />
+    <ClInclude Include="sh_list.h" />
+    <ClInclude Include="sh_listcat.h" />
+    <ClInclude Include="sh_memfuncinfo.h" />
+    <ClInclude Include="sh_memory.h" />
+    <ClInclude Include="sh_stack.h" />
+    <ClInclude Include="sh_string.h" />
+    <ClInclude Include="sh_tinyhash.h" />
+    <ClInclude Include="sh_vector.h" />
+    <ClInclude Include="mmsource\sourcehook\sourcehook.h" />
+    <ClInclude Include="mmsource\sourcehook\sourcehook_impl.h" />
+    <ClInclude Include="lua\include\lapi.h" />
+    <ClInclude Include="lua\include\lauxlib.h" />
+    <ClInclude Include="lua\include\lcode.h" />
+    <ClInclude Include="lua\include\ldebug.h" />
+    <ClInclude Include="lua\include\ldo.h" />
+    <ClInclude Include="lua\include\lfunc.h" />
+    <ClInclude Include="lua\include\lgc.h" />
+    <ClInclude Include="lua\include\llex.h" />
+    <ClInclude Include="lua\include\llimits.h" />
+    <ClInclude Include="lua\include\lmem.h" />
+    <ClInclude Include="lua\include\lobject.h" />
+    <ClInclude Include="lua\include\lopcodes.h" />
+    <ClInclude Include="lua\include\lparser.h" />
+    <ClInclude Include="lua\include\lstate.h" />
+    <ClInclude Include="lua\include\lstring.h" />
+    <ClInclude Include="lua\include\ltable.h" />
+    <ClInclude Include="lua\include\ltm.h" />
+    <ClInclude Include="lua\include\lua.h" />
+    <ClInclude Include="lua\include\luaconf.h" />
+    <ClInclude Include="lua\include\lualib.h" />
+    <ClInclude Include="lua\include\lunar.h" />
+    <ClInclude Include="lua\include\lundump.h" />
+    <ClInclude Include="lua\include\lvm.h" />
+    <ClInclude Include="lua\include\lzio.h" />
+    <ClInclude Include="lentitycache.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\..\lib\public\tier0.lib">
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='GMod|Win32'">
+      </Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='L4D_Debug|Win32'">
+      </Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </Command>
+    </CustomBuild>
+    <CustomBuild Include="..\..\lib\public\vstdlib.lib">
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='GMod|Win32'">
+      </Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='L4D_Debug|Win32'">
+      </Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </Command>
+    </CustomBuild>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

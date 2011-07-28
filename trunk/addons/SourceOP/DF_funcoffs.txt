@@ -1,0 +1,186 @@
+// SourceOP Function Offsets
+//
+//
+// This file sets offsets for certain functions used by SourceOP.
+// Don't modify this file unless you know what you are doing.
+//
+// These offsets are for Linux, the Windows offsets are automatically
+// calculated based on these values. Offsets with "_from_" in them are not
+// modified for any platform as they are offsets from something else, not from
+// the base class.
+//
+// The game directory is specified at the top of each block. The block called
+// "default" MUST BE FIRST and will be used as the offsets if none are
+// specified for the particular game type. Any offsets not specified in a
+// game's specific block will get its values from the default block.
+//
+// Currently, default applies to hl2mp, css, and dods.
+
+
+// The default block must be first
+default
+{
+        CBaseEntity::GetRefEHandle =                            3
+        CBaseEntity::GetCollideable =                           4
+        CBaseEntity::GetNetworkable =                           5
+        CBaseEntity::GetModelIndex =                            7
+        CBaseEntity::GetModelName =                             8
+        CBaseEntity::SetModelIndex =                            9
+        CBaseEntity::GetDataDescMap =                           12
+        CBaseEntity::GetClassName =                             -1
+        CBaseEntity::UpdateTransmitState =                      19
+        CBaseEntity::Spawn =                                    22
+        CBaseEntity::Precache =                                 23
+        CBaseEntity::SetModel =                                 24
+        CBaseEntity::PostConstructor =                          26
+        CBaseEntity::KeyValue_lin =                             29
+        CBaseEntity::KeyValue_win =                             30
+        CBaseEntity::Activate =                                 33
+        CBaseEntity::SetParent =                                34
+        CBaseEntity::AcceptInput =                              36
+        CBaseEntity::Think =                                    47
+        CBaseEntity::PassesDamageFilter =                       59
+        CBaseEntity::TraceAttack =                              60
+        CBaseEntity::OnTakeDamage =                             62
+        CBaseEntity::IsAlive =                                  65
+        CBaseEntity::Event_Killed =                             66
+        CBaseEntity::IsNPC =                                    70
+        CBaseEntity::IsPlayer =                                 80
+        CBaseEntity::IsBaseCombatWeapon =                       85
+        CBaseEntity::ChangeTeam =                               90
+        CBaseEntity::Use =                                      96
+        CBaseEntity::StartTouch =                               97
+        CBaseEntity::Touch =                                    98
+        CBaseEntity::UpdateOnRemove =                           104
+        CBaseEntity::Teleport =                                 107
+        CBaseEntity::FireBullets =                              111
+        CBaseEntity::SetDamage =                                128
+        CBaseEntity::EyePosition =                              129
+        CBaseEntity::EyeAngles =                                130
+        CBaseEntity::FVisible_lin =                             140
+        CBaseEntity::FVisible_win =                             140
+        CBaseEntity::WorldSpaceCenter =                         148
+        CBaseEntity::GetSoundEmissionOrigin =                   149
+        CBaseEntity::VPhysicsGetObjectList =                    162
+        CBaseAnimating::StudioFrameAdvance =                    187
+        CBaseAnimating::Extinguish =                            209
+        CBaseCombatCharacter::GiveAmmo =                        247
+        CBaseCombatCharacter::Weapon_Equip =                    254
+        CBaseCombatCharacter::Weapon_Switch =                   257
+        CBaseCombatCharacter::Weapon_GetSlot =                  261
+        CBaseCombatCharacter::RemovePlayerItem =                263
+        CBaseCombatWeapon::Holster_win =                        248
+        // find via CBasePlayer::StartObserverMode
+        CBaseCombatWeapon::Holster_lin =                        252
+        CBaseGrenade::SetDamageRadius =                         219
+
+        CBaseCombatWeapon::PrimaryAttack_win =                  268
+        CBaseCombatWeapon::SecondaryAttack_win =                269
+        CBaseCombatWeapon::PrimaryAttack_lin =                  273
+        CBaseCombatWeapon::SecondaryAttack_lin =                274
+        CBasePlayer::ForceRespawn =                             318
+        CBasePlayer::StartObserverMode =                        359
+        CBasePlayer::StopObserverMode =                         360
+        CBasePlayer::ItemPostFrame =                            389
+        CBasePlayer::GiveNamedItem =                            390
+        CBasePlayer::CanHearAndReadChatFrom =                   410
+        CBaseMultiplayerPlayer::CalculateTeamBalanceScore =     453
+        CTFPlayer::GiveNamedItem_win =                          458
+        CTFPlayer::GiveNamedItem_lin =                          465
+
+        CGameRules::PlayerRelationship =                        107
+        CGameRules::PlayerCanHearChat =                         108
+        CGameRules::GetTeamIndex =                              110
+        CGameRules::GetIndexedTeamName =                        111
+        CGameRules::IsValidTeam =                               112
+        CGameRules::MarkAchievement =                           128
+        CMultiplayRules::GetNextLevelName =                     141
+        CMultiplayRules::ChangeLevel =                          143
+        CMultiplayRules::GoToIntermission =                     144
+        CTeamplayRules::SetStalemate =                          153
+        CTeamplayRules::SetSwitchTeams =                        154
+        CTeamplayRules::HandleSwitchTeams =                     156
+        CTeamplayRules::SetScrambleTeams =                      157
+        CTeamplayRules::HandleScrambleTeams =                   159
+
+        IServerNetworkable::GetEntityHandle_platind =           0
+        IServerNetworkable::GetEdict_platind =                  2
+        IServerNetworkable::Release_platind =                   4
+        IServerNetworkable::GetBaseEntity_platind =             7
+
+        // CBaseClient Windows
+        CBaseClient::Connect_win =                              10
+        CBaseClient::Reconnect_win =                            12
+        CBaseClient::Disconnect_win =                           13
+        CBaseClient::GetPlayerSlot_win =                        14
+        CBaseClient::GetNetworkID_win =                         16
+        CBaseClient::GetClientName_win =                        17
+        CBaseClient::GetNetChannel_win =                        18
+        CBaseClient::GetServer_win =                            19
+        CBaseClient::ExecuteStringCommand_win =                 28
+        // ----
+        CBaseClient::FillUserInfo_win =                         6
+        CBaseClient::SendServerInfo_win =                       12
+        CBaseClient::SetUserCVar_win =                          17
+        // ----
+        CBaseClient::vtable2_from_vtable3 =                     -42
+
+        // CBaseClient Linux
+        CBaseClient::Connect_lin =                              11
+        CBaseClient::Reconnect_lin =                            13
+        CBaseClient::Disconnect_lin =                           14
+        CBaseClient::IGetPlayerSlot_lin =                       15
+        CBaseClient::GetPlayerSlot_lin =                        3
+        CBaseClient::GetNetworkID_lin =                         5
+        CBaseClient::GetClientName_lin =                        6
+        CBaseClient::GetNetChannel_lin =                        7
+        CBaseClient::GetServer_lin =                            8
+        CBaseClient::ExecuteStringCommand_lin =                 22
+        // ----
+        CBaseClient::FillUserInfo_lin =                         46
+        CBaseClient::SendServerInfo_lin =                       52
+        CBaseClient::SetUserCVar_lin =                          57
+
+        // CBaseServer platform independent
+        CBaseServer::GetNumClients =                            3
+        CBaseServer::GetMaxClients =                            6
+        CBaseServer::RejectConnection =                         48
+        CBaseServer::ConnectClient =                            50
+        CBaseServer::GetFreeClient =                            51
+
+        m_fnCommandCallback_from_ConCommand =                   24
+        CEntityDictionary_from_dumpentityfactories =            57
+        CEntityDictionary_use_oldstyle =                        0
+        CEntityDictionary_use_debugprints =                     0
+
+        // used if not found automatically
+        m_MoveType_from_CBaseEntity_fallback_win =              0
+        m_MoveCollide_from_CBaseEntity_fallback_win =           0
+        m_MoveType_from_CBaseEntity_fallback_lin =              0
+        m_MoveCollide_from_CBaseEntity_fallback_lin =           0
+        m_nSolidType_from_CollisionProp_fallback =              0
+        m_nSolidType_use_integer =                              0
+        m_usSolidFlags_from_CCollisionProp_fallback =           0
+}
+
+cstrike
+{
+        CBasePlayer::StartObserverMode =                        360
+        CBasePlayer::StopObserverMode =                         361
+        CBasePlayer::ItemPostFrame =                            390
+        CBasePlayer::GiveNamedItem =                            391
+        CBasePlayer::CanHearAndReadChatFrom =                   411
+        CBaseMultiplayerPlayer::CalculateTeamBalanceScore =     454
+}
+
+hl2mp
+{
+        CBaseMultiplayerPlayer::CalculateTeamBalanceScore =     451
+
+        CBaseCombatWeapon::Holster_win =                        244
+        CBaseCombatWeapon::Holster_lin =                        245
+        CBaseCombatWeapon::PrimaryAttack_win =                  265
+        CBaseCombatWeapon::SecondaryAttack_win =                266
+        CBaseCombatWeapon::PrimaryAttack_lin =                  266
+        CBaseCombatWeapon::SecondaryAttack_lin =                267
+}
