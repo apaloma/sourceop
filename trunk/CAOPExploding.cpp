@@ -69,7 +69,6 @@ void CAOPExploding::Set(edict_t *pent)
     MakeThink(&CAOPExploding::Think);
     MakeTouch(&CAOPExploding::Touch);
     pBase = GetBase();
-    //pAdminOP.emitSoundBlockedList.AddToTail(VFuncs::entindex(pBase));
     SetDamage(100);
     SetDamageRadius(100);
     VFuncs::SetTakeDamage(pBase, DAMAGE_YES);

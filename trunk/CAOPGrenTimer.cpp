@@ -98,7 +98,7 @@ void CAOPGrenTimer::BeepThink()
     filter.RemoveAllRecipients();
     filter.AddRecipient(m_iOwner);
 
-    enginesound->EmitSound((CRecipientFilter&)filter, m_iOwner, CHAN_ITEM, "buttons/button9.wav", 0.4, SNDLVL_NORM, 0, 100, &pAdminOP.pAOPPlayers[m_iOwner-1].EyePosition());
+    enginesound->EmitSound((CRecipientFilter&)filter, m_iOwner, CHAN_ITEM, "buttons/button9.wav", 0.4, SNDLVL_NORM, 0, 100, 0, &pAdminOP.pAOPPlayers[m_iOwner-1].EyePosition());
     
     m_flNextThink = gpGlobals->curtime + m_flInterval;
     if(m_flFinishTime <= m_flNextThink)
@@ -113,7 +113,7 @@ void CAOPGrenTimer::FinalBeepThink()
     filter.RemoveAllRecipients();
     filter.AddRecipient(m_iOwner);
 
-    enginesound->EmitSound((CRecipientFilter&)filter, m_iOwner, CHAN_ITEM, "buttons/button8.wav", 0.4, SNDLVL_NORM, 0, 100, &pAdminOP.pAOPPlayers[m_iOwner-1].EyePosition());
+    enginesound->EmitSound((CRecipientFilter&)filter, m_iOwner, CHAN_ITEM, "buttons/button8.wav", 0.4, SNDLVL_NORM, 0, 100, 0, &pAdminOP.pAOPPlayers[m_iOwner-1].EyePosition());
 
     UTIL_Remove(GetBase());
 }

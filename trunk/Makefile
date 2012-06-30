@@ -155,7 +155,6 @@ PLUGIN_OBJS = \
 	$(PLUGIN_OBJ_DIR)/lutil.o \
 	$(PLUGIN_OBJ_DIR)/LuaLoader.o \
 	$(PLUGIN_OBJ_DIR)/mapcycletracker.o \
-	$(PLUGIN_OBJ_DIR)/menu.o \
 	$(PLUGIN_OBJ_DIR)/particles.o \
 	$(PLUGIN_OBJ_DIR)/PhysicsShared.o \
 	$(PLUGIN_OBJ_DIR)/pingmanager.o \
@@ -229,6 +228,10 @@ install:
 	$(MAKE) all
 	$(MAKE) copyfile
 
+install_beta:
+	$(MAKE) all
+	$(MAKE) copyfile_beta
+
 install_debug:
 	$(MAKE) debug
 	$(MAKE) copyfile
@@ -238,6 +241,12 @@ copyfile:
 	-sudo chown srcds /home/srcds/tf2server/orangebox/bin/sourceop.$(SHLIBEXT)
 	-sudo chgrp srcds /home/srcds/tf2server/orangebox/bin/sourceop.$(SHLIBEXT)
 	-sudo chmod 644 /home/srcds/tf2server/orangebox/bin/sourceop.$(SHLIBEXT)
+
+copyfile_beta:
+	-sudo cp sourceop_$(ARCH).$(SHLIBEXT) /home/srcds/tf2betaserver/tf2beta/bin/sourceop.$(SHLIBEXT)
+	-sudo chown srcds /home/srcds/tf2betaserver/tf2beta/bin/sourceop.$(SHLIBEXT)
+	-sudo chgrp srcds /home/srcds/tf2betaserver/tf2beta/bin/sourceop.$(SHLIBEXT)
+	-sudo chmod 644 /home/srcds/tf2betaserver/tf2beta/bin/sourceop.$(SHLIBEXT)
 
 install_l4d:
 	$(MAKE) l4d_debug

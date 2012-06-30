@@ -43,13 +43,13 @@ class CMainLoopSleepHack;
 
 //#define OFFICIALSERV_ONLY
 #ifdef OFFICIALSERV_ONLY
-    #define SourceOPVersion "SourceOP Internal Test Version 0.9.10"
-    #define SourceOPVerShort "0.9.10"
+    #define SourceOPVersion "SourceOP Internal Test Version 0.9.13"
+    #define SourceOPVerShort "0.9.13"
     #pragma message( "INTERNAL VERSION " __FILE__ )
     #define SOPDLog(s) do { if(debug_log.GetBool()) pAdminOP.DebugLog(s); } while(0)
 #else
-    #define SourceOPVersion "SourceOP Version 0.9.9"
-    #define SourceOPVerShort "0.9.9"
+    #define SourceOPVersion "SourceOP Version 0.9.12"
+    #define SourceOPVerShort "0.9.12"
     #define SOPDLog(s) ((void)0)
 #endif
 
@@ -586,7 +586,6 @@ public:
     CUtlVector <CAOPEntity *> myEntList;                        // hooked entities that we are managing
     CUtlVector <CAOPEntity *> myThinkEnts;                      // entities that we are managing thinks for
     CUtlVector <classinstall_t> installList;
-    CUtlVector <int> emitSoundBlockedList;
     CUtlVector <datadesc_t> dataDesc;
     CUtlVector <sendprop_t> sendProps;
     CUtlVector <trampolineinfo_t> trampolines;
@@ -660,10 +659,8 @@ public:
         uint32 unIP;
         uint16 usPort;
         uint16 usGamePort;
-        uint16 usSpectatorPort;
         uint16 usQueryPort;
         uint32 unServerFlags;
-        char pszGameDir[512];
         char pszVersionString[256];
         bool bLanMode;
     } storedgameserverinit_t;

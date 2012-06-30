@@ -71,7 +71,6 @@ void CAOPNormal::Set(edict_t *pent)
     MakeThink(&CAOPNormal::Think);
     MakeTouch(&CAOPNormal::Touch);
     pBase = GetBase();
-    //pAdminOP.emitSoundBlockedList.AddToTail(VFuncs::entindex(pBase));
     VFuncs::SetTakeDamage(pBase, DAMAGE_YES);
     VFuncs::SetHealth(pBase, 1);
     VFuncs::SetCollisionGroup( pBase, COLLISION_GROUP_PLAYER );

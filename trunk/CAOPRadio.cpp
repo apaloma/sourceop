@@ -210,7 +210,7 @@ void CAOPRadio::Play( const char *pszFile )
     Vector origin = GetAbsOrigin() + Vector(0,0,1);
     CBroadcastRecipientFilter filter;
 
-    enginesound->EmitSound((CRecipientFilter&)filter, VFuncs::entindex(pBase), CHAN_VOICE, pszFile, 1.0, SNDLVL_NORM, 0, PITCH_NORM, &origin);
+    enginesound->EmitSound((CRecipientFilter&)filter, VFuncs::entindex(pBase), CHAN_VOICE, pszFile, 1.0, SNDLVL_NORM, 0, PITCH_NORM, 0, &origin);
 }
 
 void CAOPRadio::SetRadioOwner( int index )
@@ -699,7 +699,7 @@ void CAOPRadio::StopRadio()
     CBaseEntity *pBase = GetBase();
     Vector origin = GetAbsOrigin() + Vector(0,0,1);
     CBroadcastRecipientFilter filter;
-    enginesound->EmitSound((CRecipientFilter&)filter, VFuncs::entindex(pBase), CHAN_VOICE, "common/null.wav", 1.0, SNDLVL_NORM, 0, PITCH_NORM, &origin);
+    enginesound->EmitSound((CRecipientFilter&)filter, VFuncs::entindex(pBase), CHAN_VOICE, "common/null.wav", 1.0, SNDLVL_NORM, 0, PITCH_NORM, 0, &origin);
 }
 
 void CAOPRadio::UpdateOnRemove( void )

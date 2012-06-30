@@ -106,7 +106,7 @@ void NEVERINLINE SOP_SleepTrampoline(DWORD msec)
     Msg("[SOURCEOP] That is bad.\n");
 }
 
-bool NEVERINLINE SOP_SteamGameServer_InitSafeTrampoline( uint32 unIP, uint16 usPort, uint16 usGamePort, uint16 usSpectatorPort, uint16 usQueryPort, EServerMode eServerMode, const char *pchGameDir, const char *pchVersionString )
+bool NEVERINLINE SOP_SteamGameServer_InitSafeTrampoline( uint32 unIP, uint16 usPort, uint16 usGamePort, uint16 usQueryPort, EServerMode eServerMode, const char *pchVersionString )
 {
     Msg("[SOURCEOP] Trampoline was called unmodified.\n");
     Msg("[SOURCEOP] That is bad.\n");
@@ -1268,9 +1268,9 @@ void __cdecl SOP_Sleep(DWORD msec)
     //}
 }
 
-bool SOP_SteamGameServer_InitSafe( uint32 unIP, uint16 usPort, uint16 usGamePort, uint16 usSpectatorPort, uint16 usQueryPort, EServerMode eServerMode, const char *pchGameDir, const char *pchVersionString )
+bool SOP_SteamGameServer_InitSafe( uint32 unIP, uint16 usPort, uint16 usGamePort, uint16 usQueryPort, EServerMode eServerMode, const char *pchVersionString )
 {
-    bool ret = SOP_SteamGameServer_InitSafeTrampoline(unIP, usPort, usGamePort, usSpectatorPort, usQueryPort, eServerMode, pchGameDir, pchVersionString);
+    bool ret = SOP_SteamGameServer_InitSafeTrampoline(unIP, usPort, usGamePort, usQueryPort, eServerMode, pchVersionString);
     pAdminOP.HookSteamFromGameServerInit();
 
     bool bLanMode = (unIP == 1);
@@ -1282,10 +1282,8 @@ bool SOP_SteamGameServer_InitSafe( uint32 unIP, uint16 usPort, uint16 usGamePort
 
     pAdminOP.StoredGameServerInitParams.unIP = unIP;
     pAdminOP.StoredGameServerInitParams.usGamePort = usGamePort;
-    pAdminOP.StoredGameServerInitParams.usSpectatorPort = usSpectatorPort;
     pAdminOP.StoredGameServerInitParams.usQueryPort = usQueryPort;
     pAdminOP.StoredGameServerInitParams.unServerFlags = serverFlags;
-    V_strncpy(pAdminOP.StoredGameServerInitParams.pszGameDir, pchGameDir, sizeof(pAdminOP.StoredGameServerInitParams.pszGameDir));
     V_strncpy(pAdminOP.StoredGameServerInitParams.pszVersionString, pchVersionString, sizeof(pAdminOP.StoredGameServerInitParams.pszVersionString));
     pAdminOP.StoredGameServerInitParams.bLanMode = bLanMode;
 

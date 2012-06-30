@@ -159,7 +159,7 @@ void SOPEntity::EmitSound(const char *pszSound, lua_Number vol, lua_Number pitch
     {
         Vector origin = VFuncs::GetAbsOrigin(pEnt);
         CPASFilter filter( origin );
-        enginesound->EmitSound((CRecipientFilter&)filter, VFuncs::entindex(pEnt), CHAN_AUTO, pszSound, vol/100, SNDLVL_NORM, 0, clamp(pitch,1,255), &origin);
+        enginesound->EmitSound((CRecipientFilter&)filter, VFuncs::entindex(pEnt), CHAN_AUTO, pszSound, vol/100, SNDLVL_NORM, 0, clamp(pitch,1,255), 0, &origin);
     }
 }
 SOPVector *SOPEntity::EyePos(void) {

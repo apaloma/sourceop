@@ -486,6 +486,8 @@ void HookItemPostFrame()
 
 void HookPrimaryAttack()
 {
+    //Msg("PrimaryAttack\n");
+
     CBaseEntity *pThisPtr = META_IFACEPTR(CBaseEntity);
     int entindex = VFuncs::entindex(pThisPtr);
 
@@ -512,6 +514,8 @@ void HookPrimaryAttack()
 
 void HookSecondaryAttack()
 {
+    //Msg("SecondaryAttack\n");
+
     CBaseEntity *pThisPtr = META_IFACEPTR(CBaseEntity);
     int entindex = VFuncs::entindex(pThisPtr);
 
@@ -824,14 +828,14 @@ void *HookConnectClient(netadr_t& net, int protocol, int challenge, int clientCh
         unvacban_enabled.GetBool() &&
         pAdminOP.VacAllowPlayer(steamid))
     {
-        pAdminOP.SteamGameServer()->SetServerType(pAdminOP.StoredGameServerInitParams.unServerFlags & (~k_unServerFlagSecure),
+        /*pAdminOP.SteamGameServer()->SetServerType(pAdminOP.StoredGameServerInitParams.unServerFlags & (~k_unServerFlagSecure),
             pAdminOP.StoredGameServerInitParams.unIP,
             pAdminOP.StoredGameServerInitParams.usGamePort,
             pAdminOP.StoredGameServerInitParams.usSpectatorPort,
             pAdminOP.StoredGameServerInitParams.usQueryPort,
             pAdminOP.StoredGameServerInitParams.pszGameDir,
             pAdminOP.StoredGameServerInitParams.pszVersionString,
-            pAdminOP.StoredGameServerInitParams.bLanMode);
+            pAdminOP.StoredGameServerInitParams.bLanMode);*/
         g_bShouldResetVac = true;
         g_iResetVacInFrames = 10;
     }
@@ -1230,7 +1234,7 @@ void CAdminOP :: Load( void )
         isDod = 1;
     else if(!stricmp(modName, "FortressForever"))
         isFF = 1;
-    else if(!stricmp(modName, "tf"))
+    else if(!stricmp(modName, "tf") || !stricmp(modName, "tf_beta"))
         isTF2 = 1;
 
     if(QueryPerformanceFrequency(&liFrequency)) hasQuery = true;
@@ -1299,6 +1303,12 @@ void CAdminOP :: Load( void )
             TimeLog("SourceOPErrors.log", "SetMoveType was not found inside of the server dll. Will use fallback method.\n");
         if(_ResetSequence == NULL)
             TimeLog("SourceOPErrors.log", "ResetSequence was not found inside of the server dll.\n");
+        if(_UtilPlayerByIndex == NULL && isTF2)
+            TimeLog("SourceOPErrors.log", "PlayerByIndex was not found inside of the server dll.\n");
+        if(_NET_SendPacket == NULL)
+            TimeLog("SourceOPErrors.log", "NET_SendPacket was not found inside of the engine dll.\n");
+        if(_SV_BroadcastVoiceData == NULL)
+            TimeLog("SourceOPErrors.log", "SV_BroadcastVoiceData was not found inside of the engine dll.\n");
     }
     else
     {
@@ -1346,7 +1356,7 @@ void CAdminOP :: Load( void )
 #else
     if(isHl2mp || isTF2 || isCstrike || isDod)
     {
-        te = **(ITempEntsSystem***)(VFN(effects, 0x0C) + (0x6F));
+        te = **(ITempEntsSystem***)(VFN(effects, 0x0C) + (0x3B));
     }
     else if(isFF)
     {
@@ -1377,7 +1387,6 @@ void CAdminOP :: Load( void )
     entList.Purge();
     myEntList.Purge();
     myThinkEnts.Purge();
-    emitSoundBlockedList.Purge();
     radioLoops.Purge();
     dataDesc.Purge();
     installedFactories.Purge();
@@ -1710,7 +1719,6 @@ void CAdminOP :: LevelInit( char const *pMapName )
         }
     }
     //myEntList.Purge();
-    emitSoundBlockedList.Purge();
 
     bPlayerResourceCached = 0;
     pPlayerResource = NULL;
@@ -1928,14 +1936,14 @@ void CAdminOP :: GameFrame( bool simulating )
         g_iResetVacInFrames--;
         if(g_iResetVacInFrames <= 0)
         {
-            this->SteamGameServer()->SetServerType(pAdminOP.StoredGameServerInitParams.unServerFlags,
+            /*this->SteamGameServer()->SetServerType(pAdminOP.StoredGameServerInitParams.unServerFlags,
                 pAdminOP.StoredGameServerInitParams.unIP,
                 pAdminOP.StoredGameServerInitParams.usGamePort,
                 pAdminOP.StoredGameServerInitParams.usSpectatorPort,
                 pAdminOP.StoredGameServerInitParams.usQueryPort,
                 pAdminOP.StoredGameServerInitParams.pszGameDir,
                 pAdminOP.StoredGameServerInitParams.pszVersionString,
-                pAdminOP.StoredGameServerInitParams.bLanMode);
+                pAdminOP.StoredGameServerInitParams.bLanMode);*/
 
             g_bShouldResetVac = false;
         }
@@ -3192,50 +3200,6 @@ CBaseEntity *CreateCombineBall( const Vector &origin, const Vector &velocity, fl
         }
     }
 
-    const char *cefTblFunc = f.GetSignature("CEntFactDictVFunc", &len);
-    const char *cefTblFuncMatch = f.GetMatchString("CEntFactDictVFunc");
-    int cefExtra = atoi(f.GetExtra("CEntFactDictVFunc"));
-    int cefOccurence = 0;
-
-    // doesn't work in tf2, other method does
-    if(!isTF2)
-    {
-        for(unsigned int i = 0; i<(modlentry.modBaseSize-len); i++)
-        {
-            if(f.IsMatch(pCheck, i, len, cefTblFunc, cefTblFuncMatch))
-            {
-                // found signature for a entity factory function
-                int address = ((int)modlentry.modBaseAddr) + i;
-                char *addrptr = (char *)&address;
-                for(unsigned int j = 0; j<(modlentry.modBaseSize-4); j++)
-                {
-                    if(pCheck[j] == addrptr[0] && pCheck[j+1] == addrptr[1] && pCheck[j+2] == addrptr[2] && pCheck[j+3] == addrptr[3])
-                    {
-                        // found the vtable that this function is in
-                        int vtbladdr = ((int)modlentry.modBaseAddr) + j;
-                        char *vtbladdrptr = (char *)&vtbladdr;
-                        vtbladdr -= 4; // this is the second entry, not the first, so subtract 4 to get first
-                        for(unsigned int k = 0; k<(modlentry.modBaseSize-4); k++)
-                        {
-                            if(pCheck[k] == vtbladdrptr[0] && pCheck[k+1] == vtbladdrptr[1] && pCheck[k+2] == vtbladdrptr[2] && pCheck[k+3] == vtbladdrptr[3])
-                            {
-                                // found a class instance using this vtable
-                                cefOccurence++;
-                                if(cefOccurence == cefExtra)
-                                {
-                                    // found the one that we want
-                                    int classaddr = ((int)modlentry.modBaseAddr) + k;
-                                    g_entityFactoryDictionary = (CEntityFactoryDictionary *)(k+modlentry.modBaseAddr);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     const char *namedSig = f.GetSignature("CreateEntityByName", &len);
     const char *namedSigMatch = f.GetMatchString("CreateEntityByName");
     int namedEntFactDict = atoi(f.GetExtra("CreateEntFactDict"));
@@ -3267,45 +3231,6 @@ CBaseEntity *CreateCombineBall( const Vector &origin, const Vector &velocity, fl
                     }
                 }
             }
-            /*if(namedSigDetour)
-            {
-                const char *namedGBESig = f.GetSignature("CreateEntGetBaseEntity", &len);
-                const char *namedGBESigMatch = f.GetMatchString("CreateEntGetBaseEntity");
-                for(unsigned int j = i; j<i+0x5F; j++)
-                {
-                    if(f.IsMatch(pCheck, j, len, namedGBESig, namedGBESigMatch))
-                    {
-                        // This overruns CreateNetworkableByName but that function is never used
-                        BYTE replacement[] = "\x8B\xC8\xFF\x52\x04\x8B\xF0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xE8\x00\x00\x00\x00\x85\xF6\x75\x05\x5F\x33\xC0\x5E\xC3\x8B\x06\x5F\x8B\xCE\x5E\xFF\x60\x24\xCC"; // 31
-                        typedef void            (__cdecl* PostFuncFunc)( void );
-                        extern void PostFunc(void);
-                        PostFuncFunc func = PostFunc;
-                        int jump = (int)PostFunc - (int)(j+modlentry.modBaseAddr+22);
-                        int *pJump = &jump;
-
-                        replacement[7] = pCheck[j+8];
-                        replacement[8] = pCheck[j+9];
-                        replacement[9] = pCheck[j+10];
-                        replacement[10] = pCheck[j+11];
-                        replacement[11] = pCheck[j+12];
-                        replacement[12] = pCheck[j+13];
-                        replacement[13] = pCheck[j+14];
-                        replacement[14] = pCheck[j+15];
-                        replacement[15] = pCheck[j+16];
-                        replacement[16] = pCheck[j+17];
-                        replacement[18] = *(((BYTE*)pJump)+0);
-                        replacement[19] = *(((BYTE*)pJump)+1);
-                        replacement[20] = *(((BYTE*)pJump)+2);
-                        replacement[21] = *(((BYTE*)pJump)+3);
-                        serverProcessID = processID;
-                        createEntityReplaceAddr = j+modlentry.modBaseAddr;
-                        // store what is here so that it may be restored if the plugin is unloaded later
-                        patcher.ReadProcess(serverProcessID, createEntityReplaceAddr, beforeCreateEntityReplace, sizeof(beforeCreateEntityReplace));
-                        patcher.WriteProcess(processID, j+modlentry.modBaseAddr, replacement, sizeof(replacement)-1);
-                        break;
-                    }
-                }
-            }*/
             break;
         }
     }
@@ -3514,21 +3439,6 @@ CBaseEntity *CreateCombineBall( const Vector &origin, const Vector &velocity, fl
             }
         }
 
-        // NET_ReceiveDatagram
-        /*const char *recvPacketSig = f.GetSignature("ReceiveDatagram", &len);
-        const char *recvPacketMatch = f.GetMatchString("ReceiveDatagram");
-        for(unsigned int i = 0; i<(modlentry.modBaseSize-len); i++)
-        {
-            if(f.IsMatch(pCheck, i, len, recvPacketSig, recvPacketMatch))
-            {
-                _NET_ReceiveDatagram = (_ReceiveDatagramFunc)(i+modlentry.modBaseAddr);
-
-                //SetupTrampoline((BYTE *)_NET_ReceiveDatagram, (BYTE *)&SOP_NET_ReceiveDatagram, (BYTE *)&SOP_NET_ReceiveDatagramTrampoline);
-
-                break;
-            }
-        }*/
-
         // CBaseEntity::SendServerInfo
         const char *ssiTblFunc = f.GetSignature("SendServerInfo", &len);
         const char *ssiTblFuncMatch = f.GetMatchString("SendServerInfo");
@@ -3561,6 +3471,7 @@ CBaseEntity *CreateCombineBall( const Vector &origin, const Vector &velocity, fl
                         g_hookIDS.AddToTail(SH_ADD_MANUALDVPHOOK(CBaseClient_Disconnect, (void*)vtbladdr, SH_STATIC(HookDisconnect), false));
                         g_hookIDS.AddToTail(SH_ADD_MANUALDVPHOOK(CBaseClient_GetNetworkID, (void*)vtbladdr, SH_STATIC(HookGetNetworkID), true));
                         g_hookIDS.AddToTail(SH_ADD_MANUALDVPHOOK(CBaseClient_ExecuteStringCommand, (void*)vtbladdr, SH_STATIC(HookExecuteStringCommand), false));
+                        break;
                     }
                 }
             }
@@ -3575,8 +3486,6 @@ CBaseEntity *CreateCombineBall( const Vector &origin, const Vector &velocity, fl
             if(f.IsMatch(pCheck, i, len, bvdTblFunc, bvdTblFuncMatch))
             {
                 _SV_BroadcastVoiceData = (_SV_BVDFunc)(i+modlentry.modBaseAddr);
-                //SV_BroadcastVoiceDataDetour.Detour((BYTE *)_SV_BroadcastVoiceData, (BYTE *)&SOP_BroadcastVoice, true, true, true);
-                //SV_BroadcastVoiceDataDetour.Apply();
 
                 SetupTrampoline((BYTE *)_SV_BroadcastVoiceData, (BYTE *)&SOP_BroadcastVoice, (BYTE *)&SOP_BroadcastVoiceTrampoline);
                 break;
@@ -4149,11 +4058,26 @@ void CAdminOP :: SetupTrampoline( BYTE *pbTarget, BYTE *pbHook, BYTE *pbTrampoli
             // instruction that is being added here fixes the value in ebx to
             // match what would have been in ebx if the call to
             // __i686.get_pc_thunk.bx had never moved.
-            if(isFuncGetPcThunkBx((BYTE *)location))
+            //
+            // 10/13/11 - GCC generates inline thunks of the format call 0; pop ebx
+            // -- this pushes eip into ebx just like a normal thunk, so we need to
+            // adjust for it as well
+            bool bInlineThunk = (callOffset == 0);
+            if(bInlineThunk || isFuncGetPcThunkBx((BYTE *)location))
             {
                 int adjustment = (pbNew - pbDst);
                 BYTE *pbAdjust = (BYTE *)&adjustment;
                 // add to ebx
+                // We pop ebx, fix it up, then push it.
+                // this is because the 'pop ebx' step of the inline
+                // thunk will be in the returned function, and skips
+                // the ugly logic of copying an additional instruction
+                // over and then modifying ebx after it.
+                if (bInlineThunk)
+                {
+                    memset(pbDst - 4, 0, 4); // Undo CDetourDis's call correction, we want it to remain in the tramp
+                    *(pbDst++) = 0x5B; // pop ebx
+                }
                 pbDst[0] = '\x81';
                 pbDst[1] = '\xC3';
                 pbDst[2] = pbAdjust[0];
@@ -4161,6 +4085,7 @@ void CAdminOP :: SetupTrampoline( BYTE *pbTarget, BYTE *pbHook, BYTE *pbTrampoli
                 pbDst[4] = pbAdjust[2];
                 pbDst[5] = pbAdjust[3];
                 pbDst += 6;
+                if (bInlineThunk) *(pbDst++) = 0x53; // push ebx
             }
         }
 #endif
@@ -4462,22 +4387,6 @@ void CAdminOP :: GetPlayerLimits( int& minplayers, int& maxplayers, int &default
 #endif
 }
 
-void CAdminOP :: EmitSound( IRecipientFilter& filter, int iEntIndex, int iChannel, const char *pSample, 
-                            float flVolume, soundlevel_t iSoundlevel, int iFlags, int iPitch, 
-                            const Vector *pOrigin, const Vector *pDirection, CUtlVector< Vector >* pUtlVecOrigins, bool bUpdatePositions, float soundtime, int speakerentity )
-{
-    //Msg("iEntIndex: %i  iChannel: %i  pSample: %s  iPitch: %i\n", iEntIndex, iChannel, pSample, iPitch);
-    for(int i = 0; i < emitSoundBlockedList.Count(); i++)
-    {
-        if(iEntIndex == emitSoundBlockedList[i])
-        {
-            RETURN_META(MRES_SUPERCEDE);
-            return;
-        }
-    }
-    RETURN_META(MRES_IGNORED);
-}
-
 bool CAdminOP :: SetClientListening(int iReceiver, int iSender, bool bListen)
 {
     //Msg("SetClientListening(%i, %i, %i)\n", iReceiver, iSender, bListen);
@@ -4523,10 +4432,13 @@ bool CAdminOP :: SetClientListening(int iReceiver, int iSender, bool bListen)
 int CAdminOP :: ParmValue( const char *psz, int nDefaultVal )
 {
 #ifdef OFFICIALSERV_ONLY
-    if(FStrEq(psz, "-maxplayers") && maxplayers_force.GetInt() > 0)
+    if(FStrEq(psz, "-maxplayers"))
     {
-        Msg("[SOURCEOP] Overriding -maxplayers parameter to %i.\n", maxplayers_force.GetInt());
-        RETURN_META_VALUE(MRES_SUPERCEDE, maxplayers_force.GetInt());
+        if(maxplayers_force.GetInt() > 0)
+        {
+            Msg("[SOURCEOP] Overriding -maxplayers parameter to %i.\n", maxplayers_force.GetInt());
+            RETURN_META_VALUE(MRES_SUPERCEDE, maxplayers_force.GetInt());
+        }
     }
 #endif
     RETURN_META_VALUE(MRES_IGNORED, nDefaultVal);
@@ -4725,7 +4637,7 @@ void CAdminOP :: HookEntityType(const char *pszEntName)
         // TF
         && strcmp(pszEntName, "tf_bot") && strcmp(pszEntName, "item_teamflag") && strncmp(pszEntName, "team_", 5) && strncmp(pszEntName, "game_", 5)
         && strcmp(pszEntName, "mapobj_cart_dispenser") && strcmp(pszEntName, "obj_dispenser") && strcmp(pszEntName, "training_prop_dynamic")
-        && strcmp(pszEntName, "tf_weapon_medigun")
+        && strcmp(pszEntName, "tf_weapon_medigun") && strcmp(pszEntName, "eyeball_boss")
         // causes crashing in ClientActive when unloading and then loading again
         && strcmp(pszEntName, "tf_objective_resource")
         // L4D
@@ -5396,7 +5308,7 @@ PLUGIN_RESULT CAdminOP :: ClientCommand(edict_t *pEntity, const CCommand &args)
     }
 
 #ifdef OFFICIALSERV_ONLY
-    bool isTestAdmin =  pAOPPlayer->IsAdmin(1024, "test");
+    bool isTestAdmin =  !!pAOPPlayer->IsAdmin(1024, "test");
 
     if(FStrEq(pcmd, "testhudnotifycustom") && isTestAdmin)
     {

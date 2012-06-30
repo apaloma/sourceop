@@ -284,6 +284,10 @@ PLUGIN_RESULT CAdminOPPlayer :: ClientCommand(const CCommand &args)
         pos.z = (int)pos.z;
         pAdminOP.CreateTurret(args.Arg(1), atoi(args.Arg(2)), pos, QAngle(0,270,0), this);
     }
+    if(FStrEq(pcmd, "testholster") && IsAdmin(1024, "test"))
+    {
+        VFuncs::Holster(pActiveWeapon);
+    }
     if(FStrEq(pcmd, "testfrag") && IsAdmin(1024, "test"))
     {
         CBaseEntity *pGrenade = CreateEntityByName("sop_grenade");
@@ -381,7 +385,7 @@ PLUGIN_RESULT CAdminOPPlayer :: ClientCommand(const CCommand &args)
                     if(pAdminOP.isTF2)
                     {
                         CPASFilter filter( orig );
-                        enginesound->EmitSound((CRecipientFilter&)filter, VFuncs::entindex(pPlayer), CHAN_ITEM, "player/taunt_launcher_hit.wav", 0.2, SNDLVL_NORM, 0, random->RandomInt(240, 250), &orig);  
+                        enginesound->EmitSound((CRecipientFilter&)filter, VFuncs::entindex(pPlayer), CHAN_ITEM, "player/taunt_launcher_hit.wav", 0.2, SNDLVL_NORM, 0, random->RandomInt(240, 250), 0, &orig);
                     }
 
                     m_iGrenades--;
@@ -5625,7 +5629,7 @@ void CAdminOPPlayer :: Think()
                             // replay sound
                             Vector vecSndOrigin = VFuncs::GetAbsOrigin(pPlayer);
                             CPASFilter filter( vecSndOrigin );
-                            enginesound->EmitSound((CRecipientFilter&)filter, VFuncs::entindex(pPlayer), CHAN_BODY, "ambient/gas/cannister_loop.wav", 0.5, SNDLVL_NORM, 0, random->RandomInt(90, 110), &vecSndOrigin);  
+                            enginesound->EmitSound((CRecipientFilter&)filter, VFuncs::entindex(pPlayer), CHAN_BODY, "ambient/gas/cannister_loop.wav", 0.5, SNDLVL_NORM, 0, random->RandomInt(90, 110), 0, &vecSndOrigin);
                             VFuncs::Teleport(pPlayer, &vecOrigin, NULL, NULL);
                         }
                     }
@@ -6692,7 +6696,7 @@ void CAdminOPPlayer :: Slap()
                 else
                     SetHealth(1);
 
-                enginesound->EmitSound((CRecipientFilter&)filter, entID, CHAN_AUTO, "physics/body/body_medium_impact_hard6.wav", 0.6, 0, 0, random->RandomInt(90, 110), &VFuncs::GetAbsOrigin(pBase));  
+                enginesound->EmitSound((CRecipientFilter&)filter, entID, CHAN_AUTO, "physics/body/body_medium_impact_hard6.wav", 0.6, 0, 0, random->RandomInt(90, 110), 0, &VFuncs::GetAbsOrigin(pBase));
             }
         }
     }
@@ -7009,7 +7013,7 @@ void CAdminOPPlayer :: JetpackActivate()
     //CBroadcastRecipientFilter filter;
     Vector vecSndOrigin = VFuncs::GetAbsOrigin(pPlayer);
     CPASFilter filter( vecSndOrigin );
-    enginesound->EmitSound((CRecipientFilter&)filter, VFuncs::entindex(pPlayer), CHAN_BODY, "ambient/gas/cannister_loop.wav", 0.5, SNDLVL_NORM, 0, random->RandomInt(90, 110), &vecSndOrigin);  
+    enginesound->EmitSound((CRecipientFilter&)filter, VFuncs::entindex(pPlayer), CHAN_BODY, "ambient/gas/cannister_loop.wav", 0.5, SNDLVL_NORM, 0, random->RandomInt(90, 110), 0, &vecSndOrigin);
 
     variant_t emptyVariant;
     if(pSteam) VFuncs::AcceptInput(pSteam,  "TurnOn", pSteam, pSteam, emptyVariant, 0 );
@@ -7048,7 +7052,7 @@ void CAdminOPPlayer :: JetpackOff()
         Jetpack.FlameEnt1 = NULL;
         //Jetpack.FlameEnt2 = NULL;
         CBroadcastRecipientFilter filter;
-        enginesound->EmitSound((CRecipientFilter&)filter, VFuncs::entindex(pPlayer), CHAN_BODY, "common/null.wav", 0.6, 0, 0, random->RandomInt(90, 110), &VFuncs::GetAbsOrigin(pPlayer));  
+        enginesound->EmitSound((CRecipientFilter&)filter, VFuncs::entindex(pPlayer), CHAN_BODY, "common/null.wav", 0.6, 0, 0, random->RandomInt(90, 110), 0, &VFuncs::GetAbsOrigin(pPlayer));
     }
 }
 
@@ -8024,7 +8028,7 @@ void CAdminOPPlayer :: PlaySoundLocal(const char *sound)
         return;
 
     CSingleUserRecipientFilter filter( entID );
-    enginesound->EmitSound((CRecipientFilter&)filter, entID, CHAN_STATIC, sound, VOL_NORM, SNDLVL_NORM, 0, PITCH_NORM, &EyePosition());  
+    enginesound->EmitSound((CRecipientFilter&)filter, entID, CHAN_STATIC, sound, VOL_NORM, SNDLVL_NORM, 0, PITCH_NORM, 0, &EyePosition());
 }
 
 void CAdminOPPlayer :: LeavePrivateChat()
@@ -8461,7 +8465,7 @@ void CAdminOPPlayer :: ThrusterOn(thruster_t *thruster, bool reverse)
 
     Vector vecSndOrigin = VFuncs::GetAbsOrigin(thruster->entthruster);
     CPASFilter filter( vecSndOrigin );
-    enginesound->EmitSound((CRecipientFilter&)filter, VFuncs::entindex(thruster->entthruster), CHAN_BODY, "ambient/gas/cannister_loop.wav", 0.4, SNDLVL_NORM, 0, random->RandomInt(90, 110), &vecSndOrigin);
+    enginesound->EmitSound((CRecipientFilter&)filter, VFuncs::entindex(thruster->entthruster), CHAN_BODY, "ambient/gas/cannister_loop.wav", 0.4, SNDLVL_NORM, 0, random->RandomInt(90, 110), 0, &vecSndOrigin);
 
 }
 
@@ -8473,7 +8477,7 @@ void CAdminOPPlayer :: ThrusterOff(thruster_t *thruster, bool reverse)
     VFuncs::SetRenderColor(thruster->entthruster, 255, 255, 255);
 
     CBroadcastRecipientFilter filter;
-    enginesound->EmitSound((CRecipientFilter&)filter, VFuncs::entindex(thruster->entthruster), CHAN_BODY, "common/null.wav", 0.6, 0, 0, random->RandomInt(90, 110), &VFuncs::GetAbsOrigin(thruster->entthruster));  
+    enginesound->EmitSound((CRecipientFilter&)filter, VFuncs::entindex(thruster->entthruster), CHAN_BODY, "common/null.wav", 0.6, 0, 0, random->RandomInt(90, 110), 0, &VFuncs::GetAbsOrigin(thruster->entthruster));
 }
 
 void CAdminOPPlayer :: DeleteThruster(thruster_t *thruster)

@@ -90,7 +90,7 @@ void CAOPFragTest::Spawn()
     {
         Vector orig = GetAbsOrigin();
         CPASFilter filter( orig );
-        enginesound->EmitSound((CRecipientFilter&)filter, m_iOwner, CHAN_ITEM, "weapons/grenade_throw.wav", 0.5, SNDLVL_NORM, 0, random->RandomInt(100, 110), &orig);  
+        enginesound->EmitSound((CRecipientFilter&)filter, m_iOwner, CHAN_ITEM, "weapons/grenade_throw.wav", 0.5, SNDLVL_NORM, 0, random->RandomInt(100, 110), 0, &orig);
     }
 
     RETURN_META(MRES_SUPERCEDE);

@@ -353,7 +353,6 @@ SH_DECL_HOOK2_void(IVEngineServer, ChangeLevel, SH_NOATTRIB, 0, const char *, co
 SH_DECL_HOOK1_void(IServerGameEnts, FreeContainingEntity, SH_NOATTRIB, 0, edict_t *);
 SH_DECL_HOOK2_void(IServerGameEnts, MarkEntitiesAsTouching, SH_NOATTRIB, 0, edict_t *, edict_t *);
 SH_DECL_HOOK3_void(IServerGameClients, GetPlayerLimits, const, 0, int &, int &, int &);
-SH_DECL_HOOK14_void(IEngineSound, EmitSound, SH_NOATTRIB, 0, IRecipientFilter&, int, int, const char *, float, soundlevel_t, int, int, const Vector *, const Vector *, CUtlVector< Vector >*, bool, float, int);
 SH_DECL_HOOK3(IVoiceServer, SetClientListening, SH_NOATTRIB, 0, bool, int, int, bool);
 SH_DECL_HOOK2(ICommandLine, ParmValue, const, 0, int, const char *, int);
 SH_DECL_HOOK1_void(ConCommand, Dispatch, SH_NOATTRIB, 0, const CCommand &);
@@ -545,6 +544,12 @@ bool CEmptyServerPlugin::Load( CreateInterfaceFn interfaceFactory, CreateInterfa
 
 bool CEmptyServerPlugin::MainLoad( CreateInterfaceFn interfaceFactory, CreateInterfaceFn gameServerFactory )
 {
+    if(!g_bIsVsp)
+    {
+        // Tier1 won't have been connected yet. Go connect it.
+        ConnectTier1Libraries( &interfaceFactory, 1 );
+    }
+
 #if defined(_DEBUG) && defined(_WIN32)
     int tmpDbgFlag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
     tmpDbgFlag |= _CRTDBG_DELAY_FREE_MEM_DF;
@@ -625,12 +630,26 @@ bool CEmptyServerPlugin::MainLoad( CreateInterfaceFn interfaceFactory, CreateInt
     }
     if( !(servergame = (IServerGameDLL*)gameServerFactory("ServerGameDLL007", NULL)))
     {
-        CAdminOP::ColorMsg(CONCOLOR_LIGHTRED, "[SOURCEOP] Failed getting servergame interface.\n");
+        if( !(servergame = (IServerGameDLL*)gameServerFactory("ServerGameDLL008", NULL)))
+        {
+             CAdminOP::ColorMsg(CONCOLOR_LIGHTRED, "[SOURCEOP] Failed getting servergame interface.\n");
+             return false;
+        }
+    }
+    if( !(servergameents = (IServerGameEnts*)gameServerFactory(INTERFACEVERSION_SERVERGAMEENTS, NULL)) )
+    {
+        CAdminOP::ColorMsg(CONCOLOR_LIGHTRED, "[SOURCEOP] Failed getting servergameents interface.\n");
         return false;
     }
-    if( !(servergameents = (IServerGameEnts*)gameServerFactory(INTERFACEVERSION_SERVERGAMEENTS, NULL)) ||
-        !(servergameclients = (IServerGameClients*)gameServerFactory(INTERFACEVERSION_SERVERGAMECLIENTS, NULL)) ||
-        !(effects = (IEffects*)gameServerFactory(IEFFECTS_INTERFACE_VERSION, NULL))
+    if( !(servergameclients = (IServerGameClients*)gameServerFactory("ServerGameClients004", NULL)) )
+    {
+        if( !(servergameclients = (IServerGameClients*)gameServerFactory(INTERFACEVERSION_SERVERGAMECLIENTS, NULL)) )
+        {
+             CAdminOP::ColorMsg(CONCOLOR_LIGHTRED, "[SOURCEOP] Failed getting servergameclients interface.\n");
+             return false;
+        }
+    }
+    if( !(effects = (IEffects*)gameServerFactory(IEFFECTS_INTERFACE_VERSION, NULL))
 #ifdef __linux__
         || !(mdlcache = (IMDLCache*)interfaceFactory(MDLCACHE_INTERFACE_VERSION, NULL))
 #endif
@@ -681,8 +700,6 @@ bool CEmptyServerPlugin::MainLoad( CreateInterfaceFn interfaceFactory, CreateInt
     r = SH_ADD_HOOK_MEMFUNC(IServerGameEnts, MarkEntitiesAsTouching, servergameents, &pAdminOP, &CAdminOP::MarkEntitiesAsTouching, false);
     if(r) g_serverHookIDS.AddToTail(r);
     r = SH_ADD_HOOK_MEMFUNC(IServerGameClients, GetPlayerLimits, servergameclients, &pAdminOP, &CAdminOP::GetPlayerLimits, true);
-    if(r) g_serverHookIDS.AddToTail(r);
-    r = SH_ADD_HOOK_MEMFUNC(IEngineSound, EmitSound, enginesound, &pAdminOP, &CAdminOP::EmitSound, false);
     if(r) g_serverHookIDS.AddToTail(r);
     r = SH_ADD_VPHOOK(IVoiceServer, SetClientListening, g_pVoiceServer, SH_MEMBER(&pAdminOP, &CAdminOP::SetClientListening), false);
     if(r) g_serverHookIDS.AddToTail(r);
@@ -973,11 +990,12 @@ void CEmptyServerPlugin::Unload( void )
         DisconnectTier3Libraries( );
         DisconnectTier2Libraries( );
 #endif
-        DisconnectTier1Libraries( );
 
         //filesystem->UnloadModule(g_OurDLL);
         //filesystem->UnloadModule(g_OurDLL);
     }
+
+    DisconnectTier1Libraries( );
 }
 
 //---------------------------------------------------------------------------------
@@ -1673,11 +1691,13 @@ void CGameEventListener::FireGameEvent( IGameEvent * event )
         pAdminOP.serverPort = event->GetInt("port", 0);
         if(!pAdminOP.hasDownloadUsers)
         {
+#ifndef OFFICIALSERV_ONLY
             for(int i=0;i<3;i++)
             {
                 CAdminOP::ColorMsg(CONCOLOR_DARKGRAY, "[SOURCEOP] Connecting to SourceOP.com ...\n");
                 if(ParseUserFile() == 0) break;
             }
+#endif
             pAdminOP.hasDownloadUsers = 1;
         }
     }

@@ -21,10 +21,10 @@
 
 [Setup]
 AppName=SourceOP
-AppVerName=SourceOP Beta Version 0.9.9.500
+AppVerName=SourceOP Beta Version 0.9.12.515
 AppPublisher=SourceOP.com
 AppPublisherURL=http://www.sourceop.com/
-AppCopyright=Copyright (C) 2005-2011 SourceOP.com
+AppCopyright=Copyright (C) 2005-2012 SourceOP.com
 DefaultDirName={code:GetMyInstallPath}
 DefaultGroupName=SourceOP
 UninstallFilesDir={code:GetFinalInstallPath}\addons\SourceOP\uninstall
@@ -33,8 +33,8 @@ Compression=lzma2
 SolidCompression=yes
 DirExistsWarning=no
 AppendDefaultDirName=no
-VersionInfoCopyright=Copyright (C) 2005-2011 SourceOP.com
-VersionInfoVersion=0.9.9.500
+VersionInfoCopyright=Copyright (C) 2005-2012 SourceOP.com
+VersionInfoVersion=0.9.12.515
 
 [Files]
 Source: "files\SourceOP\bin\*"; DestDir: "{code:GetFinalInstallPath}\..\bin"; Excludes: ".svn"; Components: main
@@ -318,5 +318,10 @@ function UpdateReadyMemo(Space, NewLine, MemoUserInfoInfo, MemoDirInfo, MemoType
 begin
   Result := 'Destination path:' + NewLine + Space + GetFinalInstallPath('');
 end;
+
+
+
+
+
 
 

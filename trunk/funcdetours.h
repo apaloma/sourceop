@@ -32,7 +32,7 @@ void SOP_BroadcastVoiceTrampoline(IClient *client, int a, char *b, long long c);
 int SOP_usleepTrampoline(useconds_t usec);
 #endif
 void SOP_SleepTrampoline(DWORD msec);
-bool SOP_SteamGameServer_InitSafeTrampoline( uint32 unIP, uint16 usPort, uint16 usGamePort, uint16 usSpectatorPort, uint16 usQueryPort, EServerMode eServerMode, const char *pchGameDir, const char *pchVersionString );
+bool SOP_SteamGameServer_InitSafeTrampoline( uint32 unIP, uint16 usPort, uint16 usGamePort, uint16 usQueryPort, EServerMode eServerMode, const char *pchVersionString );
 bool SOP_BGetCallbackTrampoline( HSteamPipe hSteamPipe, CallbackMsg_t *pCallbackMsg, HSteamCall *phSteamCall );
 edict_t *SOP_UTIL_PlayerByIndexTrampoline(int client);
 
@@ -44,7 +44,7 @@ void SOP_BroadcastVoice( IClient *client, int a, char *b, long long c);
 int SOP_usleep(useconds_t usec);
 #endif
 void __cdecl SOP_Sleep(DWORD msec);
-bool SOP_SteamGameServer_InitSafe( uint32 unIP, uint16 usPort, uint16 usGamePort, uint16 usSpectatorPort, uint16 usQueryPort, EServerMode eServerMode, const char *pchGameDir, const char *pchVersionString );
+bool SOP_SteamGameServer_InitSafe( uint32 unIP, uint16 usPort, uint16 usGamePort, uint16 usQueryPort, EServerMode eServerMode, const char *pchVersionString );
 bool SOP_BGetCallback( HSteamPipe hSteamPipe, CallbackMsg_t *pCallbackMsg, HSteamCall *phSteamCall );
 edict_t *SOP_UTIL_PlayerByIndex(int client);
 
