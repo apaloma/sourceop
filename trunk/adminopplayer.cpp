@@ -239,15 +239,15 @@ PLUGIN_RESULT CAdminOPPlayer :: ClientCommand(const CCommand &args)
             //pAttributes = pItem->m_attributes;
             Msg("%p %p %p\n", pAttribManager, pItem, pAttributes);
             Msg("Dumping attribs:\n");
-            for(int i = 0; i < pItem->m_attributes.Count(); i++)
+            for(int i = 0; i < pItem->m_attributes.m_Attributes.Count(); i++)
             {
-                CEconItemAttribute *pAttrib = &pItem->m_attributes[i];
+                CEconItemAttribute *pAttrib = &pItem->m_attributes.m_Attributes[i];
                 Msg("%i %f\n", pAttrib->m_iAttribDef, pAttrib->m_flVal);
             }
             CEconItemAttribute newAttrib;
             newAttrib.m_flVal = 4.0f;
             newAttrib.m_iAttribDef = 4;
-            pItem->m_attributes.AddToTail(newAttrib);
+            pItem->m_attributes.m_Attributes.AddToTail(newAttrib);
         }
         else
         {
@@ -4568,22 +4568,6 @@ PLUGIN_RESULT CAdminOPPlayer :: DoTestFuncs(const char *pcmd, const CCommand &ar
 #endif
         }
     }
-    if(FStrEq(pcmd, "testcreditlist"))
-    {
-        if(IsAdmin(65536))
-        {
-            CUtlLinkedList <credits_t, unsigned int> creditList;
-            credits_t newCredit;
-            int iCount = atoi(engine->Cmd_Argv(1));
-
-            memset(&newCredit,0,sizeof(newCredit));
-            creditList.Purge();
-            for(int i = 0;i<iCount;i++)
-                creditList.AddToTail(newCredit);
-            Msg("%i\n", creditList.Count());
-            creditList.Purge();
-        }
-    }
     if(FStrEq(pcmd, "testnewcredits"))
     {
         if(IsAdmin(65536))
@@ -4592,37 +4576,6 @@ PLUGIN_RESULT CAdminOPPlayer :: DoTestFuncs(const char *pcmd, const CCommand &ar
             for ( unsigned int i=pAdminOP.creditList.Head(); i != pAdminOP.creditList.InvalidIndex(); i = pAdminOP.creditList.Next( i ) )
             {
                 Msg(" %i)\n  %s;%i;%i\n", i, pAdminOP.creditList.Element(i).WonID, pAdminOP.creditList.Element(i).credits, pAdminOP.creditList.Element(i).lastsave);
-            }
-        }
-    }
-    if(FStrEq(pcmd, "testnewcredits_purge"))
-    {
-        if(IsAdmin(65536))
-        {
-            pAdminOP.creditList.Purge();
-            Msg("Credits:\n");
-            for ( unsigned int i=pAdminOP.creditList.Head(); i != pAdminOP.creditList.InvalidIndex(); i = pAdminOP.creditList.Next( i ) )
-            {
-                Msg(" %i)\n  %s;%i;%i\n", i, pAdminOP.creditList.Element(i).WonID, pAdminOP.creditList.Element(i).credits, pAdminOP.creditList.Element(i).lastsave);
-            }
-        }
-    }
-    if(FStrEq(pcmd, "testnewcredits_add"))
-    {
-        if(IsAdmin(65536))
-        {
-            int iCount = atoi(engine->Cmd_Argv(1));
-
-            for(int i = 0;i<iCount;i++)
-            {
-                creditsram_t newCred;
-
-                memset(&newCred, 0, sizeof(newCred));
-                strcpy(newCred.WonID, "SOP_TEST");
-                strcpy(newCred.FirstName, "SOP TEST FNAME");
-                strcpy(newCred.CurrentName, "SOP TEST CNAME");
-                newCred.credits = i;
-                pAdminOP.creditList.AddToTail(newCred);
             }
         }
     }
@@ -7305,8 +7258,11 @@ int CAdminOPPlayer :: LoadCredits(bool isReload)
         {
             char PrevJoinName[sizeof(Credits.JoinName)];
 
-            if(FStrEq(engine->GetPlayerNetworkIDString(pEdPlayer), "STEAM_ID_PENDING"))
+            const CSteamID *psteamIdFromEngine = engine->GetClientSteamID(pEdPlayer);
+            if(psteamIdFromEngine == NULL || FStrEq(engine->GetPlayerNetworkIDString(pEdPlayer), "STEAM_ID_PENDING"))
                 return 0;
+
+            CSteamID steamIdFromEngine = *psteamIdFromEngine;
             
             strcpy(PrevJoinName, Credits.JoinName);
             ZeroCredits();
@@ -7359,32 +7315,32 @@ int CAdminOPPlayer :: LoadCredits(bool isReload)
                 }
             }
 
-            for ( unsigned int i=pAdminOP.creditList.Head(); i != pAdminOP.creditList.InvalidIndex(); i = pAdminOP.creditList.Next( i ) )
+            int iMap = pAdminOP.m_mapSteamIDToCreditEntry.Find( steamIdFromEngine.ConvertToUint64() );
+            if ( iMap != pAdminOP.m_mapSteamIDToCreditEntry.InvalidIndex() )
             {
-                creditsram_t *findCredits = &pAdminOP.creditList.Element(i);
-                //Msg(" %i)\n  %s;%i;%i\n", i, findCredits->WonID, findCredits->credits, findCredits->lastsave);
-                if (FStrEq(findCredits->WonID, engine->GetPlayerNetworkIDString(pEdPlayer)))
-                {
-                    Credits.CreditsJoin = findCredits->credits;
-                    Credits.TimeJoin = findCredits->timeonserver;
-                    if(isReload)
-                        Credits.totalconnects = findCredits->totalconnects;
-                    else
-                        Credits.totalconnects = findCredits->totalconnects+1;
-                    strcpy(Credits.NameTest, findCredits->LastName);
-                    strcpy(Credits.LastName, findCredits->LastName);
-                    strcpy(Credits.FirstName, findCredits->FirstName);
-                    memcpy(&Credits.thismap, &findCredits->thismap, sizeof(Credits.thismap));
-                    
-                    engine->LogPrint(UTIL_VarArgs("[SOURCEOP] \"%s<%i><%s><%s>\" loaded credits \"%i\"\n", info->GetName(), info->GetUserID(), engine->GetPlayerNetworkIDString(pEdPlayer), GetTeamName(), Credits.CreditsJoin));
+                int iVec = pAdminOP.m_mapSteamIDToCreditEntry[iMap];
+                creditsram_t *findCredits = &pAdminOP.creditList.Element(iVec);
 
-                    return 1;
-                }
+                Credits.CreditsJoin = findCredits->credits;
+                Credits.TimeJoin = findCredits->timeonserver;
+                if(isReload)
+                    Credits.totalconnects = findCredits->totalconnects;
+                else
+                    Credits.totalconnects = findCredits->totalconnects+1;
+                strcpy(Credits.NameTest, findCredits->LastName);
+                strcpy(Credits.LastName, findCredits->LastName);
+                strcpy(Credits.FirstName, findCredits->FirstName);
+                memcpy(&Credits.thismap, &findCredits->thismap, sizeof(Credits.thismap));
+
+                engine->LogPrint(UTIL_VarArgs("[SOURCEOP] \"%s<%i><%s><%s>\" loaded credits \"%i\" from position \"%i\"\n", info->GetName(), info->GetUserID(), engine->GetPlayerNetworkIDString(pEdPlayer), GetTeamName(), Credits.CreditsJoin, iVec));
+
+                return 1;
             }
-
-            engine->LogPrint(UTIL_VarArgs("[SOURCEOP] \"%s<%i><%s><%s>\" loaded credits \"%i\" new player\n", info->GetName(), info->GetUserID(), engine->GetPlayerNetworkIDString(pEdPlayer), GetTeamName(), Credits.CreditsJoin));
-
-            return 1;
+            else
+            {
+                engine->LogPrint(UTIL_VarArgs("[SOURCEOP] \"%s<%i><%s><%s>\" loaded credits \"%i\" new player\n", info->GetName(), info->GetUserID(), engine->GetPlayerNetworkIDString(pEdPlayer), GetTeamName(), Credits.CreditsJoin));
+                return 1;
+            }
         }
     }
 
@@ -7409,6 +7365,12 @@ int CAdminOPPlayer :: SaveCredits(bool isShutdown)
     if(Credits.PendingLoad)
         return CRED_SAVEERROR_PENDINGLOAD;
 
+    const CSteamID *psteamIdFromEngine = engine->GetClientSteamID(pEntity);
+    if(psteamIdFromEngine == NULL || FStrEq(engine->GetPlayerNetworkIDString(pEntity), "STEAM_ID_PENDING"))
+        return CRED_SAVEERROR_NOINFO;
+
+    CSteamID steamIdFromEngine = *psteamIdFromEngine;
+
     /*time_t t1 = time (NULL);
     struct tm * timestruct = localtime (&t1);
     int dayssaved = (timestruct->tm_year * 365) + timestruct->tm_yday + int((timestruct->tm_year-1) / 4); */
@@ -7418,69 +7380,75 @@ int CAdminOPPlayer :: SaveCredits(bool isShutdown)
     //char msg[256];
     char logmsg[512];
 
-    for ( unsigned int i=pAdminOP.creditList.Head(); i != pAdminOP.creditList.InvalidIndex(); i = pAdminOP.creditList.Next( i ) )
+    int iMap = pAdminOP.m_mapSteamIDToCreditEntry.Find( steamIdFromEngine.ConvertToUint64() );
+    if ( iMap != pAdminOP.m_mapSteamIDToCreditEntry.InvalidIndex() )
     {
-        creditsram_t *CreditsInfo = &pAdminOP.creditList.Element(i);
+        int iVec = pAdminOP.m_mapSteamIDToCreditEntry[iMap];
+        creditsram_t *CreditsInfo = &pAdminOP.creditList.Element(iVec);
 
-        if(FStrEq(CreditsInfo->WonID, Credits.WonID))
+        if(CreditsInfo->steamid != steamid)
         {
-            char FirstName[36];
-            if(CreditsInfo->FirstName[0] == '\0')
-            {
-                strcpy(FirstName, Credits.JoinName);
-            }
-            else
-            {
-                strcpy(FirstName, CreditsInfo->FirstName);
-            }
-            CreditsInfo->credits = Credits.CreditsJoin + Credits.CreditsDuringGame;
-            CreditsInfo->lastsave = ltime;
-            CreditsInfo->timeonserver =  (int)Credits.TimeJoin + ((int)engine->Time() - (int)Credits.TimeJoined);
-            CreditsInfo->totalconnects = Credits.totalconnects;
-            strcpy(CreditsInfo->FirstName, FirstName);
-            strcpy(CreditsInfo->LastName, Credits.LastName);
-            if(isShutdown)
-                strcpy(CreditsInfo->CurrentName, Credits.JoinName);
-            else
-                strcpy(CreditsInfo->CurrentName, info->GetName());
-            strcpy(CreditsInfo->WonID, Credits.WonID);
-            memcpy(&CreditsInfo->thismap, &Credits.thismap, sizeof(CreditsInfo->thismap));
+            engine->LogPrint( UTIL_VarArgs( "[SOURCEOP] \"Console<0><Console><Console>\" Credits map consistency error. Expected SteamID \"%llu\" at \"%i\" but found \"%s\"\n", steamid.ConvertToUint64(), iVec, CreditsInfo->steamid.ConvertToUint64() ) );
+            pAdminOP.TimeLog( "SourceOPErrors.log", "Credits map consistency error. Expected SteamID \"%llu\" at \"%i\" but found \"%s\"\n", steamid.ConvertToUint64(), iVec, CreditsInfo->steamid.ConvertToUint64() );
+            return CRED_SAVEERROR_BADDATA;
+        }
 
-            if(!isShutdown)
-            {
-                //Q_snprintf(msg, sizeof(msg), "[%s] Your credits have been saved in AdminOP's database.\n", pAdminOP.adminname);
-                //engine->ClientPrintf(pEntity, msg);
-                Q_snprintf(logmsg, sizeof(logmsg), "[SOURCEOP] \"%s<%i><%s><%s>\" saved credits \"%i\"\n", info->GetName(), info->GetUserID(), engine->GetPlayerNetworkIDString(pEntity), GetTeamName(), CreditsInfo->credits);
-                engine->LogPrint(logmsg);
-            }
+        if(CreditsInfo->FirstName[0] == '\0')
+        {
+            strcpy(CreditsInfo->FirstName, Credits.JoinName);
+        }
 
-            return 0;
+        CreditsInfo->credits = Credits.CreditsJoin + Credits.CreditsDuringGame;
+        CreditsInfo->lastsave = ltime;
+        CreditsInfo->timeonserver =  (int)Credits.TimeJoin + ((int)engine->Time() - (int)Credits.TimeJoined);
+        CreditsInfo->totalconnects = Credits.totalconnects;
+        strcpy(CreditsInfo->LastName, Credits.LastName);
+        if(isShutdown)
+            strcpy(CreditsInfo->CurrentName, Credits.JoinName);
+        else
+            strcpy(CreditsInfo->CurrentName, info->GetName());
+        strcpy(CreditsInfo->WonID, Credits.WonID);
+        memcpy(&CreditsInfo->thismap, &Credits.thismap, sizeof(CreditsInfo->thismap));
+
+        if(!isShutdown)
+        {
+            //Q_snprintf(msg, sizeof(msg), "[%s] Your credits have been saved in AdminOP's database.\n", pAdminOP.adminname);
+            //engine->ClientPrintf(pEntity, msg);
+            Q_snprintf(logmsg, sizeof(logmsg), "[SOURCEOP] \"%s<%i><%s><%s>\" saved credits \"%i\"\n", info->GetName(), info->GetUserID(), engine->GetPlayerNetworkIDString(pEntity), GetTeamName(), CreditsInfo->credits);
+            engine->LogPrint(logmsg);
+        }
+    }
+    else
+    {
+        creditsram_t CreditsInfo;
+
+        memset(&CreditsInfo, 0, sizeof(CreditsInfo));
+        CreditsInfo.credits = Credits.CreditsJoin + Credits.CreditsDuringGame;
+        CreditsInfo.lastsave = ltime;
+        CreditsInfo.timeonserver =  (int)Credits.TimeJoin + ((int)engine->Time() - (int)Credits.TimeJoined);
+        CreditsInfo.totalconnects = Credits.totalconnects;
+        strcpy(CreditsInfo.FirstName, Credits.JoinName); //It's a new dude so we're going to have to use the JoinName
+        strcpy(CreditsInfo.LastName, Credits.LastName);
+        if(isShutdown)
+            strcpy(CreditsInfo.CurrentName, Credits.JoinName);
+        else
+            strcpy(CreditsInfo.CurrentName, info->GetName());
+        strcpy(CreditsInfo.WonID, Credits.WonID);
+        memcpy(&CreditsInfo.thismap, &Credits.thismap, sizeof(CreditsInfo.thismap));
+        int iVec = pAdminOP.creditList.AddToTail(CreditsInfo);
+        pAdminOP.m_mapSteamIDToCreditEntry.Insert( steamIdFromEngine.ConvertToUint64(), iVec );
+        if(!isShutdown)
+        {
+            //Q_snprintf(msg, sizeof(msg), "[%s] Your credits have been saved in AdminOP's database.\n", pAdminOP.adminname);
+            //engine->ClientPrintf(pEntity, msg);
+            Q_snprintf(logmsg, sizeof(logmsg), "[SOURCEOP] \"%s<%i><%s><%s>\" saved credits \"%i\" new player\n", info->GetName(), info->GetUserID(), engine->GetPlayerNetworkIDString(pEntity), GetTeamName(), CreditsInfo.credits);
+            engine->LogPrint(logmsg);
         }
     }
 
-    creditsram_t CreditsInfo;
-
-    memset(&CreditsInfo, 0, sizeof(CreditsInfo));
-    CreditsInfo.credits = Credits.CreditsJoin + Credits.CreditsDuringGame;
-    CreditsInfo.lastsave = ltime;
-    CreditsInfo.timeonserver =  (int)Credits.TimeJoin + ((int)engine->Time() - (int)Credits.TimeJoined);
-    CreditsInfo.totalconnects = Credits.totalconnects;
-    strcpy(CreditsInfo.FirstName, Credits.JoinName); //It's a new dude so we're going to have to use the JoinName
-    strcpy(CreditsInfo.LastName, Credits.LastName);
-    if(isShutdown)
-        strcpy(CreditsInfo.CurrentName, Credits.JoinName);
-    else
-        strcpy(CreditsInfo.CurrentName, info->GetName());
-    strcpy(CreditsInfo.WonID, Credits.WonID);
-    memcpy(&CreditsInfo.thismap, &Credits.thismap, sizeof(CreditsInfo.thismap));
-    pAdminOP.creditList.AddToTail(CreditsInfo);
-    if(!isShutdown)
-    {
-        //Q_snprintf(msg, sizeof(msg), "[%s] Your credits have been saved in AdminOP's database.\n", pAdminOP.adminname);
-        //engine->ClientPrintf(pEntity, msg);
-        Q_snprintf(logmsg, sizeof(logmsg), "[SOURCEOP] \"%s<%i><%s><%s>\" saved credits \"%i\" new player\n", info->GetName(), info->GetUserID(), engine->GetPlayerNetworkIDString(pEntity), GetTeamName(), CreditsInfo.credits);
-        engine->LogPrint(logmsg);
-    }
+    // Ensure any duplicate call to SaveCredits doesn't duplicate credits or time
+    Credits.CreditsDuringGame = 0;
+    Credits.TimeJoined = engine->Time();
 
     return 0;
 }

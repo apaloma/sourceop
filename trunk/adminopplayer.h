@@ -32,6 +32,7 @@ class CBaseCombatWeapon;
 #define CRED_SAVEERROR_PENDINGLOAD  5
 #define CRED_SAVEERROR_GETPOS       6
 #define CRED_SAVEERROR_SETPOS       7
+#define CRED_SAVEERROR_BADDATA      8
 
 #define AOP_PL_GAGGED               (1<<0)
 #define AOP_PL_NOCLIP               (1<<1)
@@ -81,6 +82,7 @@ typedef struct credits_t
 typedef struct creditsram_s
 {
     char            WonID[24];      //player's wonid (authid)
+    CSteamID        steamid;
     int             credits;        //amount of credits
     int             timeonserver;   //the time the player has been on the server
     unsigned long   lastsave;       //time in seconds since UTC 1/1/70

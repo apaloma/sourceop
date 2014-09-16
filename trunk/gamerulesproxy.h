@@ -45,6 +45,8 @@ public:
     void SetSwitchTeams(bool bScramble);
     void HandleSwitchTeams();
     void SetScrambleTeams(bool bScramble);
+    // CTFGameRules
+    bool IsMannVsMachineMode();
 
     // Hooks
     void OnChangeLevel();

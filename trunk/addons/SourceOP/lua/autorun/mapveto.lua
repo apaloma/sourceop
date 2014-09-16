@@ -11,6 +11,7 @@ function mapveto_voteover(vote)
   local percentyes = tostring(math.floor(yespercentage)) .. "%"
   local nextmap = game.GetMapNext()
   local defpercent = convar.GetInteger("DF_mapveto_defaultpercent")
+  local maxpercent = convar.GetInteger("DF_mapveto_maxpercent")
   local stepsize = convar.GetInteger("DF_mapveto_percentstep")
   local requiredpercent = mapveto_reqpercents[nextmap] or defpercent
 
@@ -46,8 +47,8 @@ function mapveto_voteover(vote)
   sourceop.SayTextAll(tostring(nonvoters) .. " players did not vote.\n")
 
   // check bounds
-  if(mapveto_reqpercents[nextmap] > 100) then
-    mapveto_reqpercents[nextmap] = 100
+  if(mapveto_reqpercents[nextmap] > maxpercent) then
+    mapveto_reqpercents[nextmap] = maxpercent
   elseif(mapveto_reqpercents[nextmap] < defpercent) then
     mapveto_reqpercents[nextmap] = defpercent
   end
@@ -134,6 +135,7 @@ end
 
 convar.Add("DF_mapveto_enabled", "0", 0, "Whether or not the map veto system is enabled.", true, 0, true, 1)
 convar.Add("DF_mapveto_defaultpercent", "50", 0, "The default percentage of yes votes needed to veto a map.", true, 0, true, 100)
+convar.Add("DF_mapveto_maxpercent", "100", 0, "The maximum percentage that will ever be reached.", true, 0, true, 100)
 convar.Add("DF_mapveto_percentstep", "10", 0, "The percentage that the required percentage will change on success or failure.", true, 0, true, 100)
 hook.Add("IntermissionStarting", "mapvetointermission", mapveto_intermission)
 hook.Add("LevelInit", "mapvetolevelinit", mapveto_levelinit)

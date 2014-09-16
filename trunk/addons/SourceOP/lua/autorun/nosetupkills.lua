@@ -12,7 +12,7 @@ function nosetupkills_LevelShutdown(mapName)
 end
 
 function nosetupkills_SetupStart()
-  if(convar.GetBool("DF_setupround_punishkills")) then
+  if(convar.GetBool("DF_setupround_punishkills") && !gamerules:IsMannVsMachineMode()) then
     hook.Add("PlayerDied", "nosetupkills_PlayerDied", nosetupkills_PlayerDied)
     if(convar.GetBool("DF_setupround_punishkills_notice")) then
       timer.Simple(1.5,

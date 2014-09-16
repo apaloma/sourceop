@@ -9,7 +9,6 @@ require "timer"
 
 local prophunt_offsetplayerlocal = sourceop.GetPropOffset("DT_LocalPlayerExclusive", "m_Local")
 local prophunt_offsetobservermode = sourceop.GetPropOffset("DT_BasePlayer", "m_iObserverMode")
-local prophunt_offsetobservertarget = sourceop.GetPropOffset("DT_BasePlayer", "m_hObserverTarget")
 local prophunt_offsetplayerfov = sourceop.GetPropOffset("DT_BasePlayer", "m_iFOV")
 local prophunt_offsetplayerdefaultfov = sourceop.GetPropOffset("DT_BasePlayer", "m_iDefaultFOV")
 local prophunt_offsetdrawviewmodel = prophunt_offsetplayerlocal + sourceop.GetPropOffset("DT_Local", "m_bDrawViewmodel")
@@ -227,14 +226,13 @@ function prophunt_SetPropFirstPerson(pPlayer, firstPerson)
   if(firstPerson) then
     prophunt_SetPropFirstPersonFlag(pPlayer, true)
 
-    pPlayer:SetOffsetInt(prophunt_offsetobservermode, 0)
+    pPlayer:Fire("SetForcedTauntCam", "0")
     pPlayer:SetOffsetByte(prophunt_offsetdrawviewmodel, 1)
     pPlayer:SetOffsetInt(prophunt_offsetplayerfov, 90)
   else
     prophunt_SetPropFirstPersonFlag(pPlayer, false)
 
-    pPlayer:SetOffsetEnt(prophunt_offsetobservertarget, pPlayer)
-    pPlayer:SetOffsetInt(prophunt_offsetobservermode, 1)
+    pPlayer:Fire("SetForcedTauntCam", "1")
     pPlayer:SetOffsetByte(prophunt_offsetdrawviewmodel, 0)
     pPlayer:SetOffsetInt(prophunt_offsetplayerfov, 100)
 
@@ -482,7 +480,7 @@ function prophunt_RemovePlayerProp(pPlayer)
 
   prophunt_SetProp(pPlayer, nil)
 
-  pPlayer:SetOffsetInt(prophunt_offsetobservermode, 0)
+  pPlayer:Fire("SetForcedTauntCam", "0")
   pPlayer:SetOffsetByte(prophunt_offsetdrawviewmodel, 1)
   pPlayer:Fire("EnableShadow", "1")
   pPlayer:Fire("SetCustomModel", "")

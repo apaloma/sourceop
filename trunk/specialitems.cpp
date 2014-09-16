@@ -46,6 +46,9 @@ typedef struct specialitemload_s
 BEGIN_DATADESC_NO_BASE( CEconItemView )
 END_DATADESC()
 
+BEGIN_DATADESC_NO_BASE( CAttributeList )
+END_DATADESC()
+
 class CSpecialItemLoaderThread : public CQueueThread<specialitemload_t>
 {
 public:
@@ -181,7 +184,7 @@ private:
             V_strncpy(newspecialitem->m_szPetName, row.Column(2), sizeof(newspecialitem->m_szPetName));
             newspecialitem->m_bEquipped = atoi(row.Column(3)) != 0;
             CEconItemView *newitem = new CEconItemView;
-            //Msg("[ITEMDBG] Test: %i %i   %i %i\n", sizeof(CScriptCreatedItem), sizeof(CScriptCreatedAttribute), ((char *)&newitem->m_attributes) - ((char *)newitem), ((char *)&newitem->m_bInitialized) - ((char *)newitem));
+            //Msg("[ITEMDBG] Test: %i %i\n", sizeof(CEconItemView), sizeof(CEconItemAttribute));
             newspecialitem->m_pItem = newitem;
             newitem->m_bInitialized = false;
             newitem->m_iEntityLevel = atoi(row.Column(4));
@@ -192,8 +195,8 @@ private:
             newitem->m_iAccountID = item.steamid.GetAccountID();
             newitem->m_iItemDefinitionIndex = atoi(row.Column(1));
             newitem->m_iPosition = 0;
-            memset(newitem->m_szAttributeDescription, 0, sizeof(newitem->m_szAttributeDescription));
-            newitem->m_attributes.EnsureCapacity(16);
+            newitem->m_pUnk = NULL;
+            newitem->m_attributes.m_Attributes.EnsureCapacity(16);
 
             //Msg("[ITEMDBG] Adding item %i  type %i level %i quality %i\n", newitem->m_iGlobalIndex, newitem->m_iItemDefinitionIndex, newitem->m_iEntityLevel, newitem->m_iEntityQuality);
             items->AddToTail(newspecialitem);
@@ -219,9 +222,12 @@ private:
                 CEconItemAttribute newAttrib;
                 newAttrib.m_iAttribDef = atoi(row.Column(0));
                 newAttrib.m_flVal = atof(row.Column(1));
+                newAttrib.m_flInitialValue = newAttrib.m_flVal;
+                newAttrib.m_nRefundableCurrency = 0;
+                newAttrib.m_bSetBonus = false;
 
                 //Msg("[ITEMDBG] Adding attribute to item %i  def %i  val %f\n", (int)curitem->m_iGlobalIndex, newAttrib.m_iAttribDef, newAttrib.m_flVal);
-                curitem->m_attributes.AddToTail(newAttrib);
+                curitem->m_attributes.m_Attributes.AddToTail(newAttrib);
 
                 row = m_SQL->NextRow();
             }

@@ -23,6 +23,7 @@
 #include "baseentity.h"
 #include "player.h"
 // HACK HACK HACK : BASEENTITY ACCESS
+#include "toolframework/itoolentity.h"
 
 #include "AdminOP.h"
 #include "recipientfilter.h"
@@ -91,9 +92,13 @@ int g_offEffects = 0;
 int g_offRender = 0;
 int g_offThrower = 0;
 int g_offButtons = 0;
+int g_offCombineBallRadius = 0;
 
 // items
 int g_offItem = 0;
+
+// gamerules
+int g_offPlayingMannVsMachine = 0;
 
 // loaded from datadesc
 int g_offNetwork = 0;
@@ -230,6 +235,8 @@ void VFuncs::LoadOffsets(void)
 #endif
                             else if(!strcmp(pszFunc, "CBaseEntity::WorldSpaceCenter"))                  offs[OFFSET_WORLDSPACECENTER] = iOffset;
                             else if(!strcmp(pszFunc, "CBaseEntity::GetSoundEmissionOrigin"))            offs[OFFSET_GETSOUNDEMISSIONORIGIN] = iOffset;
+                            else if(!strcmp(pszFunc, "CBaseEntity::CreateVPhysics"))                    offs[OFFSET_CREATEVPHYSICS] = iOffset;
+                            else if(!strcmp(pszFunc, "CBaseEntity::VPhysicsDestroyObject"))             offs[OFFSET_VPHYSICSDESTROYOBJECT] = iOffset;
                             else if(!strcmp(pszFunc, "CBaseEntity::VPhysicsGetObjectList"))             offs[OFFSET_VPHYSICSGETOBJECTLIST] = iOffset;
                             else if(!strcmp(pszFunc, "CBaseAnimating::StudioFrameAdvance"))             offs[OFFSET_STUDIOFRAMEADVANCE] = iOffset;
                             else if(!strcmp(pszFunc, "CBaseAnimating::Extinguish"))                     offs[OFFSET_EXTINGUISH] = iOffset;
@@ -706,7 +713,11 @@ void VFuncs::LoadOffsets(void)
         g_offButtons -= 24;
     }
 
+    g_offCombineBallRadius = pAdminOP.GetPropOffset("DT_PropCombineBall", "m_flRadius");
+
     g_offItem = pAdminOP.GetPropOffset("DT_AttributeContainer", "m_Item");
+
+    g_offPlayingMannVsMachine = pAdminOP.GetPropOffset("DT_TFGameRules", "m_bPlayingMannVsMachine");
 
     // m_targetPosition
     g_offBeamTargetPosition = pAdminOP.GetPropOffsetAnyTable("m_targetPosition");
@@ -924,7 +935,7 @@ CREATE_VFUNC2(CBaseEntity, KeyValue, offs[OFFSET_KEYVALUE], 0, 0, bool, const ch
 CREATE_VFUNC0_void(CBaseEntity, Activate, offs[OFFSET_ACTIVATE], 0, 0)
 CREATE_VFUNC5(CBaseEntity, AcceptInput, offs[OFFSET_ACCEPTINPUT], 0, 0, bool, const char *, szInputName, CBaseEntity *, pActivator, CBaseEntity *, pCaller, variant_t, Value, int, outputID)
 CREATE_VFUNC1(CBaseEntity, PassesDamageFilter, offs[OFFSET_PASSESDAMAGEFILTER], 0, 0, bool, const CTakeDamageInfo &, info)
-CREATE_VFUNC3_void(CBaseEntity, TraceAttack, offs[OFFSET_TRACEATTACK], 0, 0, const CTakeDamageInfo &, info, const Vector &, vecDir, trace_t *, ptr)
+CREATE_VFUNC4_void(CBaseEntity, TraceAttack, offs[OFFSET_TRACEATTACK], 0, 0, const CTakeDamageInfo &, info, const Vector &, vecDir, trace_t *, ptr, void *, pAccumulator)
 CREATE_VFUNC1(CBaseEntity, OnTakeDamage, offs[OFFSET_ONTAKEDAMAGE], 0, 0, int, const CTakeDamageInfo &, info)
 CREATE_VFUNC0(CBaseEntity, IsAlive, offs[OFFSET_ISALIVE], 0, 0, bool)
 CREATE_VFUNC1_void(CBaseEntity, Event_Killed, offs[OFFSET_EVENTKILLED], 0, 0, const CTakeDamageInfo &, info)
@@ -943,6 +954,8 @@ CREATE_VFUNC0(CBaseEntity, EyeAngles, offs[OFFSET_EYEANGLES], 0, 0, const QAngle
 CREATE_VFUNC3(CBaseEntity, FVisible, offs[OFFSET_FVISIBLE], 0, 0, bool, CBaseEntity *, pEntity, int, traceMask, CBaseEntity **, ppBlocker)
 CREATE_VFUNC0(CBaseEntity, WorldSpaceCenter, offs[OFFSET_WORLDSPACECENTER], 0, 0, const Vector &)
 CREATE_VFUNC0(CBaseEntity, GetSoundEmissionOrigin, offs[OFFSET_GETSOUNDEMISSIONORIGIN], 0, 0, Vector)
+CREATE_VFUNC0(CBaseEntity, CreateVPhysics, offs[OFFSET_CREATEVPHYSICS], 0, 0, bool)
+CREATE_VFUNC0_void(CBaseEntity, VPhysicsDestroyObject, offs[OFFSET_VPHYSICSDESTROYOBJECT], 0, 0)
 CREATE_VFUNC2(CBaseEntity, VPhysicsGetObjectList, offs[OFFSET_VPHYSICSGETOBJECTLIST], 0, 0, int, IPhysicsObject **, pList, int, listMax)
 CREATE_VFUNC0_void(CBaseAnimating, StudioFrameAdvance, offs[OFFSET_STUDIOFRAMEADVANCE], 0, 0)
 CREATE_VFUNC0_void(CBaseAnimating, Extinguish, offs[OFFSET_EXTINGUISH], 0, 0)
@@ -971,6 +984,12 @@ CREATE_VFUNC1_void(void, SetSwitchTeams, offs[OFFSET_SETSWITCHTEAMS], 0, 0, bool
 CREATE_VFUNC0_void(void, HandleSwitchTeams, offs[OFFSET_HANDLESWITCHTEAMS], 0, 0);
 CREATE_VFUNC1_void(void, SetScrambleTeams, offs[OFFSET_SETSCRAMBLETEAMS], 0, 0, bool, bScramble);
 CREATE_VFUNC0_void(void, HandleScrambleTeams, offs[OFFSET_HANDLESCRAMBLETEAMS], 0, 0);
+bool VFuncs::IsMannVsMachineMode( void *pThisPtr )
+{
+    DECLARE_VAR_RVAL(bool, m_bPlayingMannVsMachine, pThisPtr, g_offPlayingMannVsMachine, false);
+    return *m_bPlayingMannVsMachine;
+}
+
 
 CREATE_VFUNC0(IServerNetworkable, GetEntityHandle, offs[OFFSET_GETENTITYHANDLE], 0, 0, IHandleEntity *)
 CREATE_VFUNC0(IServerNetworkable, GetEdict, offs[OFFSET_GETEDICT], 0, 0, edict_t *)
@@ -1422,6 +1441,12 @@ MoveType_t VFuncs::GetMoveType( CBaseEntity *pThisPtr )
 
 void VFuncs::SetMoveType( CBaseEntity *pThisPtr, MoveType_t val, MoveCollide_t moveCollide )
 {
+    if ( g_nServerToolsVersion >= 2 )
+    {
+        servertools->SetMoveType( pThisPtr, val, moveCollide );
+        return;
+    }
+
     if(_SetMoveType)
     {
         void **this_ptr = *(void ***)&pThisPtr;
@@ -1655,6 +1680,12 @@ void VFuncs::SetSequence( CBaseAnimating *pThisPtr, int nSequence )
 
 void VFuncs::ResetSequence( CBaseAnimating *pThisPtr, int nSequence )
 {
+    if ( g_nServerToolsVersion >= 2 )
+    {
+        servertools->ResetSequence( pThisPtr, nSequence );
+        return;
+    }
+
     if(_ResetSequence)
     {
         void **this_ptr = *(void ***)&pThisPtr;
@@ -2153,6 +2184,12 @@ int VFuncs::GetButtons( CBasePlayer *pThisPtr )
     return *m_nButtons;
 }
 
+void VFuncs::SetCombineBallRadius( CBaseEntity *pThisPtr, float flRadius )
+{
+    DECLARE_VAR(float, m_flRadius, pThisPtr, g_offCombineBallRadius);
+    *m_flRadius = flRadius;
+}
+
 int VFuncs::CCollProp_GetSolidFlags( CCollisionProperty *pThisPtr )
 {
     DECLARE_VAR_RVAL(int, m_usSolidFlags, pThisPtr, g_offSolidFlags, 0);
@@ -2265,7 +2302,7 @@ CEntityFactoryDictionary *VFuncs::GetEntityDictionary( ConCommand *pDumpEntityFa
     void *handle;
 
     engine->GetGameDir(gamedir, sizeof(gamedir));
-    Q_snprintf(filepath, sizeof(filepath), "%s/bin/server.so", gamedir);
+    Q_snprintf(filepath, sizeof(filepath), "%s/bin/server_srv.so", gamedir);
 
     handle = dlopen(filepath, RTLD_LAZY | RTLD_NOLOAD);
     if(handle)
@@ -2273,7 +2310,7 @@ CEntityFactoryDictionary *VFuncs::GetEntityDictionary( ConCommand *pDumpEntityFa
         typedef IEntityFactoryDictionary* (__cdecl* EntFactDictFunc)( void );
         EntFactDictFunc EntFactDict;
 
-        Msg(">", filepath);
+        Msg(">");
         EntFactDict = (EntFactDictFunc)ResolveSymbol(handle, "_Z23EntityFactoryDictionaryv");
         CEntityFactoryDictionary *dict = ( CEntityFactoryDictionary * )EntFactDict();
         dlclose(handle);
@@ -2281,7 +2318,7 @@ CEntityFactoryDictionary *VFuncs::GetEntityDictionary( ConCommand *pDumpEntityFa
     }
     else
     {
-        Msg("..fail\n", filepath);
+        Msg("..fail\n");
         return NULL;
     }
 #endif

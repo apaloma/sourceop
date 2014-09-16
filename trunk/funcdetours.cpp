@@ -47,8 +47,6 @@ class IClient;
 #define NEVERINLINE __attribute__ ((noinline))
 #endif
 
-void (ArenaRunTeamLogicClass::* ArenaRunTeamLogicClass::RunTeamLogic)(void) = NULL;
-
 int AdvanceString(const char *buf, int start, int len);
 
 int AdvanceString(const char *buf, int start, int len)
@@ -100,11 +98,6 @@ int NEVERINLINE SOP_usleepTrampoline(useconds_t usec)
     return 0;
 }
 #endif
-void NEVERINLINE SOP_SleepTrampoline(DWORD msec)
-{
-    Msg("[SOURCEOP] Trampoline was called unmodified.\n");
-    Msg("[SOURCEOP] That is bad.\n");
-}
 
 bool NEVERINLINE SOP_SteamGameServer_InitSafeTrampoline( uint32 unIP, uint16 usPort, uint16 usGamePort, uint16 usQueryPort, EServerMode eServerMode, const char *pchVersionString )
 {
@@ -118,19 +111,6 @@ bool NEVERINLINE SOP_BGetCallbackTrampoline( HSteamPipe hSteamPipe, CallbackMsg_
     Msg("[SOURCEOP] Trampoline was called unmodified.\n");
     Msg("[SOURCEOP] That is bad.\n");
     return false;
-}
-
-void NEVERINLINE ArenaRunTeamLogicClass::SOP_RunTeamLogic_Trampoline()
-{
-    Msg("[SOURCEOP] Trampoline was called unmodified.\n");
-    Msg("[SOURCEOP] That is bad.\n");
-}
-
-edict_t NEVERINLINE *SOP_UTIL_PlayerByIndexTrampoline(int client)
-{
-    Msg("[SOURCEOP] Trampoline was called unmodified.\n");
-    Msg("[SOURCEOP] That is bad.\n");
-    return NULL;
 }
 
 #ifdef OFFICIALSERV_ONLY
@@ -1246,28 +1226,6 @@ int __cdecl SOP_usleep(useconds_t usec)
 }
 #endif
 
-void __cdecl SOP_Sleep(DWORD msec)
-{
-    static DWORD lastval = 345345;
-    //if(msec == 1)
-    //{
-        if(lastval != msec)
-        {
-            Msg("Hey guys. Sleep hook called %i.\n", msec);
-            lastval = msec;
-        }
-        int sleeptime = sleep_time.GetInt();
-        if(sleeptime != -1)
-        {
-            SOP_SleepTrampoline(sleeptime);
-        }
-    //}
-    //else
-    //{
-    //    SOP_SleepTrampoline(msec);
-    //}
-}
-
 bool SOP_SteamGameServer_InitSafe( uint32 unIP, uint16 usPort, uint16 usGamePort, uint16 usQueryPort, EServerMode eServerMode, const char *pchVersionString )
 {
     bool ret = SOP_SteamGameServer_InitSafeTrampoline(unIP, usPort, usGamePort, usQueryPort, eServerMode, pchVersionString);
@@ -1474,43 +1432,4 @@ int HookGCRetrieveMessage(unsigned int *messageId, void *data, unsigned int cbDa
     }*/
 
     RETURN_META_VALUE(MRES_IGNORED, 0);
-}
-
-int g_previousMaxPlayers = 0;
-
-void ArenaRunTeamLogicClass::SOP_RunTeamLogic()
-{
-    if(tf2_arenateamsize.GetInt() > 0)
-    {
-        g_previousMaxPlayers = gpGlobals->maxClients;
-        gpGlobals->maxClients = tf2_arenateamsize.GetInt() * 3;
-    }
-
-    this->SOP_RunTeamLogic_Trampoline();
-
-    if(tf2_arenateamsize.GetInt() > 0)
-    {
-        gpGlobals->maxClients = g_previousMaxPlayers;
-        g_previousMaxPlayers = 0;
-    }
-}
-
-edict_t *SOP_UTIL_PlayerByIndex(int client)
-{
-    edict_t *ret = NULL;
-
-    int localMaxPlayers = gpGlobals->maxClients;
-    if(g_previousMaxPlayers)
-    {
-        gpGlobals->maxClients = g_previousMaxPlayers;
-    }
-
-    ret = SOP_UTIL_PlayerByIndexTrampoline(client);
-
-    if(g_previousMaxPlayers)
-    {
-        gpGlobals->maxClients = localMaxPlayers;
-    }
-
-    return ret;
 }

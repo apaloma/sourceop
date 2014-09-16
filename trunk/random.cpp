@@ -659,7 +659,7 @@ void CBaseEntity::DispatchTraceAttack( const CTakeDamageInfo &info, const Vector
     }
 //#endif
 
-    VFuncs::TraceAttack( this, info, vecDir, ptr );
+    VFuncs::TraceAttack( this, info, vecDir, ptr, NULL );
 }
 
 //------------------------------------------------------------------------------

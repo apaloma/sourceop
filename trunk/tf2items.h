@@ -18,35 +18,33 @@
 #ifndef TF2ITEMS_H
 #define TF2ITEMS_H
 
-class ISave;
-class IRestore;
-
-#define MAX_ITEM_DESCRIPTION_LENGTH 96
-
 #pragma pack(push, 4)
 class CEconItemAttribute
 {
+    DECLARE_CLASS_NOBASE( CEconItemAttribute );
+
 public:
-    unsigned short m_iAttribDef;
-    float m_flVal;
-    wchar_t m_szDescription[MAX_ITEM_DESCRIPTION_LENGTH];
+    DECLARE_EMBEDDED_NETWORKVAR();
 
-    virtual void NetworkStateChanged() { }
-    virtual void NetworkStateChanged( void *pVar ) { }
+    CNetworkVar( unsigned short, m_iAttribDef );
+    CNetworkVar( float, m_flVal );
 
-    // Save / Restore
-    virtual void Save( ISave &pSave ) { }
-    virtual void Restore( IRestore &pRestore ) { }
+    CNetworkVar( float, m_flInitialValue );
+    CNetworkVar( int, m_nRefundableCurrency );
 
-    // Unknown return types
-    virtual void UpdateDescription()
-    {
-        m_szDescription[0] = '\0';
-    }
-    virtual const wchar_t *GetDescription()
-    {
-        return m_szDescription;
-    }
+    CNetworkVar( bool,	m_bSetBonus );
+};
+
+class CAttributeList
+{
+    DECLARE_CLASS_NOBASE( CAttributeList );
+
+public:
+    DECLARE_EMBEDDED_NETWORKVAR();
+    DECLARE_DATADESC();
+
+    CUtlVector<CEconItemAttribute> m_Attributes;
+    void *m_pManager;
 };
 
 /*
@@ -57,8 +55,11 @@ second number is the element stride
 */
 class CEconItemView
 {
-public:
     DECLARE_CLASS_NOBASE( CEconItemView );
+
+public:
+    DECLARE_EMBEDDED_NETWORKVAR();
+    DECLARE_DATADESC();
 
     //int     m_Padding1;               //4
     unsigned short m_iItemDefinitionIndex;     //8   4
@@ -70,34 +71,12 @@ public:
     int     m_iGlobalIndexLow;          //36  28
     unsigned int m_iAccountID;          // new as of 4/28/2010
     unsigned int m_iPosition;           //40  32
-    wchar_t m_szWideName[128];          //44  36
-    char    m_szName[128];              //300 164
-    char    m_szUnk[24];
-    wchar_t m_szAttributeDescription[MAX_ITEM_DESCRIPTION_LENGTH * 16]; //428 292
-    void *m_pLocalizationProvider;      // new as of uber update?
-    CNetworkVarEmbedded( CUtlVector<CEconItemAttribute>, m_attributes ); // 3520
 
+    void *m_pUnk;
     bool    m_bInitialized;
 
-public:
-    virtual void            NetworkStateChanged         ( ) { }
-    virtual void            NetworkStateChanged         ( void *pVar ) { }
-
-private:
-    DECLARE_DATADESC();
-
-public:
-    virtual const char      *BuildAttributeDescription  ( bool bVar ) { return NULL; }
+    CNetworkVarEmbedded( CAttributeList, m_attributes );
 };
 #pragma pack(pop)
-
-class CTF2ItemsLocalizationProvider
-{
-    virtual wchar_t *Find ( char const *tokenName ) { return NULL; }
-    virtual void ConstructString ( wchar_t *, int, wchar_t *, int, ... ) { return; }
-    virtual int ConvertLoccharToANSI ( wchar_t const *, char *, int ) { return 0; }
-    virtual int ConvertLoccharToUnicode ( wchar_t const *, wchar_t *, int ) { return 0; }
-    virtual int ConvertUTF8ToLocchar ( char const *, wchar_t *, int ) { return 0; }
-};
 
 #endif

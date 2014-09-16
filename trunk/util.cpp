@@ -45,7 +45,7 @@
 
 #include "tier0/memdbgon.h"
 
-CEntityFactoryDictionary *g_entityFactoryDictionary = NULL;
+IEntityFactoryDictionary *g_entityFactoryDictionary = NULL;
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -252,6 +252,19 @@ void UTIL_FreeFile( byte *buffer )
     delete[] buffer;
 }
 
+char *UTIL_VarArgs( const char *format, ... )
+{
+    va_list     argptr;
+    static char     string[1024];
+    
+    va_start (argptr, format);
+    Q_vsnprintf(string, sizeof(string), format,argptr);
+    va_end (argptr);
+
+    return string;
+}
+
+// Old style parameters
 char *UTIL_VarArgs( char *format, ... )
 {
     va_list     argptr;
@@ -261,7 +274,7 @@ char *UTIL_VarArgs( char *format, ... )
     Q_vsnprintf(string, sizeof(string), format,argptr);
     va_end (argptr);
 
-    return string;  
+    return string;
 }
 
 /*
@@ -371,6 +384,12 @@ void UTIL_PrecacheOther( const char *szClassname, const char *modelName )
 //-----------------------------------------------------------------------------
 void UTIL_RemoveImmediate( CBaseEntity *oldObj )
 {
+    if( g_nServerToolsVersion >= 2 )
+    {
+        servertools->RemoveEntityImmediate( oldObj );
+        return;
+    }
+
     // valid pointer or already removed?
     if ( !oldObj || (VFuncs::GetEFlags(oldObj) & EFL_KILLME) )
         return;
@@ -433,6 +452,12 @@ void UTIL_Remove( IServerNetworkable *oldObj, CBaseEntity *pBaseEnt )
 
 void UTIL_Remove( CBaseEntity *oldObj )
 {
+    if( g_nServerToolsVersion >= 2 )
+    {
+        servertools->RemoveEntity( oldObj );
+        return;
+    }
+
     if ( !oldObj )
         return;
     UTIL_Remove( VFuncs::NetworkProp(oldObj), oldObj );
@@ -1043,13 +1068,15 @@ AngularImpulse WorldToLocalRotation( const VMatrix &localToWorld, const Vector &
 
 IEntityFactoryDictionary *EntityFactoryDictionary()
 {
-    /*typedef IEntityFactoryDictionary* (__cdecl* EntFactDictFunc)( void );
-    EntFactDictFunc EntFactDict;
-    EntFactDict = (EntFactDictFunc) (0x222A6A80); 
+    if(g_entityFactoryDictionary)
+        return g_entityFactoryDictionary;
 
-    CEntityFactoryDictionary *dict = ( CEntityFactoryDictionary * )EntFactDict();*/
+    if ( g_nServerToolsVersion >= 2 )
+    {
+        g_entityFactoryDictionary = servertools->GetEntityFactoryDictionary();
+        return g_entityFactoryDictionary;
+    }
 
-    if(g_entityFactoryDictionary) return g_entityFactoryDictionary;
 #ifdef WIN32
     ConCommandBase *pPtr = pAdminOP.GetCommands();
     while (pPtr)
@@ -1077,14 +1104,15 @@ IEntityFactoryDictionary *EntityFactoryDictionary()
 
 CBaseEntity *CreateEntityByName( const char *className, int iForceEdictIndex )
 {
-    if(_CreateEntityByName != NULL)
-    {
-        return _CreateEntityByName(className, iForceEdictIndex);
-    }
-    else if(servertools != NULL)
+    if(servertools != NULL)
     {
         return (CBaseEntity *)servertools->CreateEntityByName(className);
     }
+    else if(_CreateEntityByName != NULL)
+    {
+        return _CreateEntityByName(className, iForceEdictIndex);
+    }
+
     return NULL;
 }
 
@@ -1093,83 +1121,23 @@ CBaseEntity *CreateCombineBall( const Vector &origin, const Vector &velocity, fl
     if(_CreateCombineBall != NULL)
     {
         CBaseEntity *pReturn = NULL;
-#ifdef _WIN32
-        // TODO: Reenable this once orangebox hl2mp radius hack fixed
-        ////static CMemoryPatcher       patcher;
-        ////BYTE cballRadReplace[1] = {'\xEB'}; // change jne to jmp
-/*
-void CPropCombineBall::SetRadius( float flRadius )
-{
-    m_flRadius = clamp( flRadius, 1, MAX_COMBINEBALL_RADIUS );
-223FB370 D9 44 24 04      fld         dword ptr [esp+4] 
-223FB374 D8 1D C0 EB 4A 22 fcomp       dword ptr [__real@41400000 (224AEBC0h)] 
-223FB37A DF E0            fnstsw      ax   
-223FB37C F6 C4 41         test        ah,41h 
-223FB37F 75 1B            jne         CPropCombineBall::SetRadius+2Ch (223FB39Ch) 
-223FB381 8D 54 24 04      lea         edx,[esp+4] 
-223FB385 52               push        edx  
-223FB386 81 C1 A0 04 00 00 add         ecx,4A0h 
-223FB38C C7 44 24 08 00 00 40 41 mov         dword ptr [esp+8],41400000h 
-223FB394 E8 A7 FB FF FF   call        CNetworkVarBase<float,CPropCombineBall::NetworkVar_m_flRadius>::Set (223FAF40h) 
-}
-223FB399 C2 04 00         ret         4    
 
-void CPropCombineBall::SetRadius( float flRadius )
-{
-    m_flRadius = clamp( flRadius, 1, MAX_COMBINEBALL_RADIUS );
-223FB39C D9 44 24 04      fld         dword ptr [esp+4] 
-223FB3A0 D8 1D 48 61 4A 22 fcomp       dword ptr [__real@3f800000 (224A6148h)] 
-223FB3A6 DF E0            fnstsw      ax   
-223FB3A8 F6 C4 05         test        ah,5 
-223FB3AB 7A 1B            jp          CPropCombineBall::SetRadius+58h (223FB3C8h) 
-223FB3AD 8D 54 24 04      lea         edx,[esp+4] 
-223FB3B1 52               push        edx  
-223FB3B2 81 C1 A0 04 00 00 add         ecx,4A0h 
-223FB3B8 C7 44 24 08 00 00 80 3F mov         dword ptr [esp+8],3F800000h 
-223FB3C0 E8 7B FB FF FF   call        CNetworkVarBase<float,CPropCombineBall::NetworkVar_m_flRadius>::Set (223FAF40h) 
-}
-223FB3C5 C2 04 00         ret         4    
-
-void CPropCombineBall::SetRadius( float flRadius )
-{
-    m_flRadius = clamp( flRadius, 1, MAX_COMBINEBALL_RADIUS );
-223FB3C8 8B 44 24 04      mov         eax,dword ptr [esp+4] 
-223FB3CC 8D 54 24 04      lea         edx,[esp+4] 
-223FB3D0 52               push        edx  
-223FB3D1 81 C1 A0 04 00 00 add         ecx,4A0h 
-223FB3D7 89 44 24 08      mov         dword ptr [esp+8],eax 
-223FB3DB E8 60 FB FF FF   call        CNetworkVarBase<float,CPropCombineBall::NetworkVar_m_flRadius>::Set (223FAF40h) 
-}
-223FB3E0 C2 04 00         ret         4    
---- No source file -------------------------------------------------------------
-*/
-
-        // TODO: Reenable this once orangebox hl2mp radius hack fixed
-        /*BYTE cballOld[sizeof(cballRadReplace)];
-        if(pAdminOP.cballRadPID && pAdminOP.cballRadAddr)
-        {
-            if(!patcher.Init())
-            {
-                pAdminOP.TimeLog("SourceOPErrors.log", "Failed to init mempatch for CreateCombineBall.\n");
-                Msg("Failed to init mempatch.\n");
-                return NULL;
-            }
-            for(int i=0;i<sizeof(cballRadReplace);i++)
-            {
-                //Msg("%x=%x ", pAdminOP.cballRadAddr[i], cballRadReplace[i]);
-                cballOld[i] = (BYTE)pAdminOP.cballRadAddr[i];
-            }
-            //Msg("\n");
-            patcher.WriteProcess(pAdminOP.cballRadPID, pAdminOP.cballRadAddr, cballRadReplace, sizeof(cballRadReplace));
-        }*/
-#endif // _WIN32
         pReturn = _CreateCombineBall(origin, velocity, radius, mass, lifetime, pOwner);
-#ifdef _WIN32
-        /*if(pAdminOP.cballRadPID && pAdminOP.cballRadAddr)
+
+        // If the radius is greater than the max, let's do some hacks to make it work
+        if ( radius > 12.0f )
         {
-            patcher.WriteProcess(pAdminOP.cballRadPID, pAdminOP.cballRadAddr, cballOld, sizeof(cballRadReplace));
-        }*/
-#endif // _WIN32
+            VFuncs::SetCombineBallRadius( pReturn, radius );
+
+            // After changing the radius, we need to recreate the VPhysics object
+            VFuncs::VPhysicsDestroyObject( pReturn );
+            VFuncs::CreateVPhysics( pReturn );
+
+            // We need to set the same things on the new physics object that Spawn and CreateCombineBall set
+            VFuncs::VPhysicsGetObject( pReturn )->SetVelocity( &velocity, NULL );
+            PhysSetGameFlags( VFuncs::VPhysicsGetObject( pReturn ), FVPHYSICS_WAS_THROWN );
+        }
+
         return pReturn;
     }
     return NULL;

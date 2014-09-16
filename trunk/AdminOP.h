@@ -39,17 +39,16 @@ class ClientCommands;
 class CReservedSlots;
 class CSOPGameRulesProxy;
 class CMapCycleTracker;
-class CMainLoopSleepHack;
 
 //#define OFFICIALSERV_ONLY
 #ifdef OFFICIALSERV_ONLY
-    #define SourceOPVersion "SourceOP Internal Test Version 0.9.13"
-    #define SourceOPVerShort "0.9.13"
+    #define SourceOPVersion "SourceOP Internal Test Version 0.9.17"
+    #define SourceOPVerShort "0.9.17"
     #pragma message( "INTERNAL VERSION " __FILE__ )
     #define SOPDLog(s) do { if(debug_log.GetBool()) pAdminOP.DebugLog(s); } while(0)
 #else
-    #define SourceOPVersion "SourceOP Version 0.9.12"
-    #define SourceOPVerShort "0.9.12"
+    #define SourceOPVersion "SourceOP Version 0.9.16"
+    #define SourceOPVerShort "0.9.16"
     #define SOPDLog(s) ((void)0)
 #endif
 
@@ -364,6 +363,8 @@ extern IMetamodOverrides *g_metamodOverrides;
 class CAdminOP
 {
 public:
+    CAdminOP( void );
+
     void Load( void );
     void LevelInit( char const *pMapName );
     void ServerActivate( edict_t *pEdictList, int edictCount, int clientMax );
@@ -416,6 +417,7 @@ public:
         const Vector *pOrigin = NULL, const Vector *pDirection = NULL, CUtlVector< Vector >* pUtlVecOrigins = NULL, bool bUpdatePositions = true, float soundtime = 0.0f, int speakerentity = -1 );
     bool SetClientListening(int iReceiver, int iSender, bool bListen);
     int ParmValue( const char *psz, int nDefaultVal );
+    bool PrecacheSound( const char *pSample, bool bPreload = false, bool bIsUISound = false );
     void MaxPlayersDispatch( const CCommand &command );
     CCommand *MaxPlayersDispatchHandler( const CCommand &command );
     void LogPrint( const char *msg );
@@ -581,7 +583,8 @@ public:
     CUtlLinkedList <precached_t, unsigned short> precached;
     CUtlLinkedList <char *, unsigned short> downloads;
     CUtlLinkedList <maplist_t, unsigned short> mapList;
-    CUtlLinkedList <creditsram_t, unsigned int> creditList;
+    CUtlVector <creditsram_t> creditList;
+    CUtlMap <uint64, int, int> m_mapSteamIDToCreditEntry;
     CUtlLinkedList <edict_t *, unsigned int> entList;           // list of all entities
     CUtlVector <CAOPEntity *> myEntList;                        // hooked entities that we are managing
     CUtlVector <CAOPEntity *> myThinkEnts;                      // entities that we are managing thinks for
@@ -633,10 +636,6 @@ public:
     edict_t *pRemoveEntity;
 
     CUtlLinkedList <unsigned int, unsigned short> spawnedServerEnts;
-
-    unsigned long cballRadPID; //DWORD
-    BYTE *cballRadAddr;
-    CMainLoopSleepHack *sleepHack;
 
     typedef struct killtrack_s
     {
@@ -702,9 +701,6 @@ private:
     rankstruct_t ranks;
 
     unsigned long serverProcessID; //DWORD
-    // CreateEntityByName replacement
-    void *createEntityReplaceAddr;
-    BYTE beforeCreateEntityReplace[42];
 
     CVoteSystem cvarVote;
     ConVar      *cvarVoteCvar;
@@ -722,23 +718,6 @@ private:
     bool featureStatus[NUM_FEATS];
 
     bool meleeonly;
-};
-
-class CMainLoopSleepHack
-{
-public:
-    CMainLoopSleepHack(unsigned int start, unsigned int len, unsigned int parampos);
-
-    void RemoveSleepCall();
-    void RestoreSleepCall();
-    void SetSleepParam(int val);
-
-private:
-    unsigned int m_iStart, m_iLen, m_iParamPos;
-    bool m_bRemoved;
-    void *m_SleepCode;
-    void *m_Param;
-    unsigned char *oldData;
 };
 
 //-----------------------------------------------------------------------------
@@ -826,7 +805,6 @@ typedef void            (__cdecl* _ApplyMultiDamageFunc)( void );
 typedef void            (__cdecl* _RadiusDamageFunc)( const CTakeDamageInfo &info, const Vector &vecSrc, float flRadius, int iClassIgnore, CBaseEntity *pEntityIgnore );
 typedef void*           _SetMoveTypeFunc;
 typedef void*           _ResetSequenceFunc;
-typedef edict_t*        (__cdecl* _UtilPlayerByIndexFunc)( int client );
 typedef int             (__cdecl* _ReceiveDatagramFunc)( int a, void *structure );
 typedef void            (__cdecl* _SendPacketFunc)( void *netchan, int a, const netadr_t &sock, unsigned char const *data, int length, bf_write *bitdata, bool b );
 typedef void            (__cdecl* _SV_BVDFunc)(void *, int, char*, long long);
@@ -844,7 +822,6 @@ extern _ApplyMultiDamageFunc _ApplyMultiDamage;
 extern _RadiusDamageFunc _RadiusDamage;
 extern _SetMoveTypeFunc _SetMoveType;
 extern _ResetSequenceFunc _ResetSequence;
-extern _UtilPlayerByIndexFunc _UtilPlayerByIndex;
 extern _ReceiveDatagramFunc _NET_ReceiveDatagram;
 extern int (*VCR_Hook_recvfrom)(int s, char *buf, int len, int flags, struct sockaddr *from, int *fromlen);
 extern _SendPacketFunc _NET_SendPacket;
@@ -855,6 +832,8 @@ extern _usleepfunc _dedicated_usleep;
 extern PFNSteam_BGetCallback _BGetCallback;
 extern PFNSteam_FreeLastCallback _FreeLastCallback;
 extern PFNSteam_GameServer_InitSafe _SteamGameServer_InitSafe;
+
+extern int g_nServerToolsVersion;
 
 extern bool g_bIsVsp;
 extern IConCommandBaseAccessor *pConCommandAccessor;

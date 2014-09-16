@@ -168,6 +168,7 @@ ConVar tf2_disable_voicemenu("DF_tf2_disable_voicemenu", "0", FCVAR_SOP, "0 - No
 ConVar tf2_disable_voicemenu_message("DF_tf2_disable_voicemenu_message", "1", FCVAR_SOP, "Enables printing a message to players when they try to use voicemenu but it's disabled.");
 ConVar tf2_disable_fish("DF_tf2_disable_fish", "0", FCVAR_SOP, "Enables disabling The Holy Mackerel and will replace the weapon with the standard bat.");
 ConVar tf2_disable_witcher("DF_tf2_disable_witcher", "0", FCVAR_SOP, "Enables disabling witcher items.");
+ConVar tf2_disable_mvmprecache("DF_tf2_disable_mvmprecache", "1", FCVAR_SOP, "Disables precaching of MvM sounds.");
 
 ConVar unvacban_enabled("DF_unvacban_enabled", "1", FCVAR_SOP, "If non-zero, allows the server to ignore the VAC status of specific SteamIDs.");
 
@@ -180,7 +181,7 @@ ConVar lua_attack_hooks("DF_lua_attack_hooks", "0", FCVAR_SOP, "If non-zero, Pri
 
 ConVar serverquery_fakemaster("DF_serverquery_fakemaster", "1", FCVAR_SOP, "Changes the maxplayer portion of the query response to master servers to be no more than 24.", true, 0, true, 1);
 ConVar serverquery_a2sinfo_override("DF_serverquery_a2sinfo_override", "0", FCVAR_SOP, "Overrides handling of A2S_INFO queries. Helps prevent query spam.", true, 0, true, 1);
-ConVar serverquery_a2sinfo_override_serverversion("DF_serverquery_a2sinfo_override_serverversion", "1.1.1.0", FCVAR_SOP, "The server version when overriding queries.");
+ConVar serverquery_a2sinfo_override_serverversion("DF_serverquery_a2sinfo_override_serverversion", "1.2.3.2", FCVAR_SOP, "The server version when overriding queries.");
 ConVar serverquery_block_alla2cprint("DF_serverquery_block_alla2cprint", "1", FCVAR_SOP, "Enables blocking of all A2C_PRINT packets", true, 0, true, 1);
 #ifdef OFFICIALSERV_ONLY
 ConVar serverquery_visibleplayers("DF_serverquery_visibleplayers", "-1", FCVAR_SOP, "Changes the number of visible connected players.", true, -1, true, 255);
@@ -245,9 +246,6 @@ ConVar blockfriendlyheavy("DF_blockfriendlyheavy", "0", FCVAR_SOP, "Blocks spies
 
 ConVar extra_heartbeat("DF_extra_heartbeat", "0", FCVAR_SOP, "If non-zero, an extra heartbeat will be executed every interval specified. The value is in seconds.", true, 0, false, 0);
 
-int g_steamIDPrefix = 0;
-ConVar steamid_stringprefix("DF_steamid_stringprefix", "STEAM_0", FCVAR_SOP);
-ConVar steamid_prefixnumber("DF_steamid_prefixnumber", "0", FCVAR_SOP, "STEAM_#", false, 0, false, 0, &DFSteamIDPrefixNumberCallback);
 ConVar steamid_customnetworkidvalidated("DF_steamid_customnetworkidvalidated", "1", FCVAR_SOP, "Call SourceOP NetworkIDValidated code from within SourceOP instead of by the engine.");
 
 #ifdef OFFICIALSERV_ONLY
@@ -257,9 +255,7 @@ ConVar disabletouch("DF_disabletouch", "0", FCVAR_SOP, "Disables entity touching
 ConVar debug_log("DF_debug_log", "0", FCVAR_SOP, "Debug logging.");
 #endif
 
-#ifdef _WIN32
-ConVar sleep_time("DF_sleep_time", "1", FCVAR_SOP, "Changes the Sleep time of srcds's main loop. Use -1 to disable Sleep call.", true, -1, true, 127, &DFSleepTimeCallback);
-#else
+#ifndef _WIN32
 ConVar sleep_time("DF_sleep_time", "1000", FCVAR_SOP, "Changes the usleep time of srcds's main loop. Use -1 to disable usleep call.", true, -1, true, 1000000);
 #endif
 
@@ -316,10 +312,9 @@ IServerTools            *servertools = NULL;
 #ifdef __linux__
 // no tier2/3 libs
 IMDLCache               *mdlcache = NULL;
-#else
-ICvar *cvar = NULL;
-ICvar *g_pCVar = NULL;
 #endif
+
+int g_nServerToolsVersion = 0;
 
 CSharedEdictChangeInfo *g_pSharedChangeInfo = NULL;
 
@@ -355,6 +350,7 @@ SH_DECL_HOOK2_void(IServerGameEnts, MarkEntitiesAsTouching, SH_NOATTRIB, 0, edic
 SH_DECL_HOOK3_void(IServerGameClients, GetPlayerLimits, const, 0, int &, int &, int &);
 SH_DECL_HOOK3(IVoiceServer, SetClientListening, SH_NOATTRIB, 0, bool, int, int, bool);
 SH_DECL_HOOK2(ICommandLine, ParmValue, const, 0, int, const char *, int);
+SH_DECL_HOOK3(IEngineSound, PrecacheSound, SH_NOATTRIB, 0, bool, const char *, bool, bool);
 SH_DECL_HOOK1_void(ConCommand, Dispatch, SH_NOATTRIB, 0, const CCommand &);
 SH_DECL_HOOK2(IGameEventManager2, FireEvent, SH_NOATTRIB, 0, bool, IGameEvent*, bool);
 
@@ -371,7 +367,6 @@ _ApplyMultiDamageFunc _ApplyMultiDamage = NULL;
 _RadiusDamageFunc _RadiusDamage = NULL;
 _SetMoveTypeFunc _SetMoveType = NULL;
 _ResetSequenceFunc _ResetSequence = NULL;
-_UtilPlayerByIndexFunc _UtilPlayerByIndex = NULL;
 _ReceiveDatagramFunc _NET_ReceiveDatagram = NULL;
 int (*VCR_Hook_recvfrom)(int s, char *buf, int len, int flags, struct sockaddr *from, int *fromlen) = NULL;
 _SendPacketFunc _NET_SendPacket = NULL;
@@ -628,9 +623,9 @@ bool CEmptyServerPlugin::MainLoad( CreateInterfaceFn interfaceFactory, CreateInt
     {
         CAdminOP::ColorMsg(CONCOLOR_LIGHTRED, "[SOURCEOP] Old game event manager interface is not available.\n           SourceOP will not be able to send \"GameEvent\" to Lua scripts.");
     }
-    if( !(servergame = (IServerGameDLL*)gameServerFactory("ServerGameDLL007", NULL)))
+    if( !(servergame = (IServerGameDLL*)gameServerFactory("ServerGameDLL009", NULL)))
     {
-        if( !(servergame = (IServerGameDLL*)gameServerFactory("ServerGameDLL008", NULL)))
+        if( !(servergame = (IServerGameDLL*)gameServerFactory("ServerGameDLL007", NULL)))
         {
              CAdminOP::ColorMsg(CONCOLOR_LIGHTRED, "[SOURCEOP] Failed getting servergame interface.\n");
              return false;
@@ -658,9 +653,16 @@ bool CEmptyServerPlugin::MainLoad( CreateInterfaceFn interfaceFactory, CreateInt
         CAdminOP::ColorMsg(CONCOLOR_LIGHTRED, "[SOURCEOP] Failed getting third set of interfaces.\n");
         return false; // we require all these interface to function
     }
+
+    g_nServerToolsVersion = VSERVERTOOLS_INTERFACE_VERSION_INT;
     if(!(servertools = (IServerTools*)gameServerFactory(VSERVERTOOLS_INTERFACE_VERSION, NULL)))
     {
-        Warning("[SOURCEOP] Failed to get servertools interface.\n");
+        g_nServerToolsVersion = 1;
+        if(!(servertools = (IServerTools*)gameServerFactory(VSERVERTOOLS_INTERFACE_VERSION_1, NULL)))
+        {
+            g_nServerToolsVersion = 0;
+            Warning("[SOURCEOP] Failed to get servertools interface.\n");
+        }
     }
 
     gamestats = interfaceFactory("ServerUploadGameStats001", NULL);
@@ -705,6 +707,8 @@ bool CEmptyServerPlugin::MainLoad( CreateInterfaceFn interfaceFactory, CreateInt
     if(r) g_serverHookIDS.AddToTail(r);
     r = SH_ADD_HOOK_MEMFUNC(ICommandLine, ParmValue, commandline, &pAdminOP, &CAdminOP::ParmValue, false);
     if(r) g_serverHookIDS.AddToTail(r);
+    r = SH_ADD_HOOK_MEMFUNC(IEngineSound, PrecacheSound, enginesound, &pAdminOP, &CAdminOP::PrecacheSound, false);
+    if(r) g_serverHookIDS.AddToTail(r);
 
     if(gamestats)
     {
@@ -731,7 +735,11 @@ bool CEmptyServerPlugin::MainLoad( CreateInterfaceFn interfaceFactory, CreateInt
     //g_OurDLL = filesystem->LoadModule( "sourceop" );
     // Load the dependent components
 #ifdef PLUGIN_PHYSICS
+#ifdef __linux__
+    g_PhysicsDLL = filesystem->LoadModule( "vphysics_srv" , NULL, false );
+#else
     g_PhysicsDLL = filesystem->LoadModule( "vphysics" , NULL, false );
+#endif
     physicsFactory = Sys_GetFactory( g_PhysicsDLL );
     if ( !physicsFactory )
     {
@@ -1448,13 +1456,6 @@ class CMaxPlayerHook : public ConCommand
 public:
     CMaxPlayerHook() : ConCommand("maxplayers", (ICommandCallback *)NULL, "Change the maximum number of players allowed on this server.", FCVAR_GAMEDLL), m_pGameDLLSayCommand(NULL)
     {
-#ifdef __linux__
-        // to be honest, i'm not even sure how this works since cvar isn't initialized at this point
-        // but i suppose it must be somehow
-
-        // this is required since the overrided Init() doesn't seem to be getting called
-        HookOrig();
-#endif
     }
 
     void HookOrig()
@@ -1519,13 +1520,6 @@ class CSayHook : public ConCommand
 public:
     CSayHook() : ConCommand("say", (ICommandCallback *)NULL, "Display player message", FCVAR_GAMEDLL), m_pGameDLLSayCommand(NULL)
     {
-#ifdef __linux__
-        // to be honest, i'm not even sure how this works since cvar isn't initialized at this point
-        // but i suppose it must be somehow
-
-        // this is required since the overrided Init() doesn't seem to be getting called
-        HookOrig();
-#endif
     }
 
     void HookOrig()
@@ -1601,9 +1595,6 @@ class CSayTeamHook : public ConCommand
 public:
     CSayTeamHook() : ConCommand("say_team", (ICommandCallback *)NULL, "Display player message to team", FCVAR_GAMEDLL), m_pGameDLLSayCommand(NULL)
     {
-#ifdef __linux__
-        HookOrig();
-#endif
     }
 
     void HookOrig()
@@ -2112,55 +2103,11 @@ CON_COMMAND( DF_memstats, "Dumps g_pMemAlloc stats." )
 #if defined(_DEBUG) && defined(_WIN32)
         _CrtDumpMemoryLeaks();
 #endif
+#ifndef NO_MALLOC_OVERRIDE
         g_pMemAlloc->DumpStatsFileBase("sopmemstats");
+#endif
     }
 }
-
-/*CON_COMMAND_F( DF_playertimefix, "Temporary command to fix player time.", FCVAR_SOP )
-{
-    Msg("Executing player time fix.\n");
-    // if lastseen >= 1188301575, time = 0
-    for ( unsigned int i=pAdminOP.creditList.Head(); i != pAdminOP.creditList.InvalidIndex(); i = pAdminOP.creditList.Next( i ) )
-    {
-        creditsram_t *findCredits = &pAdminOP.creditList.Element(i);
-        if(findCredits->lastsave >= 1188301575)
-        {
-            // estimate
-            int newval = min(findCredits->credits * 100, 86400);
-            Msg("Fixed %s %s (%i->%i)\n", findCredits->WonID, findCredits->CurrentName, findCredits->timeonserver, newval);
-            findCredits->timeonserver = newval;
-        }
-    }
-}*/
-
-/*CON_COMMAND_F( DF_namefix, "Temp command to fix name.", FCVAR_SOP )
-{
-    // if lastseen >= 1188301575, time = 0
-    for ( unsigned int i=pAdminOP.creditList.Head(); i != pAdminOP.creditList.InvalidIndex(); i = pAdminOP.creditList.Next( i ) )
-    {
-        creditsram_t *findCredits = &pAdminOP.creditList.Element(i);
-        if(findCredits->FirstName[0] == '\0')
-        {
-            if(findCredits->CurrentName[0] != '\0')
-            {
-                Msg("Fixing first name for \"%s\" \"%s\".\n", findCredits->CurrentName, findCredits->WonID);
-                strcpy(findCredits->FirstName, findCredits->CurrentName);
-            }
-            else
-            {
-                int previ = pAdminOP.creditList.Previous(i);
-                Msg("Removing unnamed entry \"%s\" with time \"%i\" and credits \"%i\".\n", findCredits->WonID, findCredits->timeonserver, findCredits->credits);
-                pAdminOP.creditList.Remove(i);
-                i = previ;
-            }
-        }
-        else if(findCredits->CurrentName[0] == '\0')
-        {
-            Msg("Fixing current name for \"%s\" \"%s\".\n", findCredits->FirstName, findCredits->WonID);
-            strcpy(findCredits->CurrentName, findCredits->FirstName);
-        }
-    }
-}*/
 
 void DFVersionChangeCallback( IConVar *var, const char *pOldValue, float flOldValue )
 {
@@ -2183,23 +2130,6 @@ void DFMeleeOnlyCallback( IConVar *var, const char *pOldValue, float flOldValue 
     pAdminOP.SetMeleeMode(tf2_meleeonly.GetBool());
 }
 
-void DFSleepTimeCallback( IConVar *var, const char *pOldValue, float flOldValue )
-{
-    if(pAdminOP.sleepHack)
-    {
-        int newVal = sleep_time.GetInt();
-        if(newVal == -1)
-        {
-            pAdminOP.sleepHack->RemoveSleepCall();
-        }
-        else
-        {
-            pAdminOP.sleepHack->RestoreSleepCall();
-            pAdminOP.sleepHack->SetSleepParam(sleep_time.GetInt());
-        }
-    }
-}
-
 void DFRSlotsCallback( IConVar *var, const char *pOldValue, float flOldValue )
 {
     if(pAdminOP.rslots)
@@ -2207,11 +2137,6 @@ void DFRSlotsCallback( IConVar *var, const char *pOldValue, float flOldValue )
         pAdminOP.rslots->SetReservedSlots(rslots_slots.GetInt());
         Msg("[SOURCEOP] Number of reserved slots changed from %i to %i. %i remaining.\n", atoi(pOldValue), rslots_slots.GetInt(), pAdminOP.rslots->ReservedSlotsRemaining());
     }
-}
-
-void DFSteamIDPrefixNumberCallback( IConVar *var, const char *pOldValue, float flOldValue )
-{
-    g_steamIDPrefix = steamid_prefixnumber.GetInt();
 }
 
 IChangeInfoAccessor *CBaseEdict::GetChangeAccessor()

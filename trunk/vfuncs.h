@@ -20,6 +20,14 @@
 
 #include "tier0/memdbgon.h"
 
+#ifndef max
+#define max MAX
+#endif
+
+#ifndef min
+#define min MIN
+#endif
+
 class CEntityFactoryDictionary;
 class CBaseEntity;
 class CBaseAnimating;
@@ -77,6 +85,8 @@ enum offsets {
     OFFSET_FVISIBLE,
     OFFSET_WORLDSPACECENTER,
     OFFSET_GETSOUNDEMISSIONORIGIN,
+    OFFSET_CREATEVPHYSICS,
+    OFFSET_VPHYSICSDESTROYOBJECT,
     OFFSET_VPHYSICSGETOBJECTLIST,
     OFFSET_EXTINGUISH,
     OFFSET_STUDIOFRAMEADVANCE,
@@ -330,7 +340,7 @@ public:
     DECLARE_VFUNC0_void(CBaseEntity, Activate);
     DECLARE_VFUNC5(CBaseEntity, AcceptInput, bool, const char *, szInputName, CBaseEntity *, pActivator, CBaseEntity *, pCaller, variant_t, Value, int, outputID);
     DECLARE_VFUNC1(CBaseEntity, PassesDamageFilter, bool, const CTakeDamageInfo &, info);
-    DECLARE_VFUNC3_void(CBaseEntity, TraceAttack, const CTakeDamageInfo &, info, const Vector &, vecDir, trace_t *, ptr);
+    DECLARE_VFUNC4_void(CBaseEntity, TraceAttack, const CTakeDamageInfo &, info, const Vector &, vecDir, trace_t *, ptr, void *, pAccumulator);
     DECLARE_VFUNC1(CBaseEntity, OnTakeDamage, int, const CTakeDamageInfo &, info);
     DECLARE_VFUNC0(CBaseEntity, IsAlive, bool);
     DECLARE_VFUNC1_void(CBaseEntity, Event_Killed, const CTakeDamageInfo &, info);
@@ -349,6 +359,8 @@ public:
     static bool FVisible(CBaseEntity *pThisPtr, CBaseEntity *pEntity, int traceMask = MASK_OPAQUE, CBaseEntity **ppBlocker = NULL);
     DECLARE_VFUNC0(CBaseEntity, WorldSpaceCenter, const Vector &);
     DECLARE_VFUNC0(CBaseEntity, GetSoundEmissionOrigin, Vector);
+    DECLARE_VFUNC0(CBaseEntity, CreateVPhysics, bool);
+    DECLARE_VFUNC0_void(CBaseEntity, VPhysicsDestroyObject);
     DECLARE_VFUNC2(CBaseEntity, VPhysicsGetObjectList, int, IPhysicsObject **, pList, int, listMax);
     DECLARE_VFUNC0_void(CBaseAnimating, StudioFrameAdvance);
     DECLARE_VFUNC0_void(CBaseAnimating, Extinguish);
@@ -377,6 +389,7 @@ public:
     DECLARE_VFUNC0_void(void, HandleSwitchTeams);
     DECLARE_VFUNC1_void(void, SetScrambleTeams, bool, bScramble);
     DECLARE_VFUNC0_void(void, HandleScrambleTeams);
+    static bool IsMannVsMachineMode( void *pGameRules );
 
     DECLARE_VFUNC0(IServerNetworkable, GetEntityHandle, IHandleEntity *);
     DECLARE_VFUNC0(IServerNetworkable, GetEdict, edict_t *);
@@ -510,6 +523,7 @@ public:
     static int          GetImpulse( CBasePlayer *pThisPtr );
     static void         SetImpulse( CBasePlayer *pThisPtr, int impulse );
     static int          GetButtons( CBasePlayer *pThisPtr );
+    static void         SetCombineBallRadius( CBaseEntity *pThisPtr, float flRadius );
     static int          CCollProp_GetSolidFlags( CCollisionProperty *pThisPtr );
     static void         CCollProp_SetSolidFlags( CCollisionProperty *pThisPtr, int flags );
     static void         SetCollisionBounds( CBaseEntity *pThisPtr, const Vector& mins, const Vector &maxs );

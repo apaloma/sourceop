@@ -101,6 +101,16 @@ static int gamerules_handleswitchteams(lua_State *L)
     return 0;
 }
 
+static int gamerules_ismannvsmachinemode(lua_State *L)
+{
+    if(pAdminOP.GameRules() && pAdminOP.GameRules()->IsInitialized())
+    {
+        lua_pushboolean(L, pAdminOP.GameRules()->IsMannVsMachineMode());
+    }
+    lua_pushboolean(L, 0);
+    return 1;
+}
+
 static int gamerules_isvalidteamnumber(lua_State *L)
 {
     if(lua_isnumber(L, 1))
@@ -158,6 +168,7 @@ static const luaL_Reg gameruleslib[] = {
     {"GetIndexedTeamName",  gamerules_getindexedteamname},
     {"GetTeamIndex",        gamerules_getteamindex},
     {"HandleSwitchTeams",   gamerules_handleswitchteams},
+    {"IsMannVsMachineMode", gamerules_ismannvsmachinemode},
     {"IsValidTeamNumber",   gamerules_isvalidteamnumber},
     {"SetScrambleTeams",    gamerules_setscrambleteams},
     {"SetStalemate",        gamerules_setstalemate},

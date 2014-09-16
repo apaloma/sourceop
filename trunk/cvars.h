@@ -120,6 +120,7 @@ extern ConVar tf2_disable_voicemenu;
 extern ConVar tf2_disable_voicemenu_message;
 extern ConVar tf2_disable_fish;
 extern ConVar tf2_disable_witcher;
+extern ConVar tf2_disable_mvmprecache;
 
 extern ConVar unvacban_enabled;
 
@@ -190,8 +191,6 @@ extern ConVar blockfriendlyheavy;
 
 extern ConVar extra_heartbeat;
 
-extern ConVar steamid_stringprefix;
-extern ConVar steamid_prefixnumber;
 extern ConVar steamid_customnetworkidvalidated;
 
 #ifdef OFFICIALSERV_ONLY

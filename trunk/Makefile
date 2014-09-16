@@ -26,7 +26,7 @@
 #
 NAME=server
 
-GAME_DIR=~/srcds/orangebox
+GAME_DIR=~/steampipe/tf
 
 CPLUS=/usr/bin/g++
 CLINK=/usr/bin/gcc
@@ -34,10 +34,10 @@ CLINK=/usr/bin/gcc
 #CPP_LIB=/usr/lib/gcc/i386-redhat-linux/4.1.2/libstdc++.a /usr/lib/gcc/i386-redhat-linux/4.1.2/libgcc_eh.a
 
 #LDFLAGS=-m32 -lm -ldl -lssl tier0_i486.so vstdlib_i486.so
-LDFLAGS=-m32 -lm -ldl -lssl libtier0.so libvstdlib.so
+LDFLAGS=-m32 -lm -ldl -lssl libtier0_srv.so libvstdlib_srv.so
 
-SOURCE_DIR=/home/apaloma/hl2sdk_ob
-BUILD_DIR=/home/apaloma/hl2sdk_ob/utils/AdminOP
+SOURCE_DIR=/home/apaloma/hl2sdk_smob
+BUILD_DIR=/home/apaloma/hl2sdk_smob/utils/AdminOP
 RELEASE_DIR=./Release
 DEBUG_DIR=./Debug
 BUILD_OBJ_DIR_DEBUG=$(DEBUG_DIR)
@@ -52,7 +52,7 @@ ARCH=i486
 ARCH_CFLAGS=-mtune=i686 -march=pentium3 -mmmx -O3 -m32
 
 # -fpermissive is so gcc 3.4.x doesn't complain about some template stuff
-BASE_CFLAGS=-fpermissive -D_LINUX -DNDEBUG -Dstricmp=strcasecmp -D_stricmp=strcasecmp -D_strnicmp=strncasecmp -Dstrnicmp=strncasecmp -D_snprintf=snprintf -D_vsnprintf=vsnprintf -D_alloca=alloca -Dstrcmpi=strcasecmp
+BASE_CFLAGS=-fpermissive -D_LINUX -DNDEBUG -Dstricmp=strcasecmp -D_stricmp=strcasecmp -D_strnicmp=strncasecmp -Dstrnicmp=strncasecmp -D_snprintf=snprintf -D_vsnprintf=vsnprintf -D_alloca=alloca -Dstrcmpi=strcasecmp -DNO_MALLOC_OVERRIDE
 SHLIBEXT=so
 SHLIBCFLAGS=-fPIC
 #SHLIBLDFLAGS=-shared -Wl,-Map,$@_map.txt -Wl
@@ -80,7 +80,6 @@ PLUGIN_OBJ_DIR=$(BUILD_OBJ_DIR)/plugin
 PLUGIN_OBJ_DIR_RELEASE=$(BUILD_OBJ_DIR_RELEASE)/plugin
 PLUGIN_OBJ_DIR_DEBUG=$(BUILD_OBJ_DIR_DEBUG)/plugin
 PUBLIC_OBJ_DIR=$(BUILD_OBJ_DIR)/plugin/public
-TIER0_OBJ_DIR=$(BUILD_OBJ_DIR)/plugin/tier0
 
 #debug
 ifeq "$(DEBUGBUILD)" "true"
@@ -177,9 +176,6 @@ PLUGIN_OBJS = \
 	$(PLUGIN_OBJ_DIR)/vfuncs.o \
 	$(PLUGIN_OBJ_DIR)/votesystem.o
 
-TIER0_OBJS = \
-	$(TIER0_OBJ_DIR)/memoverride.o \
-
 LUA_OBJS = \
 	$(PLUGIN_OBJ_DIR)/lua/src/lapi.o \
 	$(PLUGIN_OBJ_DIR)/lua/src/lcode.o \
@@ -213,11 +209,13 @@ LUA_OBJS = \
 
 all: 
 	$(MAKE) dirs
-	ln -sf $(GAME_DIR)/bin/libvstdlib.so libvstdlib.so
+	ln -sf $(GAME_DIR)/bin/libvstdlib_srv.so libvstdlib_srv.so
 	ln -sf $(GAME_DIR)/bin/libvstdlib_s.so libvstdlib_s.so
-	ln -sf $(GAME_DIR)/bin/libtier0.so libtier0.so
+	ln -sf $(GAME_DIR)/bin/libtier0_srv.so libtier0_srv.so
+	ln -sf ../../lib/linux/tier1_i486.a tier1_srv.a
+	ln -sf ../../lib/linux/mathlib_i486.a mathlib_srv.a
 #ln -sf $(SOURCE_DIR)/tier1/convar.cpp convar.cpp
-	$(MAKE) sourceop_$(ARCH).$(SHLIBEXT)
+	$(MAKE) sourceop.$(SHLIBEXT)
 
 l4d_debug:
 	-cp convar_l4d.h ../../public
@@ -237,23 +235,23 @@ install_debug:
 	$(MAKE) copyfile
 
 copyfile:
-	-sudo cp sourceop_$(ARCH).$(SHLIBEXT) /home/srcds/tf2server/orangebox/bin/sourceop.$(SHLIBEXT)
-	-sudo chown srcds /home/srcds/tf2server/orangebox/bin/sourceop.$(SHLIBEXT)
-	-sudo chgrp srcds /home/srcds/tf2server/orangebox/bin/sourceop.$(SHLIBEXT)
-	-sudo chmod 644 /home/srcds/tf2server/orangebox/bin/sourceop.$(SHLIBEXT)
+	-sudo cp sourceop.$(SHLIBEXT) /home/srcds/steampipe/tf/bin/sourceop.$(SHLIBEXT)
+	-sudo chown srcds /home/srcds/steampipe/tf/bin/sourceop.$(SHLIBEXT)
+	-sudo chgrp srcds /home/srcds/steampipe/tf/bin/sourceop.$(SHLIBEXT)
+	-sudo chmod 644 /home/srcds/steampipe/tf/bin/sourceop.$(SHLIBEXT)
 
 copyfile_beta:
-	-sudo cp sourceop_$(ARCH).$(SHLIBEXT) /home/srcds/tf2betaserver/tf2beta/bin/sourceop.$(SHLIBEXT)
+	-sudo cp sourceop.$(SHLIBEXT) /home/srcds/tf2betaserver/tf2beta/bin/sourceop.$(SHLIBEXT)
 	-sudo chown srcds /home/srcds/tf2betaserver/tf2beta/bin/sourceop.$(SHLIBEXT)
 	-sudo chgrp srcds /home/srcds/tf2betaserver/tf2beta/bin/sourceop.$(SHLIBEXT)
 	-sudo chmod 644 /home/srcds/tf2betaserver/tf2beta/bin/sourceop.$(SHLIBEXT)
 
 install_l4d:
 	$(MAKE) l4d_debug
-	-sudo cp sourceop_$(ARCH).$(SHLIBEXT) /home/srcds/l4dserver/l4d_demo/bin
-	-sudo chown srcds /home/srcds/l4dserver/l4d_demo/bin/sourceop_$(ARCH).$(SHLIBEXT)
-	-sudo chgrp srcds /home/srcds/l4dserver/l4d_demo/bin/sourceop_$(ARCH).$(SHLIBEXT)
-	-sudo chmod 644 /home/srcds/l4dserver/l4d_demo/bin/sourceop_$(ARCH).$(SHLIBEXT)
+	-sudo cp sourceop.$(SHLIBEXT) /home/srcds/l4dserver/l4d_demo/bin
+	-sudo chown srcds /home/srcds/l4dserver/l4d_demo/bin/sourceop.$(SHLIBEXT)
+	-sudo chgrp srcds /home/srcds/l4dserver/l4d_demo/bin/sourceop.$(SHLIBEXT)
+	-sudo chmod 644 /home/srcds/l4dserver/l4d_demo/bin/sourceop.$(SHLIBEXT)
 
 dirs:
 	-mkdir -p $(BUILD_OBJ_DIR)
@@ -265,19 +263,15 @@ dirs:
 	-mkdir -p $(PLUGIN_OBJ_DIR)/mmsource/sourcehook
 	-mkdir -p $(PUBLIC_OBJ_DIR)
 	-mkdir -p $(PUBLIC_OBJ_DIR)/../tier1
-	-mkdir -p $(TIER0_OBJ_DIR)
 	$(CHECK_DSP) $(SOURCE_DSP)
 
-sourceop_$(ARCH).$(SHLIBEXT): $(LUA_OBJS) $(PLUGIN_OBJS) $(TIER0_OBJS)
-	$(CLINK) $(DEBUG) -o $(BUILD_DIR)/$@ $(SHLIBLDFLAGS) $(LUA_OBJS) $(PLUGIN_OBJS) $(TIER0_OBJS) $(CPP_LIB) $(LDFLAGS) $(CPP_LIB) mathlib.a tier1_486.a
+sourceop.$(SHLIBEXT): $(LUA_OBJS) $(PLUGIN_OBJS)
+	$(CLINK) $(DEBUG) -o $(BUILD_DIR)/$@ $(SHLIBLDFLAGS) $(LUA_OBJS) $(PLUGIN_OBJS) $(CPP_LIB) $(LDFLAGS) $(CPP_LIB) mathlib_srv.a tier1_srv.a
 
 $(PLUGIN_OBJ_DIR)/%.o: $(PLUGIN_SRC_DIR)/%.cpp
 	$(DO_CC)
 
 $(PUBLIC_OBJ_DIR)/%.o: $(PUBLIC_SRC_DIR)/%.cpp
-	$(DO_CC)
-
-$(TIER0_OBJ_DIR)/%.o: $(TIER0_PUBLIC_SRC_DIR)/%.cpp
 	$(DO_CC)
 
 debug:
@@ -288,4 +282,4 @@ default: all
 clean:
 	-rm -rf $(PLUGIN_OBJ_DIR_RELEASE)
 	-rm -rf $(PLUGIN_OBJ_DIR_DEBUG)
-	-rm -f sourceop_$(ARCH).$(SHLIBEXT)
+	-rm -f sourceop.$(SHLIBEXT)

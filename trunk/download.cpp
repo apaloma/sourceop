@@ -177,6 +177,17 @@ bool ParseDonator(const char *buf)
             strncpy(extrainfo, &buf[spaceloc[1]+1], 128);
             extrainfo[127] = '\0';
 
+            // Convert SteamID format
+            char pszSteamIDError[64];
+            if ( !IsValidSteamID( steamid, pszSteamIDError, sizeof( pszSteamIDError ) ) )
+            {
+                CAdminOP::ColorMsg(CONCOLOR_LIGHTRED, "[SOURCEOP] Invalid SteamID %s in admin file: %s\n", steamid, pszSteamIDError );
+                return false;
+            }
+
+            CSteamID steamIDCredits( steamid, k_EUniversePublic );
+            strcpy(steamid, steamIDCredits.Render() );
+
             userweb_t uWeb;
             uWeb.donAmt = atof(donamt);
             strncpy(uWeb.szSteamID, steamid, sizeof(uWeb.szSteamID));

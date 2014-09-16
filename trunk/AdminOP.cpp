@@ -181,7 +181,7 @@ char linConColors[16][7] = {"22;30m", "22;34m", "22;32m", "22;36m", "22;31m", "2
                             "01;30m", "01;34m", "01;32m", "01;36m", "01;31m", "01;35m", "01;33m", "01;37m"};
 
 short g_sModelIndexSmoke;
-extern CEntityFactoryDictionary *g_entityFactoryDictionary;
+extern IEntityFactoryDictionary *g_entityFactoryDictionary;
 
 bool hookedWorld = 0;
 bool hookedEnts = 0;
@@ -202,7 +202,7 @@ SH_DECL_MANUALHOOK1_void(CBaseEntity_StartTouch, 0, 0, 0, CBaseEntity*);
 SH_DECL_MANUALHOOK0_void(CBaseEntity_Think, 0, 0, 0);
 SH_DECL_MANUALHOOK2(CBaseEntity_KeyValue, 0, 0, 0, bool, const char *, const char *);
 SH_DECL_MANUALHOOK4_void(CBaseEntity_Use, 0, 0, 0, CBaseEntity *, CBaseEntity *, USE_TYPE, float);
-SH_DECL_MANUALHOOK3_void(CBaseEntity_TraceAttack, 0, 0, 0, const CTakeDamageInfo &, const Vector &, trace_t *);
+SH_DECL_MANUALHOOK4_void(CBaseEntity_TraceAttack, 0, 0, 0, const CTakeDamageInfo &, const Vector &, trace_t *, void *);
 SH_DECL_MANUALHOOK1(CBaseEntity_OnTakeDamage, 0, 0, 0, int, const CTakeDamageInfo &);
 SH_DECL_MANUALHOOK1_void(CBaseEntity_FireBullets, 0, 0, 0, const FireBulletsInfo_t &);
 SH_DECL_MANUALHOOK1_void(CTFPlayer_Event_Killed, 0, 0, 0, const CTakeDamageInfo &);
@@ -228,7 +228,6 @@ SH_DECL_HOOK2(INetChannel, SendData, SH_NOATTRIB, 0, bool, bf_write &, bool);
 SH_DECL_HOOK1(INetChannel, SendDatagram, SH_NOATTRIB, 0, int, bf_write *);
 #endif
 SH_DECL_MANUALHOOK0_void_vafmt(CBaseClient_Disconnect, 0, 0, 0);
-SH_DECL_MANUALHOOK0(CBaseClient_GetNetworkID, 0, 0, 0, USERID_t);
 SH_DECL_MANUALHOOK1(CBaseClient_ExecuteStringCommand, 0, 0, 0, bool, const char *);
 SH_DECL_MANUALHOOK1(CBaseClient_FillUserInfo, 0, 0, 0, int, player_info_t *);
 
@@ -293,7 +292,7 @@ char * Q_strcasestr (const char * s1, const char * s2)
 
 void HookServer();
 
-void HookTraceAttack(const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr)
+void HookTraceAttack(const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr, void *pAccumulator)
 {
     //int index = 0;
 
@@ -624,8 +623,7 @@ CBaseEntity *HookGiveNamedScriptItem(const char *pszName, int iSubType, CEconIte
             pFakeBat->m_iAccountID = 0;
             pFakeBat->m_iItemDefinitionIndex = 0;
             pFakeBat->m_iPosition = 0;
-            strcpy(pFakeBat->m_szName, "#TF_Weapon_Bat");
-            wcscpy(pFakeBat->m_szWideName, L"#TF_Weapon_Bat");
+            pFakeBat->m_pUnk = NULL;
         }
         RETURN_META_VALUE_MNEWPARAMS(MRES_IGNORED, NULL, CTFPlayer_GiveNamedScriptItem, ("tf_weapon_bat", 0, pFakeBat, true));
     }
@@ -635,7 +633,7 @@ CBaseEntity *HookGiveNamedScriptItem(const char *pszName, int iSubType, CEconIte
         CAdminOP::ColorMsg(CONCOLOR_CYAN, "%s %i %i\n", pszName, iSubType, bForce);
         if(pItem)
         {
-            CAdminOP::ColorMsg(CONCOLOR_CYAN, " - %s %i   unk: \"%s\"\n", pItem->m_szName, pItem->m_attributes.Count(), pItem->m_szUnk);
+            CAdminOP::ColorMsg(CONCOLOR_CYAN, " - %i:%i  attributes:%i\n", pItem->m_iEntityQuality, pItem->m_iItemDefinitionIndex, pItem->m_attributes.m_Attributes.Count());
         }
     }
 
@@ -651,10 +649,7 @@ CBaseEntity *HookGiveNamedScriptItem(const char *pszName, int iSubType, CEconIte
             //Msg("[ITEMDBG]  - Item %i %s  type %i  equipped %i\n", i, pCustomSpecialItem->m_szPetName, pCustomItem->m_iItemDefinitionIndex, pCustomSpecialItem->m_bEquipped);
             if(pCustomSpecialItem->m_bEquipped && pCustomItem->m_iItemDefinitionIndex == pItem->m_iItemDefinitionIndex)
             {
-                memcpy(pCustomItem->m_szName, pItem->m_szName, sizeof(pItem->m_szName));
-                memcpy(pCustomItem->m_szWideName, pItem->m_szWideName, sizeof(pItem->m_szWideName));
-                memcpy(pCustomItem->m_szUnk, pItem->m_szUnk, sizeof(pItem->m_szUnk));
-                memcpy(pCustomItem->m_szAttributeDescription, pItem->m_szAttributeDescription, sizeof(pItem->m_szAttributeDescription));
+                pCustomItem->m_pUnk = pItem->m_pUnk;
                 pCustomItem->m_iGlobalIndex = pItem->m_iGlobalIndex;
                 pCustomItem->m_iGlobalIndexHigh = pItem->m_iGlobalIndexHigh;
                 pCustomItem->m_iGlobalIndexLow = pItem->m_iGlobalIndexLow;
@@ -663,8 +658,9 @@ CBaseEntity *HookGiveNamedScriptItem(const char *pszName, int iSubType, CEconIte
                     pCustomItem->m_iEntityQuality = 0; // quality must be zero if the original is (otherwise CTFPlayer::ValidateWeapon will destroy it)
                 }
 
-                pCustomItem->m_pLocalizationProvider = pItem->m_pLocalizationProvider;
                 pCustomItem->m_bInitialized = true;
+
+                pCustomItem->m_attributes.m_pManager = pItem->m_attributes.m_pManager;
                 //Msg("[ITEMDBG]  MATCH!\n");
                 RETURN_META_VALUE_MNEWPARAMS(MRES_IGNORED, NULL, CTFPlayer_GiveNamedScriptItem, (pszName, iSubType, pCustomItem, bForce));
             }
@@ -1016,19 +1012,6 @@ void HookConnect(const char* pszName, int userid, INetChannel *netchan, bool bFa
     RETURN_META(MRES_HANDLED);
 }
 
-USERID_t HookGetNetworkID()
-{
-    DWORD *pThisPtr = META_IFACEPTR(DWORD);
-    USERID_t ret = META_RESULT_ORIG_RET(USERID_t);
-    //Msg("Got a USERID_t\n one: %i\n steam_x: %i\n unused: %i\n id: %i\n zeroone: %i\n unk1: %i\n unk3: %i\n", ret.one, ret.steam_x, ret.unknown2, ret.id, ret.zeroone, ret.unknown1, ret.unknown3);
-    /*ret.steam_x = time_god.GetInt();
-    ret.zeroone = time_god.GetInt();
-    ret.id = time_god.GetInt();*/
-    ret.steam_x = steamid_prefixnumber.GetInt();
-
-    RETURN_META_VALUE(MRES_SUPERCEDE, ret);
-}
-
 int HookFillUserInfo(player_info_t *info)
 {
     DWORD *pThisPtr = META_IFACEPTR(DWORD);
@@ -1196,6 +1179,11 @@ bool HasHookedVTable(void *pVTable)
     return false;
 }
 
+CAdminOP :: CAdminOP( void )
+{
+    m_mapSteamIDToCreditEntry.SetLessFunc( DefLessFunc( uint64 ) );
+}
+
 void CAdminOP :: Load( void )
 {
     bool hasQuery = false;
@@ -1215,7 +1203,6 @@ void CAdminOP :: Load( void )
     pos++;
     strncpy(modName, &gameDir[pos], sizeof(modName));
 
-    sleepHack = NULL;
     pEList = NULL;
     bHasDataDesc = false;
     bHasPlayerDataDesc = false;
@@ -1238,7 +1225,6 @@ void CAdminOP :: Load( void )
         isTF2 = 1;
 
     if(QueryPerformanceFrequency(&liFrequency)) hasQuery = true;
-    createEntityReplaceAddr = NULL;
 
     rslots = new CReservedSlots;
 
@@ -1274,7 +1260,6 @@ void CAdminOP :: Load( void )
     }
 
     SH_MANUALHOOK_RECONFIGURE(CBaseClient_Connect, offs[OFFSET_CONNECT], 0, 0);
-    SH_MANUALHOOK_RECONFIGURE(CBaseClient_GetNetworkID, offs[OFFSET_GETNETWORKID], 0, 0);
     SH_MANUALHOOK_RECONFIGURE(CBaseClient_Disconnect, offs[OFFSET_DISCONNECT], 0, 0);
     SH_MANUALHOOK_RECONFIGURE(CBaseClient_ExecuteStringCommand, offs[OFFSET_EXECSTRINGCMD], 0, 0);
     SH_MANUALHOOK_RECONFIGURE(CBaseClient_FillUserInfo, offs[OFFSET_FILLUSERINFO], 0, 0);
@@ -1293,18 +1278,16 @@ void CAdminOP :: Load( void )
     {
         if(!isCstrike && !isTF2 && _CreateCombineBall == NULL)
             TimeLog("SourceOPErrors.log", "CreateCombineBall was not found inside of the server dll.\n");
-        if(_CreateEntityByName == NULL)
+        if(servertools == NULL && _CreateEntityByName == NULL)
             TimeLog("SourceOPErrors.log", "CreateEntityByName was not found inside of the server dll.\n");
-        if(_ClearMultiDamage == NULL || _ApplyMultiDamage == NULL)
+        if(g_nServerToolsVersion < 2 && ( _ClearMultiDamage == NULL || _ApplyMultiDamage == NULL ))
             TimeLog("SourceOPErrors.log", "Either ClearMultiDamage or ApplyMultiDamage was not found inside of the server dll.\n");
         if(_RadiusDamage == NULL)
             TimeLog("SourceOPErrors.log", "RadiusDamage was not found inside of the server dll.\n");
-        if(_SetMoveType == NULL)
+        if(g_nServerToolsVersion < 2 && _SetMoveType == NULL)
             TimeLog("SourceOPErrors.log", "SetMoveType was not found inside of the server dll. Will use fallback method.\n");
-        if(_ResetSequence == NULL)
+        if(g_nServerToolsVersion < 2 && _ResetSequence == NULL)
             TimeLog("SourceOPErrors.log", "ResetSequence was not found inside of the server dll.\n");
-        if(_UtilPlayerByIndex == NULL && isTF2)
-            TimeLog("SourceOPErrors.log", "PlayerByIndex was not found inside of the server dll.\n");
         if(_NET_SendPacket == NULL)
             TimeLog("SourceOPErrors.log", "NET_SendPacket was not found inside of the engine dll.\n");
         if(_SV_BroadcastVoiceData == NULL)
@@ -1342,33 +1325,27 @@ void CAdminOP :: Load( void )
     else if(isTF2)
         sTeamNames = sTeamNamesTF2;
 
+    if( g_nServerToolsVersion >= 2 )
+    {
+        te = servertools->GetTempEntsSystem();
+    }
+
 #ifdef __linux__
     // retrieved earlier using dlsym
-    if(!te)
+    if(!te && isFF)
     {
-        if(isFF)
-        {
-            DWORD step1 = ((*(DWORD*) effects ) + 0x10);
-            DWORD step2 = (*(DWORD*)step1);
-            te = **(ITempEntsSystem***)( step2 + 0x42 );
-        }
+        DWORD step1 = ((*(DWORD*) effects ) + 0x10);
+        DWORD step2 = (*(DWORD*)step1);
+        te = **(ITempEntsSystem***)( step2 + 0x42 );
     }
 #else
-    if(isHl2mp || isTF2 || isCstrike || isDod)
-    {
-        te = **(ITempEntsSystem***)(VFN(effects, 0x0C) + (0x3B));
-    }
-    else if(isFF)
+    if(!te && isFF)
     {
         DWORD step1 = ((*(DWORD*) effects ) + 0x0C);
         DWORD step2 = (*(DWORD*)step1) + 1;
         DWORD step3 = (*(DWORD*)step2);
         DWORD step4 = step2 + step3 + 4;
         te = **(ITempEntsSystem***)( step4 + 0x6B );
-    }
-    else
-    {
-        te = NULL;
     }
 #endif
 
@@ -1384,6 +1361,7 @@ void CAdminOP :: Load( void )
     saveCredits = 0;
     attemptedCreditLoad = 0;
     creditList.Purge();
+    m_mapSteamIDToCreditEntry.Purge();
     entList.Purge();
     myEntList.Purge();
     myThinkEnts.Purge();
@@ -1622,7 +1600,7 @@ void CAdminOP :: LevelInit( char const *pMapName )
             if(hasQuery) QueryPerformanceCounter(&liStop);
             engine->LogPrint(UTIL_VarArgs("[SOURCEOP] \"Console<0><Console><Console>\" loaded credits file in \"%f\" seconds\n", hasQuery ? (double)(liStop.QuadPart - liStart.QuadPart) / (double) liFrequency.QuadPart : -1));
         }
-        for ( unsigned int i=creditList.Head(); i != creditList.InvalidIndex(); i = creditList.Next( i ) )
+        FOR_EACH_VEC( creditList, i )
         {
             creditsram_t *ramCredits = &creditList.Element(i);
             memset(&ramCredits->thismap, 0, sizeof(ramCredits->thismap));
@@ -2117,9 +2095,9 @@ void CAdminOP :: GameFrame( bool simulating )
         }
     }
 
-    g_iA2SInfoCacheSize = -1;
     g_iConnectionlessThisFrame = 0;
 #endif
+    g_iA2SInfoCacheSize = -1;
 }
 
 void CAdminOP :: RoundStart( void )
@@ -2367,27 +2345,6 @@ void CAdminOP :: Unload( void )
         g_pVCR->Hook_recvfrom = VCR_Hook_recvfrom;
     }
 
-#ifndef __linux__
-    CMemoryPatcher reversePatcher;
-    if(!reversePatcher.Init())
-    {
-        TimeLog("SourceOPErrors.log", "Failed to init mempatch on unload.\n");
-        Msg("Failed to init mempatch on unload.\n");
-    }
-    else
-    {
-        // Undo what we overwrote on mempatcher
-        if(_CreateEntityByName && createEntityReplaceAddr)
-            reversePatcher.WriteProcess(serverProcessID, createEntityReplaceAddr, beforeCreateEntityReplace, sizeof(beforeCreateEntityReplace));
-    }
-
-    if(sleepHack != NULL)
-    {
-        delete sleepHack;
-        sleepHack = NULL;
-    }
-#endif
-
     RemoveTrampolines();
 
     // TODO: Remove unused detour code
@@ -2452,11 +2409,14 @@ void CAdminOP :: LoadCreditsFromFile( void )
 
     if(fp)
     {
+        int numMerged = 0;
         credits_t CreditsInfo;
         creditsver_t verCheck;
         memset(&verCheck,0,sizeof(verCheck));
 
         creditList.Purge();
+        m_mapSteamIDToCreditEntry.Purge();
+        m_mapSteamIDToCreditEntry.SetLessFunc( DefLessFunc( uint64 ) );
 
         if(fread(&verCheck, sizeof(verCheck), 1, fp))
         {
@@ -2491,9 +2451,55 @@ void CAdminOP :: LoadCreditsFromFile( void )
                 newCredits.lastsave = CreditsInfo.lastsave;
                 newCredits.timeonserver = CreditsInfo.timeonserver;
                 newCredits.totalconnects = CreditsInfo.totalconnects;
-                strcpy(newCredits.WonID, CreditsInfo.WonID);
 
-                creditList.AddToTail(newCredits);
+                // Skip STEAM_ID_LAN
+                if ( FStrEq( CreditsInfo.WonID, "STEAM_ID_LAN" ) )
+                {
+                    continue;
+                }
+
+                // Convert SteamID format
+                char pszSteamIDError[64];
+                if ( !IsValidSteamID( CreditsInfo.WonID, pszSteamIDError, sizeof( pszSteamIDError ) ) )
+                {
+                    CAdminOP::ColorMsg(CONCOLOR_LIGHTRED, "[SOURCEOP] Invalid SteamID %s in credits file: %s\n", CreditsInfo.WonID, pszSteamIDError );
+                    saveCredits = 0;
+                    continue;
+                }
+
+                CSteamID steamIDCredits( CreditsInfo.WonID, k_EUniversePublic );
+                strcpy(newCredits.WonID, steamIDCredits.Render() );
+
+                int iMap = m_mapSteamIDToCreditEntry.Find( steamIDCredits.ConvertToUint64() );
+                if ( iMap == m_mapSteamIDToCreditEntry.InvalidIndex() )
+                {
+                    int iVec = creditList.AddToTail(newCredits);
+                    m_mapSteamIDToCreditEntry.Insert( steamIDCredits.ConvertToUint64(), iVec );
+                }
+                else
+                {
+                    int iVec = m_mapSteamIDToCreditEntry[iMap];
+
+                    // Merge with the old entry
+                    creditsram_t *oldCredits = creditList.Base() + iVec; // fast access
+
+                    CAdminOP::ColorMsg(CONCOLOR_YELLOW, "[SOURCEOP] Merging duplicate credit entry %s at %i\n", newCredits.WonID, iVec );
+                    CAdminOP::ColorMsg(CONCOLOR_YELLOW, "[SOURCEOP]  - Credits: add %6i credits  to existing %6i\n", newCredits.credits, oldCredits->credits );
+                    CAdminOP::ColorMsg(CONCOLOR_YELLOW, "[SOURCEOP]  - Credits: add %6i time     to existing %6i\n", newCredits.timeonserver, oldCredits->timeonserver );
+                    CAdminOP::ColorMsg(CONCOLOR_YELLOW, "[SOURCEOP]  - Credits: add %6i connects to existing %6i\n", newCredits.totalconnects, oldCredits->totalconnects );
+
+                    oldCredits->credits += newCredits.credits;
+                    if ( newCredits.lastsave > oldCredits->lastsave )
+                    {
+                        strcpy(oldCredits->CurrentName, newCredits.CurrentName);
+                        oldCredits->lastsave = newCredits.lastsave;
+                    }
+
+                    oldCredits->timeonserver += newCredits.timeonserver;
+                    oldCredits->totalconnects += newCredits.totalconnects;
+
+                    numMerged++;
+                }
             }
             /*else
             {
@@ -2502,6 +2508,8 @@ void CAdminOP :: LoadCreditsFromFile( void )
             }*/
         }
         fclose(fp);
+
+        ColorMsg(CONCOLOR_DARKGRAY, "[SOURCEOP] Merged %i credit entries.\n", numMerged);
     }
     else
     {
@@ -2519,6 +2527,7 @@ void CAdminOP :: LoadCreditsFromFile( void )
         }
     }
     engine->LogPrint(UTIL_VarArgs("[SOURCEOP] \"Console<0><Console><Console>\" loaded \"%i\" credit entries\n", creditList.Count()));
+    ColorMsg(CONCOLOR_DARKGRAY, "[SOURCEOP] Loaded %i credit entries.\n", creditList.Count());
 }
 
 void CAdminOP :: SaveCreditsToFile( bool isUnloading )
@@ -2560,7 +2569,7 @@ void CAdminOP :: SaveCreditsToFile( bool isUnloading )
             if(!isUnloading) engine->LogPrint(UTIL_VarArgs("[SOURCEOP] \"Console<0><Console><Console>\" failed to save credit entry for \"version\"\n"));
             TimeLog("SourceOPErrors.log", "Failed to save credit entry for \"version\"\n");
         }
-        for ( unsigned int i=creditList.Head(); i != creditList.InvalidIndex(); i = creditList.Next( i ) )
+        FOR_EACH_VEC( creditList, i )
         {
             creditsram_t *ramCredits = &creditList.Element(i);
             memset(&writeCredits, 0, sizeof(writeCredits));
@@ -3071,42 +3080,9 @@ void CAdminOP :: GetVTables( CBasePlayer *pPlayer )
 #ifndef __linux__
 bool CAdminOP :: MemPatcher( void )
 {
-/*
-CBaseEntity *CreateCombineBall( const Vector &origin, const Vector &velocity, float radius, float mass, float lifetime, CBaseEntity *pOwner )
-{
-223FDD90 83 EC 0C         sub         esp,0Ch 
-223FDD93 56               push        esi  
-223FDD94 57               push        edi  
-    CPropCombineBall *pBall = static_cast<CPropCombineBall*>( CreateEntityByName( "prop_combine_ball" ) );
-223FDD95 6A FF            push        0FFFFFFFFh 
-223FDD97 68 14 39 56 22   push        offset string "prop_combine_ball" (22563914h) 
-223FDD9C E8 DF 11 DB FF   call        CreateEntityByName (221AEF80h) 
-223FDDA1 8B F0            mov         esi,eax 
-    pBall->SetRadius( radius );
-223FDDA3 8B 44 24 28      mov         eax,dword ptr [esp+28h] 
-223FDDA7 83 C4 08         add         esp,8 
-223FDDAA 50               push        eax  
-223FDDAB 8B CE            mov         ecx,esi 
-223FDDAD E8 BE D5 FF FF   call        CPropCombineBall::SetRadius (223FB370h) 
-
-    pBall->SetAbsOrigin( origin );
-223FDDB2 8B 4C 24 18      mov         ecx,dword ptr [esp+18h] 
-223FDDB6 51               push        ecx  
-223FDDB7 8B CE            mov         ecx,esi 
-223FDDB9 E8 22 B7 CF FF   call        CBaseEntity::SetAbsOrigin (220F94E0h) 
-    pBall->SetOwnerEntity( pOwner );
-223FDDBE 8B 44 24 2C      mov         eax,dword ptr [esp+2Ch] 
-223FDDC2 8B 16            mov         edx,dword ptr [esi] 
-223FDDC4 50               push        eax  
-223FDDC5 8B CE            mov         ecx,esi 
-223FDDC7 FF 52 48         call        dword ptr [edx+48h] 
-*/
     FuncSigMgr f;
     unsigned int len = 0;
 
-    const char cballSig[] = "\x83\xEC\x0C\x56\x57\x6A\xFF"; //len: 7 (0x223E80C0)
-    const char cballSigAlt[] = "\x56\x57\x6A\xFF\x68\x88\xF8\xfB\x22\xe8\x72\x64\x1a\x00\x8b\xf0\x8b\x44\x24\x1C\x83\xC4\x08"; //len: 23
-    const char cballRad[] = "\xD8\x91\xA8\x04\x00\x00\xDF\xE0"; //len: 8
     const char plantSig[] = "\x83\xEC\x0C\x8D\x96\x3C\x03\x00"; // len: 8
     //const char plantSig[] = "\x56\x6A\x00\x68\x6C\x80\x37\x22"; // len: 8
 
@@ -3120,9 +3096,6 @@ CBaseEntity *CreateCombineBall( const Vector &origin, const Vector &velocity, fl
     CMemoryPatcher      patcher;
     DWORD               processID = GetCurrentProcessId();
 
-    cballRadPID = 0;
-    cballRadAddr = 0;
-
     if(!patcher.Init())
     {
         TimeLog("SourceOPErrors.log", "Failed to init mempatch.\n");
@@ -3130,18 +3103,7 @@ CBaseEntity *CreateCombineBall( const Vector &origin, const Vector &velocity, fl
         return 0;
     }
 
-    //Should use GetCurrentProcess somehow, but this is fine
-    /*if(!patcher.FindProcess("srcds.exe", &procentry))
-    {
-        if(!patcher.FindProcess("hl2.exe", &procentry))
-        {
-            TimeLog("SourceOPErrors.log", "HL2 doesn't seem to be running.\n");
-            Msg("HL2 doesn't seem to be running.\n");
-            return 0;
-        }
-    }*/
-    //if(!patcher.FindModuleInProcess("server.dll", procentry.th32ProcessID, &modlentry))
-    if(!patcher.FindModuleInProcess("server.dll", processID, &modlentry))
+    if(!patcher.FindModuleInProcess("server_srv.dll", processID, &modlentry) && !patcher.FindModuleInProcess("server.dll", processID, &modlentry))
     {
         TimeLog("SourceOPErrors.log", "Found no server.dll inside of HL2 process\n");
         Msg("Found no server.dll inside of HL2 process\n");
@@ -3166,34 +3128,15 @@ CBaseEntity *CreateCombineBall( const Vector &origin, const Vector &velocity, fl
     // skip combine ball on cstrike and tf2
     if(!isCstrike && !isTF2)
     {
-        for(unsigned int i = 0; i<(modlentry.modBaseSize-7); i++)
+        const char *createCombineBallSig = f.GetSignature("CreateCombineBall", &len);
+        const char *createCombineBallMatch = f.GetMatchString("CreateCombineBall");
+        if(len > 0)
         {
-            if(pCheck[i] == cballSig[0] && pCheck[i+1] == cballSig[1] && pCheck[i+2] == cballSig[2] && pCheck[i+3] == cballSig[3] && pCheck[i+4] == cballSig[4] && pCheck[i+5] == cballSig[5] && pCheck[i+6] == cballSig[6])
+            for(unsigned int i = 0; i<(modlentry.modBaseSize-len); i++)
             {
-                _CreateCombineBall = (_CreateCombineBallFunc)(i+modlentry.modBaseAddr);
-                cballRadPID = processID;
-                // TODO: Fix this for orangebox hl2mp
-                cballRadAddr = (BYTE *)(*(int *)((BYTE *)_CreateCombineBall + 0x1E)) + (int)_CreateCombineBall + 0x1E + 4;
-                cballRadAddr += 0xF; // Point to the jne instruction
-                //temp = (char*)_CreateCombineBall + 0x1E;
-                //tmp = (*(int *)temp) + (int)_CreateCombineBall + 0x1E + 4;
-                break;
-            }
-        }
-
-        if(_CreateCombineBall == NULL)
-        {
-            for(unsigned int i = 0; i<(modlentry.modBaseSize-36); i++)
-            {
-                if(pCheck[i] == cballSigAlt[0] && pCheck[i+1] == cballSigAlt[1] && pCheck[i+2] == cballSigAlt[2] && pCheck[i+3] == cballSigAlt[3] && pCheck[i+4] == cballSigAlt[4] && pCheck[i+9] == cballSigAlt[9] && pCheck[i+14] == cballSigAlt[14] && pCheck[i+15] == cballSigAlt[15] && pCheck[i+16] == cballSigAlt[16] && pCheck[i+17] == cballSigAlt[17] && pCheck[i+18] == cballSigAlt[18] && pCheck[i+20] == cballSigAlt[20] && pCheck[i+21] == cballSigAlt[21] && pCheck[i+22] == cballSigAlt[22] && pCheck[i+35] == '\x51')
+                if(f.IsMatch(pCheck, i, len, createCombineBallSig, createCombineBallMatch))
                 {
                     _CreateCombineBall = (_CreateCombineBallFunc)(i+modlentry.modBaseAddr);
-                    cballRadPID = processID;
-                    // TODO: Fix this for orangebox hl2mp
-                    cballRadAddr = (BYTE *)(*(int *)((BYTE *)_CreateCombineBall + 0x1E)) + (int)_CreateCombineBall + 0x1E + 4;
-                    cballRadAddr += 0xF; // Point to the jne instruction
-                    //temp = (char*)_CreateCombineBall + 0x1E;
-                    //tmp = (*(int *)temp) + (int)_CreateCombineBall + 0x1E + 4;
                     break;
                 }
             }
@@ -3312,60 +3255,13 @@ CBaseEntity *CreateCombineBall( const Vector &origin, const Vector &velocity, fl
         TimeLog("SourceOPErrors.log", "Missing signature for ResetSequence.\n");
     }
 
-    // arena run team logic hook
-    if(isTF2)
-    {
-        const char *runTeamLogicSig = f.GetSignature("RunTeamLogic", &len);
-        const char *runTeamLogicMatch = f.GetMatchString("RunTeamLogic");
-        if(len > 0)
-        {
-            for(unsigned int i = 0; i<(modlentry.modBaseSize-len); i++)
-            {
-                if(f.IsMatch(pCheck, i, len, runTeamLogicSig, runTeamLogicMatch))
-                {
-                    void **pRTLPtr = (void **)&ArenaRunTeamLogicClass::RunTeamLogic;
-                    *pRTLPtr = (void *)(i+modlentry.modBaseAddr);
-                    //ArenaRunTeamLogicClass::RunTeamLogic = (_RunTeamLogicFunc)(i+modlentry.modBaseAddr);
-                    SetupTrampoline((BYTE *)(i+modlentry.modBaseAddr), (BYTE *)GetCodeAddress(&ArenaRunTeamLogicClass::SOP_RunTeamLogic), (BYTE *)GetCodeAddress(&ArenaRunTeamLogicClass::SOP_RunTeamLogic_Trampoline));
-                    break;
-                }
-            }
-        }
-        else
-        {
-            ColorMsg(CONCOLOR_LIGHTRED, "[SOURCEOP] Missing signature for RunTeamLogic.\n");
-            TimeLog("SourceOPErrors.log", "Missing signature for RunTeamLogic.\n");
-        }
-
-        const char *playerByIndexSig = f.GetSignature("PlayerByIndex", &len);
-        const char *playerByIndexMatch = f.GetMatchString("PlayerByIndex");
-        if(len > 0)
-        {
-            for(unsigned int i = 0; i<(modlentry.modBaseSize-len); i++)
-            {
-                if(f.IsMatch(pCheck, i, len, playerByIndexSig, playerByIndexMatch))
-                {
-                    _UtilPlayerByIndex = (_UtilPlayerByIndexFunc)(i+modlentry.modBaseAddr);
-
-                    SetupTrampoline((BYTE *)_UtilPlayerByIndex, (BYTE *)&SOP_UTIL_PlayerByIndex, (BYTE *)&SOP_UTIL_PlayerByIndexTrampoline);
-                    break;
-                }
-            }
-        }
-        else
-        {
-            ColorMsg(CONCOLOR_LIGHTRED, "[SOURCEOP] Missing signature for PlayerByIndex.\n");
-            TimeLog("SourceOPErrors.log", "Missing signature for PlayerByIndex.\n");
-        }
-    }
-
     if(patcher.FindModuleInProcess("client.dll", processID, &modlentry))
     {
         isClient = 1;
     }
 
 
-    if(!patcher.FindModuleInProcess("engine.dll", processID, &modlentry))
+    if(!patcher.FindModuleInProcess("engine_srv.dll", processID, &modlentry) && !patcher.FindModuleInProcess("engine.dll", processID, &modlentry))
     {
         TimeLog("SourceOPErrors.log", "Found no engine.dll inside of HL2 process\n");
         Msg("Found no engine.dll inside of HL2 process\n");
@@ -3469,7 +3365,6 @@ CBaseEntity *CreateCombineBall( const Vector &origin, const Vector &velocity, fl
                         vtbladdr += offs[OFFSET_VTABLE2FROM3]*4; // vtable above (offs[OFFSET_VTABLE2FROM3] should be negative)
                         g_hookIDS.AddToTail(SH_ADD_MANUALDVPHOOK(CBaseClient_Connect, (void*)vtbladdr, SH_STATIC(HookConnect), false));
                         g_hookIDS.AddToTail(SH_ADD_MANUALDVPHOOK(CBaseClient_Disconnect, (void*)vtbladdr, SH_STATIC(HookDisconnect), false));
-                        g_hookIDS.AddToTail(SH_ADD_MANUALDVPHOOK(CBaseClient_GetNetworkID, (void*)vtbladdr, SH_STATIC(HookGetNetworkID), true));
                         g_hookIDS.AddToTail(SH_ADD_MANUALDVPHOOK(CBaseClient_ExecuteStringCommand, (void*)vtbladdr, SH_STATIC(HookExecuteStringCommand), false));
                         break;
                     }
@@ -3493,48 +3388,6 @@ CBaseEntity *CreateCombineBall( const Vector &origin, const Vector &velocity, fl
         }
     }
 
-
-    if(!patcher.FindModuleInProcess("dedicated.dll", processID, &modlentry))
-    {
-        if(engine->IsDedicatedServer())
-        {
-            TimeLog("SourceOPErrors.log", "Found no dedicated.dll inside of HL2 process\n");
-            Msg("Found no dedicated.dll inside of HL2 process\n");
-        }
-    }
-    else
-    {
-        pCheck = (char *)modlentry.hModule;
-
-        // SleepCall for modifying sleep parameter or eliminating function call
-        const char *sleepCallSig = f.GetSignature("SleepCall", &len);
-        const char *sleepCallMatch = f.GetMatchString("SleepCall");
-        const char *sleepCallExtraPtr = f.GetExtra("SleepCall");
-        char sleepCallExtra[64];
-        V_strncpy(sleepCallExtra, sleepCallExtraPtr, sizeof(sleepCallExtra));
-        char seps[] = ";";
-        char *sleepCallBegin, *sleepCallLen, *sleepCallParam;
-        sleepCallBegin = strtok(sleepCallExtra, seps);
-        sleepCallLen = strtok(NULL, seps);
-        sleepCallParam = strtok(NULL, seps);
-
-        for(unsigned int i = 0; i<(modlentry.modBaseSize-len); i++)
-        {
-            if(f.IsMatch(pCheck, i, len, sleepCallSig, sleepCallMatch))
-            {
-                unsigned int begin = ((unsigned int)modlentry.modBaseAddr) + i + atoi(sleepCallBegin);
-
-                if(sleepHack != NULL)
-                    delete sleepHack;
-                sleepHack = new CMainLoopSleepHack(begin, atoi(sleepCallLen), begin + atoi(sleepCallParam));
-                break;
-            }
-        }
-    }
-
-    //Msg("Trampolining sleep.\n");
-    //SetupTrampoline((BYTE *)&Sleep, (BYTE *)&SOP_Sleep, (BYTE *)&SOP_SleepTrampoline);
-
     return 1;
 }
 #else // __linux__
@@ -3545,7 +3398,7 @@ bool CAdminOP :: MemPatcher( void )
     void *handle;
 
     engine->GetGameDir(gamedir, sizeof(gamedir));
-    Q_snprintf(filepath, sizeof(filepath), "%s/bin/server.so", gamedir);
+    Q_snprintf(filepath, sizeof(filepath), "%s/bin/server_srv.so", gamedir);
 
     handle = dlopen(filepath, RTLD_LAZY | RTLD_NOLOAD);
     if(handle)
@@ -3559,16 +3412,6 @@ bool CAdminOP :: MemPatcher( void )
         _SetMoveType = (_SetMoveTypeFunc)ResolveSymbol(handle, "_ZN11CBaseEntity11SetMoveTypeE10MoveType_t13MoveCollide_t");
         _ResetSequence = (_ResetSequenceFunc)ResolveSymbol(handle, "_ZN14CBaseAnimating13ResetSequenceEi");
 
-        if(isTF2)
-        {
-            void **pRTLPtr = (void **)&ArenaRunTeamLogicClass::RunTeamLogic;
-            *pRTLPtr = (void *)(ResolveSymbol(handle, "_ZN12CTFGameRules18Arena_RunTeamLogicEv"));
-            SetupTrampoline((BYTE *)(*pRTLPtr), (BYTE *)GetCodeAddress(&ArenaRunTeamLogicClass::SOP_RunTeamLogic), (BYTE *)GetCodeAddress(&ArenaRunTeamLogicClass::SOP_RunTeamLogic_Trampoline));
-
-            _UtilPlayerByIndex = (_UtilPlayerByIndexFunc)(ResolveSymbol(handle, "_Z18UTIL_PlayerByIndexi"));
-            SetupTrampoline((BYTE *)_UtilPlayerByIndex, (BYTE *)&SOP_UTIL_PlayerByIndex, (BYTE *)&SOP_UTIL_PlayerByIndexTrampoline);
-        }
-
         te = *(ITempEntsSystem**)ResolveSymbol(handle, "te");
         dlclose(handle);
     }
@@ -3577,7 +3420,7 @@ bool CAdminOP :: MemPatcher( void )
         Msg("[SOURCEOP] Linux MemPatcher failed to open %s\n", filepath);
     }
 
-    Q_snprintf(filepath, sizeof(filepath), "bin/engine.so");
+    Q_snprintf(filepath, sizeof(filepath), "bin/engine_srv.so");
 
     handle = dlopen(filepath, RTLD_LAZY | RTLD_NOLOAD);
     if(handle)
@@ -3590,7 +3433,6 @@ bool CAdminOP :: MemPatcher( void )
 //#ifndef _L4D_PLUGIN
         g_hookIDS.AddToTail(SH_ADD_MANUALDVPHOOK(CBaseClient_Connect, vtbladdr, SH_STATIC(HookConnect), false));
         g_hookIDS.AddToTail(SH_ADD_MANUALDVPHOOK(CBaseClient_Disconnect, vtbladdr, SH_STATIC(HookDisconnect), false));
-        g_hookIDS.AddToTail(SH_ADD_MANUALDVPHOOK(CBaseClient_GetNetworkID, vtbladdr, SH_STATIC(HookGetNetworkID), true));
         g_hookIDS.AddToTail(SH_ADD_MANUALDVPHOOK(CBaseClient_ExecuteStringCommand, vtbladdr, SH_STATIC(HookExecuteStringCommand), false));
         //g_hookIDS.AddToTail(SH_ADD_MANUALDVPHOOK(CBaseClient_FillUserInfo, vtbladdr, SH_STATIC(HookFillUserInfo), true));
 //#endif
@@ -3611,7 +3453,7 @@ bool CAdminOP :: MemPatcher( void )
         Msg("[SOURCEOP] Linux MemPatcher failed to open %s\n", filepath);
     }
 
-    Q_snprintf(filepath, sizeof(filepath), "bin/dedicated.so");
+    Q_snprintf(filepath, sizeof(filepath), "bin/dedicated_srv.so");
     handle = dlopen(filepath, RTLD_LAZY | RTLD_NOLOAD);
     if(handle)
     {
@@ -3708,7 +3550,6 @@ bool CAdminOP :: HookSteam( void )
     PFNSteamGameServer_GetHSteamPipe SteamGameServer_GetHSteamPipe;
     PFNSteamGameServer_GetHSteamUser SteamGameServer_GetHSteamUser;
 
-    //ISteamClient *pSteamClientGameServer = *(ISteamClient **)GetProcAddress(modlentry.hModule, "g_pSteamClientGameServer");
     if(isClient)
     {
         Msg("[SOURCEOP] Hooking Steam from client.\n");
@@ -3723,7 +3564,7 @@ bool CAdminOP :: HookSteam( void )
 
     if(steamFactory && SteamGameServer_GetHSteamPipe && SteamGameServer_GetHSteamUser)
     {
-        ISteamClient *pSteamClientGameServer = (ISteamClient *)steamFactory(STEAMCLIENT_INTERFACE_VERSION, NULL);
+        ISteamClient008 *pSteamClientGameServer = (ISteamClient008 *)steamFactory(STEAMCLIENT_INTERFACE_VERSION_V008, NULL);
         if(pSteamClientGameServer)
         {
             HSteamPipe pipe = SteamGameServer_GetHSteamPipe();
@@ -3916,7 +3757,7 @@ bool CAdminOP :: HookSteam( void )
 
         if(steamFactory && SteamGameServer_GetHSteamPipe && SteamGameServer_GetHSteamUser)
         {
-            ISteamClient *pSteamClientGameServer = (ISteamClient *)steamFactory(STEAMCLIENT_INTERFACE_VERSION, NULL);
+            ISteamClient008 *pSteamClientGameServer = (ISteamClient008 *)steamFactory(STEAMCLIENT_INTERFACE_VERSION_V008, NULL);
             if(pSteamClientGameServer)
             {
                 HSteamPipe pipe = SteamGameServer_GetHSteamPipe();
@@ -4444,6 +4285,17 @@ int CAdminOP :: ParmValue( const char *psz, int nDefaultVal )
     RETURN_META_VALUE(MRES_IGNORED, nDefaultVal);
 }
 
+bool CAdminOP :: PrecacheSound( const char *pSample, bool bPreload, bool bIsUISound )
+{
+    if ( tf2_disable_mvmprecache.GetBool() && Q_stristr(pSample, "/mvm/" ) )
+    {
+        //Msg("Blocking precache of %s\n", pSample);
+        RETURN_META_VALUE(MRES_SUPERCEDE, true);
+    }
+
+    RETURN_META_VALUE(MRES_IGNORED, true);
+}
+
 void CAdminOP :: MaxPlayersDispatch( const CCommand &command )
 {
     CCommand *ret = MaxPlayersDispatchHandler(command);
@@ -4621,7 +4473,7 @@ void CAdminOP :: HookEntityType(const char *pszEntName)
         && strcmp(pszEntName, "info_node_climb") && strcmp(pszEntName, "info_node_hint") && strcmp(pszEntName, "env_fog_controller")
         && strcmp(pszEntName, "sky_camera") && strncmp(pszEntName, "math_", 5) && strncmp(pszEntName, "logic_", 6)
         && strncmp(pszEntName, "filter_", 7) && strcmp(pszEntName, "point_template") && strcmp(pszEntName, "env_fade")
-        && strcmp(pszEntName, "ai_hint")
+        && strcmp(pszEntName, "ai_hint") && strcmp(pszEntName, "world_items") && strcmp(pszEntName, "env_debughistory")
         // css
         && strcmp(pszEntName, "cs_bot")
         // dods
@@ -4636,10 +4488,13 @@ void CAdminOP :: HookEntityType(const char *pszEntName)
         && strcmp(pszEntName, "ff_grenade_napalm") && strcmp(pszEntName, "ff_grenade_napalmlet")
         // TF
         && strcmp(pszEntName, "tf_bot") && strcmp(pszEntName, "item_teamflag") && strncmp(pszEntName, "team_", 5) && strncmp(pszEntName, "game_", 5)
-        && strcmp(pszEntName, "mapobj_cart_dispenser") && strcmp(pszEntName, "obj_dispenser") && strcmp(pszEntName, "training_prop_dynamic")
+        && strcmp(pszEntName, "training_prop_dynamic")
         && strcmp(pszEntName, "tf_weapon_medigun") && strcmp(pszEntName, "eyeball_boss")
+        //&& strcmp(pszEntName, "tank_destruction") && strcmp(pszEntName, "tank_boss")
+        && strcmp(pszEntName, "tf_logic_mann_vs_machine")
         // causes crashing in ClientActive when unloading and then loading again
         && strcmp(pszEntName, "tf_objective_resource")
+        && strcmp(pszEntName, "info_populator")
         // L4D
         && strcmp(pszEntName, "boomer") && strcmp(pszEntName, "hunter") && strcmp(pszEntName, "prop_car_glass") && strcmp(pszEntName, "prop_door_rotating_checkpoint")
         && strcmp(pszEntName, "prop_health_cabinet") && strcmp(pszEntName, "prop_minigun") && strcmp(pszEntName, "smoker") && strcmp(pszEntName, "survivor_bot")
@@ -5343,20 +5198,6 @@ PLUGIN_RESULT CAdminOP :: ClientCommand(edict_t *pEntity, const CCommand &args)
     if(FStrEq(pcmd, "testremoveparticles") && isTestAdmin)
     {
         StopParticleEffects(pPlayer);
-        return PLUGIN_STOP;
-    }
-    if(FStrEq(pcmd, "testset") && isTestAdmin)
-    {
-        void *baseclient = pAdminOP.pAOPPlayers[playerindex-1].baseclient;
-        unsigned int *steamid = (unsigned int*)(((char*)baseclient)+0x59);
-        VFuncs::SetUserCVar(pAdminOP.pAOPPlayers[playerindex-1].baseclient, "cl_showfps", "1");
-        //IClient *client = (IClient*) (((int *)baseclient)+1);
-        //USERID_t test = client->GetNetworkID();
-        USERID_t test = VFuncs::GetNetworkID(baseclient);
-        Msg("%u\n", *steamid);
-        *steamid = atoi(args[1]);
-        Msg("%u\n", *steamid);
-
         return PLUGIN_STOP;
     }
     if(FStrEq(pcmd, "testreconnect") && isTestAdmin)
@@ -6065,6 +5906,7 @@ void CAdminOP :: UpdateNextMap(void)
 
 CBaseEntity *CAdminOP :: GetEntity(int index)
 {
+    // TODO: Replace this and BaseEntityToEdict with servertools->GetBaseEntityByEntIndex
     edict_t *pEdict = INDEXENT(index);
     if(pEdict) return servergameents->EdictToBaseEntity(pEdict);
     return NULL;
@@ -6755,7 +6597,7 @@ void CAdminOP :: PlayerSpeak(int iPlayer, int userid, const char *text)
                             // if the player is allowed to have hidden mode set and he/she does and the player requesting is not an admin
                             if(pAOPPlayers[playerList[0]-1].IsHiddenFrom(iPlayer))
                             {
-                                SayTextAllChatHud(UTIL_VarArgs("[%s] %s's SteamID: %s:0:%i  UserID: %i  Admin: No\n", adminname, info->GetName(), steamid_stringprefix.GetString(), pAOPPlayers[playerList[0]-1].GetFakeID(), info->GetUserID()));
+                                SayTextAllChatHud(UTIL_VarArgs("[%s] %s's SteamID: [U:1:%i]  UserID: %i  Admin: No\n", adminname, info->GetName(), pAOPPlayers[playerList[0]-1].GetFakeID(), info->GetUserID()));
                             }
                             else
                             {
@@ -7875,6 +7717,17 @@ void CAdminOP :: LoadAdmins()
                                 }
                                 else if(!stricmp(key, "SteamID"))
                                 {
+                                    // Convert SteamID format
+                                    char pszSteamIDError[64];
+                                    if ( !IsValidSteamID( newAdmin.id, pszSteamIDError, sizeof( pszSteamIDError ) ) )
+                                    {
+                                        CAdminOP::ColorMsg(CONCOLOR_LIGHTRED, "[SOURCEOP] Invalid SteamID %s in admin file: %s\n", newAdmin.id, pszSteamIDError );
+                                        continue;
+                                    }
+
+                                    CSteamID steamIDCredits( newAdmin.id, k_EUniversePublic );
+                                    strcpy(newAdmin.id, steamIDCredits.Render() );
+
                                     newAdmin.type = ADMIN_TYPE_STEAMID;
                                     adminData.AddToTail(newAdmin);
                                 }
@@ -9407,51 +9260,4 @@ int SourceOPIndexOfEdict(const edict_t *pEdict)
 edict_t *SourceOPPEntityOfEntIndex(int iEntIndex)
 {
     return pAdminOP.PEntityOfEntIndex(iEntIndex);
-}
-
-CMainLoopSleepHack::CMainLoopSleepHack(unsigned int start, unsigned int len, unsigned int parampos)
-{
-    m_iStart = start;
-    m_iLen = len;
-    m_iParamPos = parampos;
-    m_bRemoved = false;
-    m_SleepCode = (void *)m_iStart;
-    m_Param = (void *)m_iParamPos;
-    oldData = (unsigned char *)malloc(m_iLen);
-    memcpy(oldData, m_SleepCode, m_iLen);
-
-    // we need write access to this piece of mem
-    DWORD dwOldProt;
-    VirtualProtect(m_SleepCode, m_iLen, PAGE_EXECUTE_READWRITE, &dwOldProt);
-}
-
-void CMainLoopSleepHack::RemoveSleepCall()
-{
-    if(m_bRemoved)
-        return;
-
-    // replace the sleep call code with nop
-    memset(m_SleepCode, 0x90, m_iLen);
-    m_bRemoved = true;
-}
-
-void CMainLoopSleepHack::RestoreSleepCall()
-{
-    if(!m_bRemoved)
-        return;
-
-    // restore with what was there before
-    memcpy(m_SleepCode, oldData, m_iLen);
-    m_bRemoved = false;
-}
-
-void CMainLoopSleepHack::SetSleepParam(int val)
-{
-    if(m_bRemoved)
-        return;
-
-    // the parameter must fit within one byte
-    // the byte is signed
-    val = clamp(val, 0, 127);
-    memset(m_Param, val, 1);
 }

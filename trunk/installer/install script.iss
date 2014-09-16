@@ -21,10 +21,10 @@
 
 [Setup]
 AppName=SourceOP
-AppVerName=SourceOP Beta Version 0.9.12.515
+AppVerName=SourceOP Beta Version 0.9.17.543
 AppPublisher=SourceOP.com
 AppPublisherURL=http://www.sourceop.com/
-AppCopyright=Copyright (C) 2005-2012 SourceOP.com
+AppCopyright=Copyright (C) 2005-2013 SourceOP.com
 DefaultDirName={code:GetMyInstallPath}
 DefaultGroupName=SourceOP
 UninstallFilesDir={code:GetFinalInstallPath}\addons\SourceOP\uninstall
@@ -33,8 +33,8 @@ Compression=lzma2
 SolidCompression=yes
 DirExistsWarning=no
 AppendDefaultDirName=no
-VersionInfoCopyright=Copyright (C) 2005-2012 SourceOP.com
-VersionInfoVersion=0.9.12.515
+VersionInfoCopyright=Copyright (C) 2005-2013 SourceOP.com
+VersionInfoVersion=0.9.17.543
 
 [Files]
 Source: "files\SourceOP\bin\*"; DestDir: "{code:GetFinalInstallPath}\..\bin"; Excludes: ".svn"; Components: main
@@ -67,7 +67,7 @@ Source: "..\addons\SourceOP\features\jetpack.txt"; DestDir: "{code:GetFinalInsta
 
 ;Feature: Killsounds
 Source: "..\addons\SourceOP\features\killsounds.txt"; DestDir: "{code:GetFinalInstallPath}\addons\SourceOP\features"; Components: features\killsounds
-Source: "files\KillSounds\gamemod\*"; DestDir: "{code:GetFinalInstallPath}"; Flags: recursesubdirs; Excludes: ".svn"; Components: features\killsounds
+Source: "files\KillSounds\gamemod\*"; DestDir: "{code:GetFinalInstallPath}\custom\SourceOP"; Flags: recursesubdirs; Excludes: ".svn"; Components: features\killsounds
 
 ;Feature: Lua
 Source: "..\addons\SourceOP\features\lua.txt"; DestDir: "{code:GetFinalInstallPath}\addons\SourceOP\features"; Components: features\lua
@@ -82,7 +82,7 @@ Source: "..\addons\SourceOP\features\playersaycommands.txt"; DestDir: "{code:Get
 ;Feature: Radio
 Source: "..\addons\SourceOP\features\radio.txt"; DestDir: "{code:GetFinalInstallPath}\addons\SourceOP\features"; Components: features\radio
 Source: "..\addons\SourceOP\DF_radio.txt"; DestDir: "{code:GetFinalInstallPath}\addons\SourceOP"; Components: features\radio
-Source: "files\Radio\gamemod\*"; DestDir: "{code:GetFinalInstallPath}"; Flags: recursesubdirs; Excludes: ".svn"; Components: features\radio
+Source: "files\Radio\gamemod\*"; DestDir: "{code:GetFinalInstallPath}\custom\SourceOP"; Flags: recursesubdirs; Excludes: ".svn"; Components: features\radio
 
 ;Feature: Remote
 Source: "..\addons\SourceOP\features\remote.txt"; DestDir: "{code:GetFinalInstallPath}\addons\SourceOP\features"; Components: features\remote
@@ -93,7 +93,7 @@ Source: "..\addons\SourceOP\users\example\*"; DestDir: "{code:GetFinalInstallPat
 
 ;Feature: Snark
 Source: "..\addons\SourceOP\features\snark.txt"; DestDir: "{code:GetFinalInstallPath}\addons\SourceOP\features"; Components: features\snark
-Source: "files\Snark\gamemod\*"; DestDir: "{code:GetFinalInstallPath}"; Flags: recursesubdirs; Excludes: ".svn"; Components: features\snark
+Source: "files\Snark\gamemod\*"; DestDir: "{code:GetFinalInstallPath}\custom\SourceOP"; Flags: recursesubdirs; Excludes: ".svn"; Components: features\snark
 
 Source: "SourceOP.url"; DestDir: "{code:GetFinalInstallPath}"
 Source: "DetectDll.dll"; Flags: dontcopy
@@ -284,7 +284,7 @@ begin
     ModDirPage.ID:
       begin;
       if ModDirPage.SelectedValueIndex = 0 then
-        modPath := 'half-life 2 deathmatch\hl2mp'
+        modPath := 'common\Half-Life 2 Deathmatch\hl2mp'
       else if ModDirPage.SelectedValueIndex = 1 then
         modPath := 'team fortress 2\tf'
       else if ModDirPage.SelectedValueIndex = 2 then
@@ -318,6 +318,11 @@ function UpdateReadyMemo(Space, NewLine, MemoUserInfoInfo, MemoDirInfo, MemoType
 begin
   Result := 'Destination path:' + NewLine + Space + GetFinalInstallPath('');
 end;
+
+
+
+
+
 
 
 

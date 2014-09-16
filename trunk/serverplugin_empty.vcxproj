@@ -184,7 +184,8 @@ attrib -r "$(ProjectDir)\installer\files\SourceOP\bin\sourceop.dll"
 copy "$(TargetPath)" "$(ProjectDir)\installer\files\SourceOP\bin\sourceop.dll"
 attrib -r "C:\Program Files (x86)\Steam\steamapps\drunkenf00l%40hotmail.com\team fortress 2\bin\sourceop.dll"
 copy "$(TargetPath)" "C:\Program Files (x86)\Steam\steamapps\drunkenf00l%40hotmail.com\team fortress 2\bin\sourceop.dll"
-</Command>
+attrib -r "C:\HL2Server_SteamPipe\hl2mp\bin\sourceop.dll"
+copy "$(TargetPath)" "C:\HL2Server_SteamPipe\hl2mp\bin\sourceop.dll"</Command>
       <Outputs>..\..\..\bin\sourceop.dll;%(Outputs)</Outputs>
     </CustomBuildStep>
     <Midl>

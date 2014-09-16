@@ -65,7 +65,7 @@ end
 
 function isreplaybot(pPlayer)
   if(pPlayer:IsBot()) then
-    if(pPlayer:GetName() == "replay") then
+    if(pPlayer:GetName() == convar.GetString("replay_name")) then
       return true
     end
   end

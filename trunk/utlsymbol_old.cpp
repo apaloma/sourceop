@@ -13,6 +13,10 @@
 
 #include "tier0/memdbgon.h"
 
+#ifndef MAX
+#define MAX max
+#endif
+
 #define INVALID_STRING_INDEX CStringPoolIndex( 0xFFFF, 0xFFFF )
 
 #define MIN_STRING_POOL_SIZE	2048
@@ -213,7 +217,7 @@ CUtlSymbolOld CUtlSymbolOldTable::AddString( char const* pString )
 	if ( iPool == -1 )
 	{
 		// Add a new pool.
-		int newPoolSize = max( len, MIN_STRING_POOL_SIZE );
+		int newPoolSize = MAX( len, MIN_STRING_POOL_SIZE );
 		StringPool_t *pPool = (StringPool_t*)malloc( sizeof( StringPool_t ) + newPoolSize - 1 );
 		pPool->m_TotalLen = newPoolSize;
 		pPool->m_SpaceUsed = 0;

@@ -193,6 +193,11 @@ void CSOPGameRulesProxy::SetScrambleTeams(bool bScramble)
     VFuncs::SetScrambleTeams(pGameRules, bScramble);
 }
 
+bool CSOPGameRulesProxy::IsMannVsMachineMode()
+{
+    return VFuncs::IsMannVsMachineMode(pGameRules);
+}
+
 void CSOPGameRulesProxy::OnChangeLevel()
 {
     if(pAdminOP.MapCycleTracker())

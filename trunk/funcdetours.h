@@ -48,17 +48,6 @@ bool SOP_SteamGameServer_InitSafe( uint32 unIP, uint16 usPort, uint16 usGamePort
 bool SOP_BGetCallback( HSteamPipe hSteamPipe, CallbackMsg_t *pCallbackMsg, HSteamCall *phSteamCall );
 edict_t *SOP_UTIL_PlayerByIndex(int client);
 
-class ArenaRunTeamLogicClass;
-typedef void (ArenaRunTeamLogicClass::* _RunTeamLogicFunc)(void);
-class ArenaRunTeamLogicClass
-{
-public:
-    void SOP_RunTeamLogic();
-    void SOP_RunTeamLogic_Trampoline();
-
-    static _RunTeamLogicFunc ArenaRunTeamLogicClass::RunTeamLogic;
-};
-
 class GenericClass {};
 typedef void (GenericClass::*VoidFunc)();
 
