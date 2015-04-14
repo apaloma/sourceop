@@ -1,0 +1,1 @@
+SourceOP is a Source engine plugin that works for TF2, HL2 Deathmatch, and CSS. With a little configuration, it should work for any Orangebox-based Source engine game.
