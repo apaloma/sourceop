@@ -101,7 +101,7 @@ public:
     void BanPlayer( BanType_t type, const char *pszName, const char *pszBannerName, const char *pszBannerID, const char *pszMap, baninfo_t info, const char *pszExtra )
     {
         pban_t newEntry;
-        char *renderedid = info.m_netid.Render();
+        const char *renderedid = info.m_netid.Render();
         newEntry.m_type = type;
         V_strncpy(newEntry.m_playername, pszName, sizeof(newEntry.m_playername));
         newEntry.m_netid = info.m_netid;

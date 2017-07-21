@@ -187,7 +187,7 @@ CSteamID::CSteamID(const char *pchSteamID, EUniverse eDefaultUniverse)
     }
 }
 
-char *CSteamID::Render() const
+const char *CSteamID::Render() const
 {
     static char pszSteamID[64];
 
@@ -197,7 +197,7 @@ char *CSteamID::Render() const
     return pszSteamID;
 }
 
-char *CSteamID::Render(uint64 ulSteamID)
+const char *CSteamID::Render(uint64 ulSteamID)
 {
     static char pszSteamID[64];
     uint32 accountID = (uint32)ulSteamID & k_unSteamAccountIDMask;

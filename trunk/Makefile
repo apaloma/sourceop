@@ -28,16 +28,16 @@ NAME=server
 
 GAME_DIR=~/steampipe/tf
 
-CPLUS=/usr/bin/g++
-CLINK=/usr/bin/gcc
+CPLUS=/usr/bin/g++-4.8
+CLINK=/usr/bin/gcc-4.8
 #CPP_LIB=/usr/lib/libstdc++.a /usr/lib/gcc/i586-suse-linux/4.1.2/libgcc_eh.a
 #CPP_LIB=/usr/lib/gcc/i386-redhat-linux/4.1.2/libstdc++.a /usr/lib/gcc/i386-redhat-linux/4.1.2/libgcc_eh.a
 
 #LDFLAGS=-m32 -lm -ldl -lssl tier0_i486.so vstdlib_i486.so
 LDFLAGS=-m32 -lm -ldl -lssl libtier0_srv.so libvstdlib_srv.so
 
-SOURCE_DIR=/home/apaloma/hl2sdk_smob
-BUILD_DIR=/home/apaloma/hl2sdk_smob/utils/AdminOP
+SOURCE_DIR=../..
+BUILD_DIR=.
 RELEASE_DIR=./Release
 DEBUG_DIR=./Debug
 BUILD_OBJ_DIR_DEBUG=$(DEBUG_DIR)
@@ -74,7 +74,8 @@ BASE_DEFINES=CC=$(CC) CPLUS=$(CPLUS) CPP_LIB=$(CPP_LIB) \
 PLUGIN_SRC_DIR=$(SOURCE_DIR)/utils/AdminOP
 PUBLIC_SRC_DIR=$(SOURCE_DIR)/public
 TIER0_PUBLIC_SRC_DIR=$(SOURCE_DIR)/public/tier0
-MYSQL_INC_DIR=/usr/include/mysql
+#MYSQL_INC_DIR=/usr/include/mysql
+MYSQL_INC_DIR=$(PLUGIN_SRC_DIR)/external/win32/mysql/include
 
 PLUGIN_OBJ_DIR=$(BUILD_OBJ_DIR)/plugin
 PLUGIN_OBJ_DIR_RELEASE=$(BUILD_OBJ_DIR_RELEASE)/plugin

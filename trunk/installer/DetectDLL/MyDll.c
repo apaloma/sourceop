@@ -59,7 +59,7 @@ int __stdcall GetSteamUserPath(char *pszReturn)
     RegResult = RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\Valve\\Steam", 0, KEY_QUERY_VALUE, &hCurKey);
     RegResult = RegQueryValueEx(hCurKey, "ModInstallPath", NULL, &lpType, (LPBYTE)&steamexe, &lpSize);
 
-    if(RegResult == ERROR_SUCCESS)
+    if(RegResult == ERROR_SUCCESS && steamexe[0])
     {
         pos = strlen(steamexe) - 1;
 

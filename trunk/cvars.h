@@ -223,5 +223,6 @@ extern ConVar *tv_enable;
 extern ConVar *tv_name;
 extern ConVar *sv_tags;
 extern ConVar *replay_enable;
+extern ConVar *sv_use_steam_voice;
 
 #endif

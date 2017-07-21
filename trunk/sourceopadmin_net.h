@@ -254,8 +254,8 @@ public:
 
     virtual bool    Process( void );
 
-    virtual	bool    ReadFromBuffer( ByteBufRead &buffer );
-    virtual	bool    WriteToBuffer( ByteBufWrite &buffer );
+    virtual	bool    ReadFromBuffer( ByteBufRead & );
+    virtual	bool    WriteToBuffer( ByteBufWrite & );
 
     virtual int         GetType( void ) const { return clc_ping; }
     virtual const char  *GetName( void ) const { return "clc_ping"; }
@@ -507,6 +507,8 @@ public:
     char m_szLogMessage[512];
 };
 
+#define SOP_VOICE_CODEC_SPEEX 0
+#define SOP_VOICE_CODEC_STEAM 1
 SOP_SVC_MESSAGE_CLASS(VoiceData) : public ISOPNetMessage
 {
 public:
@@ -525,7 +527,8 @@ public:
 
     unsigned short m_iPlayer;
     unsigned short m_iSize;
-    char m_szVoiceData[512];
+    char m_szVoiceData[1024];
+    unsigned char m_iCodec;
 };
 
 SOP_SVC_MESSAGE_CLASS(StatusMessage) : public ISOPNetMessage
@@ -897,12 +900,12 @@ inline bool CLC_Ping::Process( void )
     return client->ProcessPing(this);
 }
 
-inline bool CLC_Ping::ReadFromBuffer( ByteBufRead &buffer )
+inline bool CLC_Ping::ReadFromBuffer( ByteBufRead & )
 {
     return true;
 }
 
-inline bool CLC_Ping::WriteToBuffer( ByteBufWrite &buffer )
+inline bool CLC_Ping::WriteToBuffer( ByteBufWrite & )
 {
     return true;
 }
@@ -1212,6 +1215,7 @@ inline bool SVC_VoiceData::ReadFromBuffer( ByteBufRead &buffer )
         m_iSize = sizeof(m_szVoiceData);
     }
     buffer.ReadBytes(m_szVoiceData, m_iSize);
+    m_iCodec = buffer.ReadByte();
 
     return true;
 }
@@ -1221,6 +1225,7 @@ inline bool SVC_VoiceData::WriteToBuffer( ByteBufWrite &buffer )
     buffer.WriteUShort(m_iPlayer);
     buffer.WriteUShort(m_iSize);
     buffer.WriteBytes(m_szVoiceData, m_iSize);
+    buffer.WriteByte(m_iCodec);
 
     return true;
 }

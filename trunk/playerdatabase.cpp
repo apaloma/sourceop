@@ -78,7 +78,7 @@ public:
 
         SOPDLog("[PLRSAVETHREAD] SavePlayer()\n");
         pdb_t newEntry;
-        char *renderedid = networkID.Render();
+        const char *renderedid = networkID.Render();
         newEntry.m_connect = connect;
         newEntry.m_iUid = userid;
         V_strncpy(newEntry.m_playername, pszName, sizeof(newEntry.m_playername));

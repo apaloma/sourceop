@@ -42,13 +42,13 @@ class CMapCycleTracker;
 
 //#define OFFICIALSERV_ONLY
 #ifdef OFFICIALSERV_ONLY
-    #define SourceOPVersion "SourceOP Internal Test Version 0.9.17"
-    #define SourceOPVerShort "0.9.17"
+    #define SourceOPVersion "SourceOP Internal Test Version 0.9.19"
+    #define SourceOPVerShort "0.9.19"
     #pragma message( "INTERNAL VERSION " __FILE__ )
     #define SOPDLog(s) do { if(debug_log.GetBool()) pAdminOP.DebugLog(s); } while(0)
 #else
-    #define SourceOPVersion "SourceOP Version 0.9.16"
-    #define SourceOPVerShort "0.9.16"
+    #define SourceOPVersion "SourceOP Version 0.9.18"
+    #define SourceOPVerShort "0.9.18"
     #define SOPDLog(s) ((void)0)
 #endif
 

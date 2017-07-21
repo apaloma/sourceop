@@ -27,10 +27,13 @@ public:
     void GetNextLevelName(char *pszNextMap, int bufsize, int mapsAhead = 0);
     int GetCurrentCycleIndex() { return m_nMapCycleindex; }
     void GetCurrentLevelName(char *pszCurrentMap, int bufsize);
+    int GetNumMapsInList() { return m_MapList.Count(); }
 private:
     int m_nMapCycleTimeStamp;
     int m_nMapCycleindex;
     CUtlVector<char*> m_MapList;
 };
+
+extern bool DFIsMapValid( const char *pszMapName );
 
 #endif // MAPCYCLETRACKER_H

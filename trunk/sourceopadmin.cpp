@@ -50,6 +50,7 @@
 
 #include "adminopplayer.h"
 #include "sourceopadmin.h"
+#include "mapcycletracker.h"
 #include "bitbuf.h"
 #include "bytebuf.h"
 #include "packet_types.h"
@@ -310,6 +311,15 @@ void CRemoteAdminServer::IncomingVoiceData(int playerslot, const char *data, int
     message.m_iPlayer = playerslot;
     message.m_iSize = size;
     memcpy(message.m_szVoiceData, data, size);
+
+    if ( sv_use_steam_voice == NULL || !sv_use_steam_voice->GetBool() )
+    {
+        message.m_iCodec = SOP_VOICE_CODEC_SPEEX;
+    }
+    else
+    {
+        message.m_iCodec = SOP_VOICE_CODEC_STEAM;
+    }
 
     for(int i = 0; i < MAX_CLIENTS; i++)
     {
@@ -659,7 +669,7 @@ static int ssl_print_errors(const char *str, size_t len, void *u)
 bool CRemoteAdminServer::CreateSSLContext()
 {
     // The method describes which SSL protocol we will be using.
-    SSL_METHOD *method;
+    const SSL_METHOD *method;
 
     // Load algorithms and error strings.
     OpenSSL_add_all_algorithms();
@@ -1178,7 +1188,7 @@ void CRemoteAdminClient::SendMapCycle(unsigned int response)
             if ( ret != 1 || *cBuf < 13 )
                 break;
 
-            if ( engine->IsMapValid( cBuf ) )
+            if ( DFIsMapValid( cBuf ) )
             {
                 V_strncpy(maplist.m_szMaps[maplist.m_iNumMaps], cBuf, MAPLIST_MAX_MAPLEN);
                 maplist.m_iNumMaps++;

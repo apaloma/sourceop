@@ -73,27 +73,33 @@ extern char origBroadcastVoiceData[5];
 
 int NEVERINLINE SOP_NET_ReceiveDatagramTrampoline(int a, void *structure)
 {
-    Msg("[SOURCEOP] Trampoline was called unmodified.\n");
+    Msg("[SOURCEOP] SOP_NET_ReceiveDatagramTrampoline was called unmodified.\n");
     Msg("[SOURCEOP] That is bad.\n");
     return 0;
 }
 
+int (*g_fnReceiveDatagramTrampoline)(int, void *) = &SOP_NET_ReceiveDatagramTrampoline;
+
 void NEVERINLINE SOP_NET_SendPacketTrampoline(void *netchan, int a, const netadr_t &sock, unsigned char const *data, int length, bf_write *bitdata, bool b)
 {
-    Msg("[SOURCEOP] Trampoline was called unmodified.\n");
+    Msg("[SOURCEOP] SOP_NET_SendPacketTrampoline was called unmodified.\n");
     Msg("[SOURCEOP] That is bad.\n");
 }
 
+void (*g_fnSendPacketTrampoline)(void *, int, const netadr_t &, unsigned char const *, int, bf_write *, bool) = &SOP_NET_SendPacketTrampoline;
+
 void NEVERINLINE SOP_BroadcastVoiceTrampoline(IClient *client, int a, char *b, long long c)
 {
-    Msg("[SOURCEOP] Trampoline was called unmodified.\n");
+    Msg("[SOURCEOP] SOP_BroadcastVoiceTrampoline was called unmodified.\n");
     Msg("[SOURCEOP] That is bad.\n");
 }
+
+void (*g_fnBroadcastVoiceTrampoline)(IClient *, int, char *, long long) = &SOP_BroadcastVoiceTrampoline;
 
 #ifdef __linux__
 int NEVERINLINE SOP_usleepTrampoline(useconds_t usec)
 {
-    Msg("[SOURCEOP] Trampoline was called unmodified.\n");
+    Msg("[SOURCEOP] SOP_usleepTrampoline was called unmodified.\n");
     Msg("[SOURCEOP] That is bad.\n");
     return 0;
 }
@@ -101,17 +107,21 @@ int NEVERINLINE SOP_usleepTrampoline(useconds_t usec)
 
 bool NEVERINLINE SOP_SteamGameServer_InitSafeTrampoline( uint32 unIP, uint16 usPort, uint16 usGamePort, uint16 usQueryPort, EServerMode eServerMode, const char *pchVersionString )
 {
-    Msg("[SOURCEOP] Trampoline was called unmodified.\n");
+    Msg("[SOURCEOP] SOP_SteamGameServer_InitSafeTrampoline was called unmodified.\n");
     Msg("[SOURCEOP] That is bad.\n");
     return false;
 }
 
+bool (*g_fnSteamGameServer_InitSafeTrampoline)(uint32, uint16, uint16, uint16, EServerMode, const char *) = &SOP_SteamGameServer_InitSafeTrampoline;
+
 bool NEVERINLINE SOP_BGetCallbackTrampoline( HSteamPipe hSteamPipe, CallbackMsg_t *pCallbackMsg, HSteamCall *phSteamCall )
 {
-    Msg("[SOURCEOP] Trampoline was called unmodified.\n");
+    Msg("[SOURCEOP] SOP_BGetCallbackTrampoline was called unmodified.\n");
     Msg("[SOURCEOP] That is bad.\n");
     return false;
 }
+
+bool (*g_fnBGetCallbackTrampoline)(HSteamPipe, CallbackMsg_t *, HSteamCall *) = &SOP_BGetCallbackTrampoline;
 
 #ifdef OFFICIALSERV_ONLY
 void checkFakeHostIPMatch(const unsigned char *sockip, char *fakeHostIP)
@@ -372,7 +382,7 @@ void SOP_senda2sinfo(struct sockaddr *from, int *fromlen)
 #ifdef OFFICIALSERV_ONLY
     if(serverquery_debugprints.GetBool()) Msg("A2S_INFO to: %i.%i.%i.%i:%i\n", response.ip[0], response.ip[1], response.ip[2], response.ip[3], ntohs(response.port));
 #endif
-    SOP_NET_SendPacketTrampoline(0, 1, response, (const unsigned char *)g_szA2SInfoCache, g_iA2SInfoCacheSize, NULL, 0);
+    g_fnSendPacketTrampoline(0, 1, response, (const unsigned char *)g_szA2SInfoCache, g_iA2SInfoCacheSize, NULL, 0);
 }
 
 bool SOP_validateauth(char *pszData, int len, char *pszErrorMessage, int cbMaxErrorLen, int *clientChallenge)
@@ -551,7 +561,7 @@ int SOP_recvfrom(int s, char *buf, int len, int flags, struct sockaddr *from, in
                                 rejectBuf.WriteBytes("Auth validation failed:\n", 24);
                                 rejectBuf.WriteString(szErrorMessage);
 
-                                SOP_NET_SendPacketTrampoline(0, 1, response, (const unsigned char *)szReject, rejectBuf.GetNumBytesWritten(), NULL, 0);
+                                g_fnSendPacketTrampoline(0, 1, response, (const unsigned char *)szReject, rejectBuf.GetNumBytesWritten(), NULL, 0);
                             }
 
                             blockedmalformed++;
@@ -582,7 +592,7 @@ CON_COMMAND( block_status, "Returns the status of blocked packets" )
 int __cdecl SOP_NET_ReceiveDatagram(int a, void *structure)
 {
     //Msg("Pre : a: %i\n", a);
-    int ret = SOP_NET_ReceiveDatagramTrampoline(a, structure);
+    int ret = g_fnReceiveDatagramTrampoline(a, structure);
     /*int long1 = *(int *)structure;
     int long2 = *(((int *)structure)+1);
     int long3 = *(((int *)structure)+2);
@@ -703,7 +713,7 @@ void __cdecl SOP_NET_SendPacket( void *netchan, int a, const netadr_t &sock, uns
 
                 /*response[resplen] = '\0';
                 if(serverquery_debugprints.GetBool()) Msg("Master server reply: %s\n\n", response);*/
-                SOP_NET_SendPacketTrampoline(netchan, a, sock, (const unsigned char*)response, resplen, bitdata, b);
+                g_fnSendPacketTrampoline(netchan, a, sock, (const unsigned char*)response, resplen, bitdata, b);
                 return;
 
             }
@@ -878,7 +888,7 @@ void __cdecl SOP_NET_SendPacket( void *netchan, int a, const netadr_t &sock, uns
                         }
                     }
 
-                    SOP_NET_SendPacketTrampoline(netchan, a, sock, (const unsigned char*)buf, length, bitdata, b);
+                    g_fnSendPacketTrampoline(netchan, a, sock, (const unsigned char*)buf, length, bitdata, b);
                     return;
                 }
                 else
@@ -1149,7 +1159,7 @@ void __cdecl SOP_NET_SendPacket( void *netchan, int a, const netadr_t &sock, uns
                         bitbuf.WriteFloat(gpGlobals->curtime + (float)i + 1);
                     }
 
-                    SOP_NET_SendPacketTrampoline(netchan, a, sock, (const unsigned char *)bitbuf.GetData(), bitbuf.GetNumBytesWritten(), bitdata, b);
+                    g_fnSendPacketTrampoline(netchan, a, sock, (const unsigned char *)bitbuf.GetData(), bitbuf.GetNumBytesWritten(), bitdata, b);
                     return;
                 }
             }
@@ -1185,7 +1195,7 @@ void __cdecl SOP_NET_SendPacket( void *netchan, int a, const netadr_t &sock, uns
         }
     #endif // OFFICIALSERV_ONLY
     }
-    SOP_NET_SendPacketTrampoline(netchan, a, sock, data, length, bitdata, b);
+    g_fnSendPacketTrampoline(netchan, a, sock, data, length, bitdata, b);
 }
 
 void __cdecl SOP_BroadcastVoice( IClient *iclient, int nCount, char *data, long long c)
@@ -1201,7 +1211,7 @@ void __cdecl SOP_BroadcastVoice( IClient *iclient, int nCount, char *data, long 
         fwrite(data, nCount, 1, fp);
         fclose(fp);
     }*/
-    SOP_BroadcastVoiceTrampoline(iclient, nCount, data, c);
+    g_fnBroadcastVoiceTrampoline(iclient, nCount, data, c);
 }
 
 #ifdef __linux__
@@ -1228,7 +1238,7 @@ int __cdecl SOP_usleep(useconds_t usec)
 
 bool SOP_SteamGameServer_InitSafe( uint32 unIP, uint16 usPort, uint16 usGamePort, uint16 usQueryPort, EServerMode eServerMode, const char *pchVersionString )
 {
-    bool ret = SOP_SteamGameServer_InitSafeTrampoline(unIP, usPort, usGamePort, usQueryPort, eServerMode, pchVersionString);
+    bool ret = g_fnSteamGameServer_InitSafeTrampoline(unIP, usPort, usGamePort, usQueryPort, eServerMode, pchVersionString);
     pAdminOP.HookSteamFromGameServerInit();
 
     bool bLanMode = (unIP == 1);
@@ -1255,7 +1265,7 @@ bool SOP_BGetCallback( HSteamPipe hSteamPipe, CallbackMsg_t *pCallbackMsg, HStea
     bool bGetAnotherCallback = false;
     do
     {
-        res = SOP_BGetCallbackTrampoline(hSteamPipe, pCallbackMsg, phSteamCall);
+        res = g_fnBGetCallbackTrampoline(hSteamPipe, pCallbackMsg, phSteamCall);
         if(!res)
             return false;
 

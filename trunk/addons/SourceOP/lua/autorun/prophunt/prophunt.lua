@@ -444,7 +444,7 @@ function prophunt_SetPlayerAsPropWithInfo(pPlayer, propinfo)
 end
 
 function prophunt_HideWearables(pPlayer)
-  local wearables = ents.FindByClass("tf_wearable_item")
+  local wearables = ents.FindByClass("tf_wearable")
   for _, wearable in pairs(wearables) do
     local pOwner = wearable:GetOwner()
 
@@ -458,7 +458,7 @@ function prophunt_HideWearables(pPlayer)
 end
 
 function prophunt_ShowWearables(pPlayer)
-  local wearables = ents.FindByClass("tf_wearable_item")
+  local wearables = ents.FindByClass("tf_wearable")
   for _, wearable in pairs(wearables) do
     local pOwner = wearable:GetOwner()
 
@@ -556,7 +556,7 @@ function prophunt_menu(pPlayer, command, arguments)
 end
 
 function prophunt_HuntStart()
-  sourceop.PlaySoundAll("vo/announcer_am_gamestarting04.wav")
+  sourceop.PlaySoundAll("vo/announcer_am_gamestarting04.mp3")
   local mapPrefix = string.sub(game.GetMap(), 1, 3)
   if(prophunt_opendoors) then
     local doors = ents.FindByClass("func_door")
@@ -597,6 +597,11 @@ function prophunt_RechargeCPBonus()
 end
 
 function prophunt_WeaponFired(pOwner, pWeapon)
+  -- this is fired on a timer, so player could be dead/disconnected now
+  if(!pOwner:IsPlayer() || !pOwner:IsAlive()) then
+    return
+  end
+
   local weaponname = pWeapon:GetClassname()
   if(weaponname == "tf_weapon_flamethrower" || weaponname == "tf_weapon_minigun") then
     local lastDamageTime = prophunt_GetLastDamageTime(pOwner)
@@ -657,16 +662,16 @@ function prophunt_SetCvars()
 end
 
 function prophunt_Precache()
-  util.PrecacheSound("vo/announcer_begins_30sec.wav")
-  util.PrecacheSound("vo/announcer_begins_20sec.wav")
-  util.PrecacheSound("vo/announcer_begins_10sec.wav")
-  util.PrecacheSound("vo/announcer_begins_5sec.wav")
-  util.PrecacheSound("vo/announcer_begins_4sec.wav")
-  util.PrecacheSound("vo/announcer_begins_3sec.wav")
-  util.PrecacheSound("vo/announcer_begins_2sec.wav")
-  util.PrecacheSound("vo/announcer_begins_1sec.wav")
-  util.PrecacheSound("vo/announcer_am_gamestarting04.wav")
-  util.PrecacheSound("vo/demoman_positivevocalization04.wav")
+  util.PrecacheSound("vo/announcer_begins_30sec.mp3")
+  util.PrecacheSound("vo/announcer_begins_20sec.mp3")
+  util.PrecacheSound("vo/announcer_begins_10sec.mp3")
+  util.PrecacheSound("vo/announcer_begins_5sec.mp3")
+  util.PrecacheSound("vo/announcer_begins_4sec.mp3")
+  util.PrecacheSound("vo/announcer_begins_3sec.mp3")
+  util.PrecacheSound("vo/announcer_begins_2sec.mp3")
+  util.PrecacheSound("vo/announcer_begins_1sec.mp3")
+  util.PrecacheSound("vo/announcer_am_gamestarting04.mp3")
+  util.PrecacheSound("vo/demoman_positivevocalization04.mp3")
   util.PrecacheSound("prophunt/found.mp3")
   util.PrecacheSound("prophunt/oneandonly.mp3")
 
@@ -771,7 +776,7 @@ function prophunt_GameFrame()
           pPlayer:Health() < pPlayer:GetMaxHealth()) then
 
           pPlayer:SayText("\003Control point bonus: health filled.\n")
-          pPlayer:PlaySound("vo/demoman_positivevocalization04.wav")
+          pPlayer:PlaySound("vo/demoman_positivevocalization04.mp3")
           pPlayer:SetHealth(pPlayer:GetMaxHealth())
           pPlayer:Extinguish()
           pPlayer:Fire("ExtinguishPlayer", "1")
@@ -951,14 +956,14 @@ function prophunt_ArenaRoundStart()
   local roundtime = convar.GetInteger("tf_arena_round_time")
   local chargetime = convar.GetInteger("DF_prophunt_cpbonus_rechargetime")
 
-  timer.Create("prophunt_StartIn30", hidetime - 30, 1, function() sourceop.PlaySoundAll("vo/announcer_begins_30sec.wav") end)
-  timer.Create("prophunt_StartIn20", hidetime - 20, 1, function() sourceop.PlaySoundAll("vo/announcer_begins_20sec.wav") end)
-  timer.Create("prophunt_StartIn10", hidetime - 10, 1, function() sourceop.PlaySoundAll("vo/announcer_begins_10sec.wav") end)
-  timer.Create("prophunt_StartIn5", hidetime - 5, 1, function() sourceop.PlaySoundAll("vo/announcer_begins_5sec.wav") end)
-  timer.Create("prophunt_StartIn4", hidetime - 4, 1, function() sourceop.PlaySoundAll("vo/announcer_begins_4sec.wav") end)
-  timer.Create("prophunt_StartIn3", hidetime - 3, 1, function() sourceop.PlaySoundAll("vo/announcer_begins_3sec.wav") end)
-  timer.Create("prophunt_StartIn2", hidetime - 2, 1, function() sourceop.PlaySoundAll("vo/announcer_begins_2sec.wav") end)
-  timer.Create("prophunt_StartIn1", hidetime - 1, 1, function() sourceop.PlaySoundAll("vo/announcer_begins_1sec.wav") end)
+  timer.Create("prophunt_StartIn30", hidetime - 30, 1, function() sourceop.PlaySoundAll("vo/announcer_begins_30sec.mp3") end)
+  timer.Create("prophunt_StartIn20", hidetime - 20, 1, function() sourceop.PlaySoundAll("vo/announcer_begins_20sec.mp3") end)
+  timer.Create("prophunt_StartIn10", hidetime - 10, 1, function() sourceop.PlaySoundAll("vo/announcer_begins_10sec.mp3") end)
+  timer.Create("prophunt_StartIn5", hidetime - 5, 1, function() sourceop.PlaySoundAll("vo/announcer_begins_5sec.mp3") end)
+  timer.Create("prophunt_StartIn4", hidetime - 4, 1, function() sourceop.PlaySoundAll("vo/announcer_begins_4sec.mp3") end)
+  timer.Create("prophunt_StartIn3", hidetime - 3, 1, function() sourceop.PlaySoundAll("vo/announcer_begins_3sec.mp3") end)
+  timer.Create("prophunt_StartIn2", hidetime - 2, 1, function() sourceop.PlaySoundAll("vo/announcer_begins_2sec.mp3") end)
+  timer.Create("prophunt_StartIn1", hidetime - 1, 1, function() sourceop.PlaySoundAll("vo/announcer_begins_1sec.mp3") end)
 
   timer.Create("prophunt_HuntStart", hidetime, 1, prophunt_HuntStart)
   timer.Create("prophunt_HuntOver", roundtime - 0.05, 1, prophunt_HuntOver)
@@ -1051,7 +1056,7 @@ function prophunt_PrimaryAttack(pWeapon)
 
   -- damage on fire (-10 shotgun axe, -2 flame every 0.05 seconds)
   if(pOwner:GetTeam() == 3) then
-    prophunt_WeaponFired(pOwner, pWeapon)
+    timer.Simple(0.001, (function() prophunt_WeaponFired(pOwner, pWeapon) end))
   end
 end
 
@@ -1080,9 +1085,9 @@ function prophunt_SecondaryAttack(pWeapon)
   -- SecondaryAttack is called when the minigun is fired while holding down attack2
   local bIsInAttack = (bit.band(pOwner:Buttons(), IN_ATTACK) == IN_ATTACK)
   if(pOwner:GetTeam() == 3 && bIsInAttack) then
-    prophunt_WeaponFired(pOwner, pWeapon)
+    timer.Simple(0.001, (function() prophunt_WeaponFired(pOwner, pWeapon) end))
   elseif(pWeapon:GetClassname() == "tf_weapon_fists") then
-    prophunt_WeaponFired(pOwner, pWeapon)
+    timer.Simple(0.001, (function() prophunt_WeaponFired(pOwner, pWeapon) end))
   end
 end
 

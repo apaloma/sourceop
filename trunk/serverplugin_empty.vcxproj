@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <!--
     This file is part of SourceOP.
 
@@ -43,21 +43,25 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='GMod|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -114,15 +118,12 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <CustomBuildStep>
-      <Command>attrib -r C:\HL2Server\orangebox\bin\sourceop.dll
-copy "$(TargetPath)" C:\HL2Server\orangebox\bin\sourceop.dll
-attrib -r C:\HL2Server\orangebox\tf\addons\SourceOP\bin\sourceop.dll
-copy "$(TargetPath)" C:\HL2Server\orangebox\tf\addons\SourceOP\bin\sourceop.dll
-attrib -r "C:\Program Files (x86)\Steam\steamapps\drunkenf00l%40hotmail.com\team fortress 2\bin\sourceop.dll"
-copy "$(TargetPath)" "C:\Program Files (x86)\Steam\steamapps\drunkenf00l%40hotmail.com\team fortress 2\bin\sourceop.dll"
-attrib -r "C:\Program Files (x86)\Steam\steamapps\drunkenf00l2\team fortress 2\bin\sourceop.dll"
-copy "$(TargetPath)" "C:\Program Files (x86)\Steam\steamapps\drunkenf00l2\team fortress 2\bin\sourceop.dll"
-</Command>
+      <Command>attrib -r "D:\Program Files (x86)\Steam\SteamApps\common\Team Fortress 2\bin\sourceop.dll"
+copy "$(TargetPath)" "D:\Program Files (x86)\Steam\SteamApps\common\Team Fortress 2\bin\sourceop.dll"
+attrib -r "C:\HL2Server_SteamPipe\hl2mp\bin\sourceop.dll"
+copy "$(TargetPath)" "C:\HL2Server_SteamPipe\hl2mp\bin\sourceop.dll"
+attrib -r "C:\HL2Server_SteamPipe\tf\bin\sourceop.dll"
+copy "$(TargetPath)" "C:\HL2Server_SteamPipe\tf\bin\sourceop.dll"</Command>
       <Outputs>..\..\..\bin\sourceop.dll;%(Outputs)</Outputs>
     </CustomBuildStep>
     <Midl>
@@ -137,7 +138,7 @@ copy "$(TargetPath)" "C:\Program Files (x86)\Steam\steamapps\drunkenf00l2\team f
     <ClCompile>
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\public;..\..\public\engine;..\..\public\tier0;..\..\public\tier1;..\..\common;..\..\public\mathlib;..\..\public\game\server;..\..\game\shared;..\..\game\server;lua\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\public;..\..\public\engine;..\..\public\tier0;..\..\public\tier1;..\..\common;..\..\public\mathlib;..\..\public\game\server;..\..\game\shared;..\..\game\server;lua\include;.\external\win32\mysql\include;.\external\win32\openssl\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_SOPDEBUG;_WINDOWS;serverplugin_emptyONLY;strtoull=_strtoui64;_CRT_SECURE_NO_WARNINGS=1;NEW_OB_SENDPROPS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -158,10 +159,10 @@ copy "$(TargetPath)" "C:\Program Files (x86)\Steam\steamapps\drunkenf00l2\team f
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>tier0.lib;tier1.lib;tier2.lib;tier3.lib;vstdlib.lib;mathlib.lib;odbc32.lib;odbccp32.lib;wsock32.lib;libeay32.lib;ssleay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>tier0.lib;tier1.lib;tier2.lib;tier3.lib;vstdlib.lib;mathlib.lib;odbc32.lib;odbccp32.lib;wsock32.lib;libeay32MTd.lib;ssleay32MTd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>.\Debug/sourceop.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\lib\public;..\..\lib\common;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\lib\public;..\..\lib\common;.\external\win32\openssl\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>sourceop.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>.\Debug/sourceop.pdb</ProgramDatabaseFile>
@@ -176,16 +177,14 @@ copy "$(TargetPath)" "C:\Program Files (x86)\Steam\steamapps\drunkenf00l2\team f
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <CustomBuildStep>
-      <Command>attrib -r C:\HL2Server\orangebox\bin\sourceop.dll
-copy "$(TargetPath)" C:\HL2Server\orangebox\bin\sourceop.dll
-attrib -r C:\HL2Server\orangebox\tf\addons\SourceOP\bin\sourceop.dll
-copy "$(TargetPath)" C:\HL2Server\orangebox\tf\addons\SourceOP\bin\sourceop.dll
-attrib -r "$(ProjectDir)\installer\files\SourceOP\bin\sourceop.dll"
+      <Command>attrib -r "$(ProjectDir)\installer\files\SourceOP\bin\sourceop.dll"
 copy "$(TargetPath)" "$(ProjectDir)\installer\files\SourceOP\bin\sourceop.dll"
-attrib -r "C:\Program Files (x86)\Steam\steamapps\drunkenf00l%40hotmail.com\team fortress 2\bin\sourceop.dll"
-copy "$(TargetPath)" "C:\Program Files (x86)\Steam\steamapps\drunkenf00l%40hotmail.com\team fortress 2\bin\sourceop.dll"
+attrib -r "D:\Program Files (x86)\Steam\SteamApps\common\Team Fortress 2\bin\sourceop.dll"
+copy "$(TargetPath)" "D:\Program Files (x86)\Steam\SteamApps\common\Team Fortress 2\bin\sourceop.dll"
 attrib -r "C:\HL2Server_SteamPipe\hl2mp\bin\sourceop.dll"
-copy "$(TargetPath)" "C:\HL2Server_SteamPipe\hl2mp\bin\sourceop.dll"</Command>
+copy "$(TargetPath)" "C:\HL2Server_SteamPipe\hl2mp\bin\sourceop.dll"
+attrib -r "C:\HL2Server_SteamPipe\tf\bin\sourceop.dll"
+copy "$(TargetPath)" "C:\HL2Server_SteamPipe\tf\bin\sourceop.dll"</Command>
       <Outputs>..\..\..\bin\sourceop.dll;%(Outputs)</Outputs>
     </CustomBuildStep>
     <Midl>
@@ -201,7 +200,7 @@ copy "$(TargetPath)" "C:\HL2Server_SteamPipe\hl2mp\bin\sourceop.dll"</Command>
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\..\public;..\..\public\engine;..\..\public\tier0;..\..\public\tier1;..\..\common;..\..\public\mathlib;..\..\public\game\server;..\..\game\shared;..\..\game\server;lua\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\public;..\..\public\engine;..\..\public\tier0;..\..\public\tier1;..\..\common;..\..\public\mathlib;..\..\public\game\server;..\..\game\shared;..\..\game\server;lua\include;.\external\win32\mysql\include;.\external\win32\openssl\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;serverplugin_emptyONLY;strtoull=_strtoui64;NEW_OB_SENDPROPS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -223,10 +222,10 @@ copy "$(TargetPath)" "C:\HL2Server_SteamPipe\hl2mp\bin\sourceop.dll"</Command>
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>tier0.lib;tier1.lib;tier2.lib;tier3.lib;vstdlib.lib;mathlib.lib;odbc32.lib;odbccp32.lib;wsock32.lib;libeay32.lib;ssleay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>tier0.lib;tier1.lib;tier2.lib;tier3.lib;vstdlib.lib;mathlib.lib;odbc32.lib;odbccp32.lib;wsock32.lib;libeay32MT.lib;ssleay32MT.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>.\Release/sourceop.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\lib\public;..\..\lib\common;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\lib\public;..\..\lib\common;.\external\win32\openssl\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>sourceop.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>.\Release/sourceop.pdb</ProgramDatabaseFile>
@@ -266,7 +265,7 @@ copy "$(TargetPath)" "C:\Program Files\Steam\SteamApps\drunkenf00l%40hotmail.com
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\..\public;..\..\public\engine;..\..\public\tier0;..\..\public\tier1;..\..\dlls;..\..\game_shared;lua\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\public;..\..\public\engine;..\..\public\tier0;..\..\public\tier1;..\..\common;..\..\public\mathlib;..\..\public\game\server;..\..\game\shared;..\..\game\server;lua\include;.\external\win32\mysql\include;.\external\win32\openssl\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;serverplugin_emptyONLY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -291,7 +290,7 @@ copy "$(TargetPath)" "C:\Program Files\Steam\SteamApps\drunkenf00l%40hotmail.com
       <AdditionalDependencies>odbc32.lib;odbccp32.lib;wsock32.lib;libeay32.lib;ssleay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>.\Release/serverplugin_empty.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\lib\public;..\lib\common;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\lib\public;..\..\lib\common;.\external\win32\openssl\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>sourceop.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>.\Release/serverplugin_empty.pdb</ProgramDatabaseFile>
@@ -321,7 +320,7 @@ copy "$(TargetPath)" C:\L4DServer\l4d_demo\bin\sourceop.dll
     <ClCompile>
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\public;..\..\public\engine;..\..\public\tier0;..\..\public\tier1;..\..\common;..\..\public\mathlib;..\..\public\game\server;..\..\game\shared;..\..\game\server;lua\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\public;..\..\public\engine;..\..\public\tier0;..\..\public\tier1;..\..\common;..\..\public\mathlib;..\..\public\game\server;..\..\game\shared;..\..\game\server;lua\include;.\external\win32\mysql\include;.\external\win32\openssl\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_SOPDEBUG;_WINDOWS;_L4D_PLUGIN;serverplugin_emptyONLY;strtoull=_strtoui64;_CRT_SECURE_NO_WARNINGS=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -344,7 +343,7 @@ copy "$(TargetPath)" C:\L4DServer\l4d_demo\bin\sourceop.dll
       <AdditionalDependencies>tier0.lib;tier1.lib;tier2.lib;tier3.lib;vstdlib.lib;mathlib.lib;odbc32.lib;odbccp32.lib;wsock32.lib;libeay32.lib;ssleay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>.\Debug/serverplugin_empty.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\lib\public;..\..\lib\common;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\lib\public;..\..\lib\common;.\external\win32\openssl\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>LIBC;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <ModuleDefinitionFile>sourceop.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -383,6 +382,7 @@ copy "$(TargetPath)" C:\L4DServer\l4d_demo\bin\sourceop.dll
     <ClCompile Include="particles.cpp" />
     <ClCompile Include="PhysicsShared.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="pingmanager.cpp" />
     <ClCompile Include="playerdatabase.cpp" />
@@ -399,6 +399,7 @@ copy "$(TargetPath)" C:\L4DServer\l4d_demo\bin\sourceop.dll
     <ClCompile Include="strtools.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='L4D_Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="takedamageinfo.cpp" />
     <ClCompile Include="util.cpp" />

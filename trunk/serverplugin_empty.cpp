@@ -280,6 +280,7 @@ ConVar *tv_enable = NULL;
 ConVar *tv_name = NULL;
 ConVar *sv_tags = NULL;
 ConVar *replay_enable = NULL;
+ConVar *sv_use_steam_voice = NULL;
 
 ConCommand *maxplayers = NULL;
 
@@ -623,9 +624,9 @@ bool CEmptyServerPlugin::MainLoad( CreateInterfaceFn interfaceFactory, CreateInt
     {
         CAdminOP::ColorMsg(CONCOLOR_LIGHTRED, "[SOURCEOP] Old game event manager interface is not available.\n           SourceOP will not be able to send \"GameEvent\" to Lua scripts.");
     }
-    if( !(servergame = (IServerGameDLL*)gameServerFactory("ServerGameDLL009", NULL)))
+    if( !(servergame = (IServerGameDLL*)gameServerFactory("ServerGameDLL010", NULL)))
     {
-        if( !(servergame = (IServerGameDLL*)gameServerFactory("ServerGameDLL007", NULL)))
+        if( !(servergame = (IServerGameDLL*)gameServerFactory("ServerGameDLL009", NULL)))
         {
              CAdminOP::ColorMsg(CONCOLOR_LIGHTRED, "[SOURCEOP] Failed getting servergame interface.\n");
              return false;
@@ -780,6 +781,7 @@ bool CEmptyServerPlugin::MainLoad( CreateInterfaceFn interfaceFactory, CreateInt
     tv_name = cvar->FindVar("tv_name");
     sv_tags = cvar->FindVar("sv_tags");
     replay_enable = cvar->FindVar("replay_enable");
+    sv_use_steam_voice = cvar->FindVar("sv_use_steam_voice");
 
     // temporary fix for new TF2 server exploit
     ConCommand *removeme = cvar->FindCommand("sv_benchmark_force_start");

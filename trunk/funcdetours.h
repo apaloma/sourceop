@@ -18,6 +18,12 @@
 #ifndef FUNCDETOURS_H
 #define FUNCDETOURS_H
 
+#ifndef __linux__
+#define NEVERINLINEDECL
+#else
+#define NEVERINLINEDECL __attribute__ ((noinline))
+#endif
+
 #include "CDetour.h"
 #include "steam/isteamuser.h"
 #include "steamext.h"
@@ -25,15 +31,15 @@
 class IClient;
 extern CDetour NET_SendPacketDetour;
 
-int SOP_NET_ReceiveDatagramTrampoline(int a, void *structure);
-void SOP_NET_SendPacketTrampoline(void *netchan, int a, const netadr_t &sock, unsigned char const *data, int length, bf_write *bitdata, bool b);
-void SOP_BroadcastVoiceTrampoline(IClient *client, int a, char *b, long long c);
+int NEVERINLINEDECL SOP_NET_ReceiveDatagramTrampoline(int a, void *structure);
+void NEVERINLINEDECL SOP_NET_SendPacketTrampoline(void *netchan, int a, const netadr_t &sock, unsigned char const *data, int length, bf_write *bitdata, bool b);
+void NEVERINLINEDECL SOP_BroadcastVoiceTrampoline(IClient *client, int a, char *b, long long c);
 #ifdef __linux__
-int SOP_usleepTrampoline(useconds_t usec);
+int NEVERINLINEDECL SOP_usleepTrampoline(useconds_t usec);
 #endif
-void SOP_SleepTrampoline(DWORD msec);
-bool SOP_SteamGameServer_InitSafeTrampoline( uint32 unIP, uint16 usPort, uint16 usGamePort, uint16 usQueryPort, EServerMode eServerMode, const char *pchVersionString );
-bool SOP_BGetCallbackTrampoline( HSteamPipe hSteamPipe, CallbackMsg_t *pCallbackMsg, HSteamCall *phSteamCall );
+void NEVERINLINEDECL SOP_SleepTrampoline(DWORD msec);
+bool NEVERINLINEDECL SOP_SteamGameServer_InitSafeTrampoline( uint32 unIP, uint16 usPort, uint16 usGamePort, uint16 usQueryPort, EServerMode eServerMode, const char *pchVersionString );
+bool NEVERINLINEDECL SOP_BGetCallbackTrampoline( HSteamPipe hSteamPipe, CallbackMsg_t *pCallbackMsg, HSteamCall *phSteamCall );
 edict_t *SOP_UTIL_PlayerByIndexTrampoline(int client);
 
 int SOP_recvfrom(int s, char *buf, int len, int flags, struct sockaddr *from, int *fromlen);

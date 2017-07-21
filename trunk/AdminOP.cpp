@@ -600,13 +600,13 @@ CBaseEntity *HookGiveNamedScriptItem(const char *pszName, int iSubType, CEconIte
 
     CAdminOPPlayer *pAOPPlayer = &pAdminOP.pAOPPlayers[entindex-1];
 
-    if(pItem && (pItem->m_iItemDefinitionIndex == 452 || pItem->m_iItemDefinitionIndex == 453 || pItem->m_iItemDefinitionIndex == 454) && tf2_disable_witcher.GetBool())
+    if(tf2_disable_witcher.GetBool() && pItem && (pItem->m_iItemDefinitionIndex == 452 || pItem->m_iItemDefinitionIndex == 453 || pItem->m_iItemDefinitionIndex == 454))
     {
         Msg("[SOURCEOP] Preventing item %i from spawning.\n", pItem->m_iItemDefinitionIndex);
         RETURN_META_VALUE(MRES_SUPERCEDE, NULL);
     }
 
-    if(pItem && pItem->m_iItemDefinitionIndex == 221 && tf2_disable_fish.GetBool())
+    if(tf2_disable_fish.GetBool() && pItem && pItem->m_iItemDefinitionIndex == 221)
     {
         static CEconItemView *pFakeBat = new CEconItemView;
         static bool bBatInited = false;
@@ -637,7 +637,7 @@ CBaseEntity *HookGiveNamedScriptItem(const char *pszName, int iSubType, CEconIte
         }
     }
 
-    if(pItem && tf2_customitems.GetBool())
+    if(tf2_customitems.GetBool() && pItem)
     {
         CSpecialItem *pCustomSpecialItem;
         int i = 0;
@@ -1472,16 +1472,17 @@ void CAdminOP :: LevelInit( char const *pMapName )
         if(numAdvances >= 5000)
         {
             brokeOnInfiniteLoop = true;
+            break;
         }
     }
 
     if(brokeOnInfiniteLoop)
     {
-        ColorMsg(CONCOLOR_LIGHTRED, "[SOURCEOP] Map cycle tracker tried advancing to the current map\n           but failed. This shouldn't happen. Please report it.\n");
+        ColorMsg(CONCOLOR_LIGHTRED, "[SOURCEOP] Map cycle tracker tried advancing to the current map\n           but failed. This shouldn't happen. Please report it.\n           %i items in list. Started at %i.\n", mapCycleTracker->GetNumMapsInList(), startingPosition);
     }
     else if (brokeOnPosition)
     {
-        ColorMsg(CONCOLOR_DARKGRAY, "[SOURCEOP] Map cycle tracker did not find the current map in the map cycle.\n", numAdvances);
+        ColorMsg(CONCOLOR_DARKGRAY, "[SOURCEOP] Map cycle tracker did not find the current map in the map cycle.\n");
     }
     else if (numAdvances > 0)
     {
@@ -1512,7 +1513,7 @@ void CAdminOP :: LevelInit( char const *pMapName )
     {
         // the first map name in the file becomes the default
         sscanf( pFileList, " %31s", szNextMap );
-        if ( engine->IsMapValid( szNextMap ) )
+        if ( DFIsMapValid( szNextMap ) )
             Q_strncpy( szFirstMapInList, szNextMap ,sizeof(szFirstMapInList));
 
         // keep pulling mapnames out of the list until the current mapname
@@ -1533,7 +1534,7 @@ void CAdminOP :: LevelInit( char const *pMapName )
             if ( next_map_is_it )
             {
                 // check that it is a valid map file
-                if ( engine->IsMapValid( cBuf ) )
+                if ( DFIsMapValid( cBuf ) )
                 {
                     Q_strncpy( szNextMap, cBuf ,sizeof(szNextMap));
                     break;
@@ -1551,7 +1552,7 @@ void CAdminOP :: LevelInit( char const *pMapName )
         UTIL_FreeFile( (byte *)aFileList );
     }
 
-    if ( !engine->IsMapValid(szNextMap) )
+    if ( !DFIsMapValid(szNextMap) )
         Q_strncpy( szNextMap, szFirstMapInList ,sizeof(szNextMap));
 
     strcpy(nextmap, szNextMap);
@@ -2469,6 +2470,7 @@ void CAdminOP :: LoadCreditsFromFile( void )
 
                 CSteamID steamIDCredits( CreditsInfo.WonID, k_EUniversePublic );
                 strcpy(newCredits.WonID, steamIDCredits.Render() );
+                newCredits.steamid = steamIDCredits;
 
                 int iMap = m_mapSteamIDToCreditEntry.Find( steamIDCredits.ConvertToUint64() );
                 if ( iMap == m_mapSteamIDToCreditEntry.InvalidIndex() )
@@ -5893,7 +5895,7 @@ CSteamID CAdminOP :: GetServerSteamID()
 // The gamerules's nextmap can change midgame for example if the nextlevel cvar is changed 
 void CAdminOP :: UpdateNextMap(void)
 {
-    if(nextlevel && nextlevel->GetString() && *nextlevel->GetString() && engine->IsMapValid( nextlevel->GetString()))
+    if(nextlevel && nextlevel->GetString() && *nextlevel->GetString() && DFIsMapValid( nextlevel->GetString()))
     {
         V_strncpy(nextmap, nextlevel->GetString(), sizeof(nextmap));
     }
@@ -6845,7 +6847,7 @@ void CAdminOP :: PlayerSpeak(int iPlayer, int userid, const char *text)
                             SayTextAllChatHud(msg);
                         }
                     }
-                    else if(engine->IsMapValid(strMap))
+                    else if(DFIsMapValid(strMap))
                     {
                         mapVote.ChangeVote(strMap, userid);
                         int iVoteCount = mapVote.GetCount(strMap);
@@ -7369,7 +7371,7 @@ void CAdminOP :: InitCommandLineCVars()
 }
 
 #define CHECK_FEATURE(file, index) \
-    fp = fopen(UTIL_VarArgs("%s"SLASHSTRING""file, filepath), "rb"); \
+    fp = fopen(UTIL_VarArgs("%s" SLASHSTRING "" file, filepath), "rb"); \
     if(fp) \
     { \
         featureStatus[index] = fgetc(fp) == '1'; \

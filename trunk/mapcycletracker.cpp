@@ -89,7 +89,7 @@ void CMapCycleTracker::UpdateCycleIfNecessary()
                     StripChar( m_MapList[i] , '\r');
                     StripChar( m_MapList[i] , ' ');
 
-                    if ( !engine->IsMapValid( m_MapList[i] ) )
+                    if ( !DFIsMapValid( m_MapList[i] ) )
                     {
                         // If the engine doesn't consider it a valid map remove it from the lists
                         char szWarningMessage[MAX_PATH];
@@ -118,7 +118,7 @@ void CMapCycleTracker::UpdateCycleIfNecessary()
 
 void CMapCycleTracker::AdvanceCycle(bool bForce)
 {
-    if ( !bForce && nextlevel && nextlevel->GetString() && *nextlevel->GetString() && engine->IsMapValid( nextlevel->GetString() ) )
+    if ( !bForce && nextlevel && nextlevel->GetString() && *nextlevel->GetString() && DFIsMapValid( nextlevel->GetString() ) )
     {
         // map cycle will advance to nextlevel but the "nextmap" will remain the same
     }
@@ -152,4 +152,11 @@ void CMapCycleTracker::GetCurrentLevelName(char *pszCurrentMap, int bufsize)
         query = m_MapList.Count() - 1;
 
     V_strncpy(pszCurrentMap, m_MapList[query], bufsize);
+}
+
+bool DFIsMapValid( const char *pszMapName )
+{
+    static char szMapName[MAX_PATH];
+    V_strncpy( szMapName, pszMapName, sizeof(szMapName) );
+    return engine->FindMap( szMapName, sizeof( szMapName ) ) != IVEngineServer::eFindMap_NotFound;
 }

@@ -17,14 +17,14 @@
 
 ; -- install script.iss --
 ; Installation file for SourceOP.
-; Built with Inno Setup Compiler 5.3.9
+; Built with Inno Setup Compiler 5.5.9
 
 [Setup]
 AppName=SourceOP
-AppVerName=SourceOP Beta Version 0.9.17.543
+AppVerName=SourceOP Beta Version 0.9.18.572
 AppPublisher=SourceOP.com
 AppPublisherURL=http://www.sourceop.com/
-AppCopyright=Copyright (C) 2005-2013 SourceOP.com
+AppCopyright=Copyright (C) 2005-2017 SourceOP.com
 DefaultDirName={code:GetMyInstallPath}
 DefaultGroupName=SourceOP
 UninstallFilesDir={code:GetFinalInstallPath}\addons\SourceOP\uninstall
@@ -34,7 +34,9 @@ SolidCompression=yes
 DirExistsWarning=no
 AppendDefaultDirName=no
 VersionInfoCopyright=Copyright (C) 2005-2013 SourceOP.com
-VersionInfoVersion=0.9.17.543
+VersionInfoVersion=0.9.18.572
+;setup is not recommended due to Windows compatibility allowing for hijacking, but oh well
+OutputBaseFilename=setup
 
 [Files]
 Source: "files\SourceOP\bin\*"; DestDir: "{code:GetFinalInstallPath}\..\bin"; Excludes: ".svn"; Components: main

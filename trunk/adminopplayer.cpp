@@ -7388,8 +7388,8 @@ int CAdminOPPlayer :: SaveCredits(bool isShutdown)
 
         if(CreditsInfo->steamid != steamid)
         {
-            engine->LogPrint( UTIL_VarArgs( "[SOURCEOP] \"Console<0><Console><Console>\" Credits map consistency error. Expected SteamID \"%llu\" at \"%i\" but found \"%s\"\n", steamid.ConvertToUint64(), iVec, CreditsInfo->steamid.ConvertToUint64() ) );
-            pAdminOP.TimeLog( "SourceOPErrors.log", "Credits map consistency error. Expected SteamID \"%llu\" at \"%i\" but found \"%s\"\n", steamid.ConvertToUint64(), iVec, CreditsInfo->steamid.ConvertToUint64() );
+            engine->LogPrint( UTIL_VarArgs( "[SOURCEOP] \"Console<0><Console><Console>\" Credits map consistency error. Expected SteamID \"%llu\" at \"%i\" but found \"%llu\"\n", steamid.ConvertToUint64(), iVec, CreditsInfo->steamid.ConvertToUint64() ) );
+            pAdminOP.TimeLog( "SourceOPErrors.log", "Credits map consistency error. Expected SteamID \"%llu\" at \"%i\" but found \"%llu\"\n", steamid.ConvertToUint64(), iVec, CreditsInfo->steamid.ConvertToUint64() );
             return CRED_SAVEERROR_BADDATA;
         }
 
@@ -7434,6 +7434,7 @@ int CAdminOPPlayer :: SaveCredits(bool isShutdown)
         else
             strcpy(CreditsInfo.CurrentName, info->GetName());
         strcpy(CreditsInfo.WonID, Credits.WonID);
+        CreditsInfo.steamid = steamIdFromEngine;
         memcpy(&CreditsInfo.thismap, &Credits.thismap, sizeof(CreditsInfo.thismap));
         int iVec = pAdminOP.creditList.AddToTail(CreditsInfo);
         pAdminOP.m_mapSteamIDToCreditEntry.Insert( steamIdFromEngine.ConvertToUint64(), iVec );
