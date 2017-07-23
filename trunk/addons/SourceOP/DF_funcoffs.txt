@@ -125,7 +125,7 @@ default
         CBaseClient::SendServerInfo_win =                       13
         CBaseClient::SetUserCVar_win =                          18
         // ----
-        CBaseClient::vtable2_from_vtable3 =                     -42
+        CBaseClient::vtable2_from_vtable3 =                     22
 
         // CBaseClient Linux
         CBaseClient::Connect_lin =                              11

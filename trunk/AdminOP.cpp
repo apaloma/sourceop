@@ -3148,35 +3148,37 @@ bool CAdminOP :: MemPatcher( void )
     const char *namedSig = f.GetSignature("CreateEntityByName", &len);
     const char *namedSigMatch = f.GetMatchString("CreateEntityByName");
     int namedEntFactDict = atoi(f.GetExtra("CreateEntFactDict"));
-
-    for(unsigned int i = 0; i<(modlentry.modBaseSize-len); i++)
+    if ( len > 0 )
     {
-        if(f.IsMatch(pCheck, i, len, namedSig, namedSigMatch))
+        for ( unsigned int i = 0; i < (modlentry.modBaseSize - len); i++ )
         {
-            _CreateEntityByName = (_CreateEntityByNameFunc)(i+modlentry.modBaseAddr);
-            if(namedEntFactDict && g_entityFactoryDictionary == NULL)
+            if ( f.IsMatch( pCheck, i, len, namedSig, namedSigMatch ) )
             {
-                const char *namedEntFactSig = f.GetSignature("CreateEntFactDict", &len);
-                const char *namedEntFactMatch = f.GetMatchString("CreateEntFactDict");
-                for(unsigned int j = i; j<i+0x5F; j++)
+                _CreateEntityByName = (_CreateEntityByNameFunc)(i + modlentry.modBaseAddr);
+                if ( namedEntFactDict && g_entityFactoryDictionary == NULL )
                 {
-                    if(f.IsMatch(pCheck, j, len, namedEntFactSig, namedEntFactMatch))
+                    const char *namedEntFactSig = f.GetSignature( "CreateEntFactDict", &len );
+                    const char *namedEntFactMatch = f.GetMatchString( "CreateEntFactDict" );
+                    for ( unsigned int j = i; j < i + 0x5F; j++ )
                     {
-                        int *dictOffPtr = (int *)(modlentry.modBaseAddr + j + len);
-                        int dictAddr;
-                        if(namedEntFactDict == 1)
-                            dictAddr = ((int)modlentry.modBaseAddr) + j + len + 4 + *dictOffPtr;
-                        else
-                            dictAddr = *dictOffPtr;
+                        if ( f.IsMatch( pCheck, j, len, namedEntFactSig, namedEntFactMatch ) )
+                        {
+                            int *dictOffPtr = (int *)(modlentry.modBaseAddr + j + len);
+                            int dictAddr;
+                            if ( namedEntFactDict == 1 )
+                                dictAddr = ((int)modlentry.modBaseAddr) + j + len + 4 + *dictOffPtr;
+                            else
+                                dictAddr = *dictOffPtr;
 
-                        typedef IEntityFactoryDictionary* (__cdecl* EntFactDictFunc)( void );
-                        EntFactDictFunc EntFactDict;
-                        EntFactDict = (EntFactDictFunc)dictAddr;
-                        g_entityFactoryDictionary = (CEntityFactoryDictionary *)EntFactDict();
+                            typedef IEntityFactoryDictionary* (__cdecl* EntFactDictFunc)(void);
+                            EntFactDictFunc EntFactDict;
+                            EntFactDict = (EntFactDictFunc)dictAddr;
+                            g_entityFactoryDictionary = (CEntityFactoryDictionary *)EntFactDict();
+                        }
                     }
                 }
+                break;
             }
-            break;
         }
     }
 
@@ -3196,45 +3198,57 @@ bool CAdminOP :: MemPatcher( void )
 
     const char *clearMultiDmgSig = f.GetSignature("ClearMultiDamage", &len);
     const char *clearMultiDmgMatch = f.GetMatchString("ClearMultiDamage");
-    for(unsigned int i = 0; i<(modlentry.modBaseSize-len); i++)
+    if ( len > 0 )
     {
-        if(f.IsMatch(pCheck, i, len, clearMultiDmgSig, clearMultiDmgMatch))
+        for ( unsigned int i = 0; i < (modlentry.modBaseSize - len); i++ )
         {
-            _ClearMultiDamage = (_ClearMultiDamageFunc)(i+modlentry.modBaseAddr);
-            break;
+            if ( f.IsMatch( pCheck, i, len, clearMultiDmgSig, clearMultiDmgMatch ) )
+            {
+                _ClearMultiDamage = (_ClearMultiDamageFunc)(i + modlentry.modBaseAddr);
+                break;
+            }
         }
     }
 
     const char *applyMultiDmgSig = f.GetSignature("ApplyMultiDamage", &len);
     const char *applyMultiDmgMatch = f.GetMatchString("ApplyMultiDamage");
-    for(unsigned int i = 0; i<(modlentry.modBaseSize-len); i++)
+    if ( len > 0 )
     {
-        if(f.IsMatch(pCheck, i, len, applyMultiDmgSig, applyMultiDmgMatch))
+        for ( unsigned int i = 0; i < (modlentry.modBaseSize - len); i++ )
         {
-            _ApplyMultiDamage = (_ApplyMultiDamageFunc)(i+modlentry.modBaseAddr);
-            break;
+            if ( f.IsMatch( pCheck, i, len, applyMultiDmgSig, applyMultiDmgMatch ) )
+            {
+                _ApplyMultiDamage = (_ApplyMultiDamageFunc)(i + modlentry.modBaseAddr);
+                break;
+            }
         }
     }
 
     const char *radiusDamageSig = f.GetSignature("RadiusDamage", &len);
     const char *radiusDamageMatch = f.GetMatchString("RadiusDamage");
-    for(unsigned int i = 0; i<(modlentry.modBaseSize-len); i++)
+    if ( len > 0 )
     {
-        if(f.IsMatch(pCheck, i, len, radiusDamageSig, radiusDamageMatch))
+        for ( unsigned int i = 0; i < (modlentry.modBaseSize - len); i++ )
         {
-            _RadiusDamage = (_RadiusDamageFunc)(i+modlentry.modBaseAddr);
-            break;
+            if ( f.IsMatch( pCheck, i, len, radiusDamageSig, radiusDamageMatch ) )
+            {
+                _RadiusDamage = (_RadiusDamageFunc)(i + modlentry.modBaseAddr);
+                break;
+            }
         }
     }
 
     const char *setMoveTypeSig = f.GetSignature("SetMoveType", &len);
     const char *setMoveTypeMatch = f.GetMatchString("SetMoveType");
-    for(unsigned int i = 0; i<(modlentry.modBaseSize-len); i++)
+    if ( len > 0 )
     {
-        if(f.IsMatch(pCheck, i, len, setMoveTypeSig, setMoveTypeMatch))
+        for ( unsigned int i = 0; i < (modlentry.modBaseSize - len); i++ )
         {
-            _SetMoveType = (_SetMoveTypeFunc)(i+modlentry.modBaseAddr);
-            break;
+            if ( f.IsMatch( pCheck, i, len, setMoveTypeSig, setMoveTypeMatch ) )
+            {
+                _SetMoveType = (_SetMoveTypeFunc)(i + modlentry.modBaseAddr);
+                break;
+            }
         }
     }
 

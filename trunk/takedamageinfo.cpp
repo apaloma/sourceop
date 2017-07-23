@@ -147,8 +147,7 @@ void ClearMultiDamage( void )
 {
     if ( g_nServerToolsVersion >= 2 )
         servertools->ClearMultiDamage();
-
-    if(_ClearMultiDamage)
+    else if(_ClearMultiDamage)
         (_ClearMultiDamage)();
 }
 
@@ -159,8 +158,7 @@ void ApplyMultiDamage( void )
 {
     if ( g_nServerToolsVersion >= 2 )
         servertools->ApplyMultiDamage();
-
-    if(_ApplyMultiDamage)
+    else if(_ApplyMultiDamage)
         (_ApplyMultiDamage)();
 }
 
